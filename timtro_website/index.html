@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TìmTrọ — Tìm phòng trọ an toàn</title>
+<style>
+:root{--blue:#0878ed;--blue2:#0757b8;--navy:#10284b;--pale:#eef6ff;--line:#d9e8f5;--green:#168344;--greenbg:#e5f7e9;--muted:#68768a;--shadow:0 10px 30px #183e6510}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,"Segoe UI",Arial,sans-serif;color:#172b4d;background:linear-gradient(130deg,#f4f8ff,#fff 52%,#eef5ff);min-height:100vh}button,input,select,textarea{font:inherit}button{cursor:pointer;transition:.18s}button:hover{transform:translateY(-1px);filter:brightness(.98)}.shell{max-width:1220px;margin:auto;padding:14px 20px 32px}.topbar{height:64px;background:#fff;border:1px solid var(--line);border-radius:18px 18px 0 0;display:flex;align-items:center;justify-content:space-between;padding:0 25px;box-shadow:var(--shadow);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:800;color:var(--navy);white-space:nowrap}.brandmark{width:34px;height:34px;display:grid;place-items:center;color:var(--blue);font-size:32px}.nav{display:flex;align-items:center;gap:clamp(12px,3vw,42px)}.nav button{border:0;background:none;color:#263b5a;padding:10px 0;font-size:14px}.nav button.active{color:var(--blue);font-weight:700}.avatar{border:0;background:#eaf4ff;border-radius:50%;width:38px;height:38px;color:#234a76;font-size:20px}.page{background:#ffffffb8;border:1px solid var(--line);border-top:0;border-radius:0 0 18px 18px;min-height:650px;overflow:hidden}.hero{min-height:245px;background:linear-gradient(90deg,#0759b7f5 0%,#0879eddb 48%,#163f6b55 100%),url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1600&q=85') center/cover;display:flex;align-items:center;padding:38px 5%;color:#fff;position:relative}.hero-copy{max-width:560px;position:relative;z-index:1}.hero h1{font-size:clamp(30px,4vw,44px);line-height:1.12;margin:0 0 18px;font-weight:800;letter-spacing:-.8px}.hero p{font-size:16px;line-height:1.6;max-width:480px;margin:0 0 22px;color:#eaf5ff}.trust-row{display:flex;flex-wrap:wrap;gap:20px;font-size:14px;font-weight:700}.trust-row span{display:flex;gap:8px;align-items:center}.trust-row b{font-size:20px}.search-card{position:relative;margin:-48px auto 28px;width:min(760px,92%);background:#fff;border:1px solid #d6e6f5;border-radius:14px;padding:22px;box-shadow:0 16px 42px #123d6718;z-index:2}.field-label{display:block;font-size:13px;font-weight:750;color:#314866;margin:0 0 8px}.room-types{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.type-option{border:1px solid #d6e4f2;border-radius:10px;padding:12px;text-align:center;background:#f9fbfe;color:#334b68;font-weight:650}.type-option.selected{background:#e8f4ff;border-color:#1684f8;color:#0868cf;box-shadow:inset 0 0 0 1px #1684f8}.fields{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px}.fields.three{grid-template-columns:1fr 1fr 1fr}.field select,.field input{width:100%;border:1px solid #d4e1ee;border-radius:9px;padding:12px 11px;background:#fff;color:#243b5b;outline:none}.field select:focus,.field input:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #0878ed17}.primary,.secondary,.lightbtn{border-radius:9px;padding:12px 16px;font-weight:750;border:1px solid var(--blue)}.primary{background:linear-gradient(110deg,#0878ed,#0765d1);color:white;box-shadow:0 4px 10px #0878ed24}.secondary{background:#fff;color:#0872dc}.lightbtn{background:#eff7ff;color:#1269bf;border-color:#d6e8fa}.full{width:100%}.content{padding:26px 30px 34px}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:20px}.section-head h2{margin:0 0 5px;font-size:24px;color:var(--navy)}.muted{color:var(--muted);font-size:14px}.result-layout{display:grid;grid-template-columns:250px 1fr;gap:22px}.panel,.room-card,.review-panel,.detail-panel,.verification-card{background:#fff;border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow)}.panel{padding:18px;height:max-content}.panel h3{font-size:16px;margin:0 0 17px}.filter-line{font-size:13px;line-height:1.6;margin:0 0 14px;color:#455771}.filter-line strong{color:#243b5b}.room-list{display:flex;flex-direction:column;gap:13px}.room-card{display:grid;grid-template-columns:220px 1fr;gap:17px;padding:10px;cursor:pointer}.room-card:hover{border-color:#8cc6ff;box-shadow:0 10px 28px #0878ed13}.room-image{width:100%;height:160px;object-fit:cover;border-radius:9px;background:#e7eef7}.room-info{min-width:0;padding:4px 3px 2px;display:flex;flex-direction:column}.room-title-row{display:flex;justify-content:space-between;gap:10px}.room-title{font-weight:800;color:#183354;margin:0 0 4px;font-size:16px}.price{color:#0878ed;font-weight:800;font-size:17px;margin:0 0 8px}.verified-pill{display:inline-flex;align-items:center;gap:5px;background:var(--greenbg);color:var(--green);border-radius:20px;padding:5px 9px;font-size:11px;font-weight:800;white-space:nowrap;height:max-content}.meta{display:flex;flex-wrap:wrap;gap:10px;color:#52647a;font-size:12px;margin-bottom:7px}.rating{font-size:13px;color:#233b5a;margin-bottom:7px}.star{color:#f5a900}.room-actions{display:flex;gap:8px;margin-top:auto}.room-actions button{padding:8px 10px;font-size:12px;flex:1}.heart{background:none;border:0;font-size:24px;color:#243b5b;padding:0 4px}.heart.saved{color:#e34867}.back{border:0;background:none;color:#2a4667;font-weight:700;margin-bottom:16px;padding:0}.detail-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}.gallery-main{width:100%;height:330px;object-fit:cover;border-radius:12px}.thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}.thumbs img{width:100%;height:72px;object-fit:cover;border-radius:7px;cursor:pointer;border:2px solid transparent}.thumbs img:hover{border-color:var(--blue)}.amenities{padding:18px;background:#fff;border:1px solid var(--line);border-radius:12px}.amenity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:14px;font-size:13px}.cost-card{background:#eff8ff;border:1px solid #cfe8fb;border-radius:12px;padding:18px;margin:14px 0}.cost-total{font-size:26px;font-weight:850;margin:7px 0 12px}.cost-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;margin:11px 0}.verify-box{background:#e9f9ef;border:1px solid #c9eed5;border-radius:12px;padding:15px;margin:12px 0}.verify-box h3{color:#168344;margin:0 0 8px}.checkline{font-size:13px;margin:7px 0;color:#2d6241}.detail-actions{display:flex;gap:10px;margin-top:12px}.detail-actions>*{flex:1}.verify-banner{background:linear-gradient(100deg,#e7f9eb,#f7fff8);border-bottom:1px solid #d8efde;padding:24px 30px;display:flex;gap:18px;align-items:center}.shield{font-size:42px;color:#14823e}.verify-banner h2{color:#126d31;margin:0 0 5px;font-size:22px}.verify-list{padding:22px 30px;display:flex;flex-direction:column;gap:12px}.verify-step{background:white;border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;grid-template-columns:55px 1fr auto;gap:14px;align-items:center}.step-icon{width:48px;height:48px;background:#168344;color:white;border-radius:50%;display:grid;place-items:center;font-size:23px}.verify-step h3{margin:0 0 7px;font-size:16px}.verify-step p{margin:5px 0;font-size:13px;color:#53647a}.reviews-grid{display:grid;grid-template-columns:1fr 300px;gap:20px}.review-panel{padding:20px}.rating-big{font-size:34px;font-weight:850}.review-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.review-tabs button{border:1px solid var(--line);border-radius:9px;background:#eff7ff;padding:9px 14px;font-weight:650}.review-tabs button.active{border-color:var(--blue);color:var(--blue)}.review{display:grid;grid-template-columns:42px 1fr;gap:12px;padding:15px 0;border-bottom:1px solid #e5edf5}.review-avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#e6f2ff;color:#1767b7;font-weight:800}.review h4{margin:0 0 4px}.review p{margin:6px 0;color:#53647a;font-size:14px;line-height:1.5}.checklist{background:#f0f8ff;padding:20px;border-radius:12px;border:1px solid var(--line);height:max-content}.checklist h3{margin:0 0 6px}.checkitem{padding:12px 0;border-bottom:1px solid #dce9f5;font-size:14px}.checkitem span{color:#0aad4b;font-size:19px;margin-right:9px}.contact-card{padding:22px}.landlord{display:flex;gap:16px;align-items:center;margin-bottom:18px}.landlord-avatar{width:82px;height:82px;border-radius:50%;object-fit:cover;background:#e4effb}.landlord h2{margin:0 0 6px}.verified-text{color:var(--green);font-weight:750}.contact-methods{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:15px 0 24px}.contact-card textarea{width:100%;min-height:115px;resize:vertical;padding:14px;border:1px solid #d1deeb;border-radius:10px;margin:8px 0 12px}.toast{position:fixed;right:22px;bottom:22px;background:#16385e;color:white;padding:14px 18px;border-radius:10px;box-shadow:0 12px 30px #10284b35;z-index:50;display:none}.empty{padding:50px 20px;text-align:center;color:var(--muted)}.hidden{display:none!important}.small-label{font-size:12px;color:var(--muted)}footer{text-align:center;color:#7c8ba0;font-size:12px;padding:20px}
+@media(max-width:850px){.shell{padding:0}.topbar{border-radius:0;padding:0 14px;height:60px}.brand{font-size:20px}.nav{gap:10px}.nav button{font-size:12px}.nav button:nth-child(1),.nav button:nth-child(4){display:none}.page{border-radius:0}.result-layout,.detail-grid,.reviews-grid{grid-template-columns:1fr}.filter-panel{order:0}.room-card{grid-template-columns:170px 1fr}.room-image{height:150px}.content{padding:20px 14px}.hero{padding:30px 22px;min-height:230px}.search-card{margin-top:-30px;padding:16px}.verify-step{grid-template-columns:45px 1fr}.verify-step .secondary{grid-column:2}.verify-list{padding:16px}.verify-banner{padding:20px}.detail-actions{flex-direction:column}}
+@media(max-width:560px){.nav button:nth-child(2),.nav button:nth-child(3){display:none}.hero h1{font-size:31px}.fields,.fields.three{grid-template-columns:1fr}.room-card{grid-template-columns:1fr}.room-image{height:190px}.room-actions{flex-wrap:wrap}.room-actions button{min-width:28%}.room-title-row{align-items:flex-start}.verified-pill{font-size:10px}.gallery-main{height:250px}.amenity-grid{grid-template-columns:1fr 1fr}.contact-methods{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}}
+
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#eef5fc;border-radius:11px;padding:5px;margin:0 0 18px}.auth-card .auth-tabs .auth-tab{background:transparent;color:#47617d;border:0;box-shadow:none;padding:10px}.auth-card .auth-tabs .auth-tab.active{background:#fff;color:#0872dc;box-shadow:0 2px 8px #10284b12}.auth-card input{display:block}.auth-card form label{margin-top:2px}
+body.auth-pending{overflow:hidden}
+body.auth-pending .shell{display:none}
+.auth-card :focus-visible{outline:3px solid #65b2ff;outline-offset:3px}
+.auth-options{display:flex;justify-content:flex-end;margin:-2px 0 16px}
+.forgot-password{font-size:13px;color:#0872dc;text-decoration:underline;text-underline-offset:3px;cursor:default}
+
+
+.auth-gate{position:fixed;inset:0;z-index:1200;background:linear-gradient(135deg,#0759b7 0%,#0878ed 55%,#163f6b 100%);display:flex;align-items:center;justify-content:center;padding:20px;color:#173452;overflow-y:auto}
+.auth-card{width:min(480px,100%);background:#fff;border-radius:22px;padding:clamp(24px,5vw,38px);box-shadow:0 25px 80px #042d5a55;margin:auto}
+.auth-brand{font-size:28px;font-weight:850;color:#10284b;text-align:center;margin-bottom:10px}.auth-brand span{color:#0878ed}
+.auth-card h1{text-align:center;font-size:25px;color:#10284b;margin:12px 0}.auth-copy{text-align:center;color:#66778b;line-height:1.55;font-size:14px;margin:0 0 22px}
+.auth-card label{display:block;font-size:13px;font-weight:750;margin:0 0 7px;color:#314866}.auth-card input{width:100%;border:1px solid #d4e1ee;border-radius:10px;padding:13px 12px;margin-bottom:12px}.auth-card button{width:100%;border-radius:10px;padding:13px 16px;font-weight:750;border:1px solid #0878ed;background:linear-gradient(110deg,#0878ed,#0765d1);color:white}.auth-msg{font-size:13px;line-height:1.5;margin-top:14px;padding:11px 12px;border-radius:9px;display:none;overflow-wrap:anywhere}.auth-msg.info{display:block;background:#eff7ff;color:#174e85}.auth-msg.error{display:block;background:#fff0f0;color:#a32727}.auth-msg.success{display:block;background:#e9f9ef;color:#126d31}.auth-small{text-align:center;font-size:12px;color:#7b8ba0;line-height:1.5;margin:16px 0 0}.auth-user{font-size:12px;color:#5c6f85;max-width:230px;overflow-wrap:anywhere}
+
+/* Roommate finder */
+.roommate-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center;padding:28px;background:linear-gradient(120deg,#eaf8ff,#f7fcff);border:1px solid #d5edf9;border-radius:16px;margin-bottom:22px}.roommate-hero h2{font-size:clamp(24px,3vw,34px);margin:0 0 10px;color:#075b82}.roommate-hero p{line-height:1.65;color:#45677b;margin:0}.roommate-hero-art{font-size:72px;text-align:center;letter-spacing:8px}.roommate-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}.roommate-form{display:grid;grid-template-columns:1fr 1fr;gap:13px}.roommate-form .wide{grid-column:1/-1}.roommate-form input,.roommate-form select,.roommate-form textarea,.roommate-filters input,.roommate-filters select{width:100%;border:1px solid #d4e1ee;border-radius:9px;padding:11px;background:#fff;color:#243b5b}.roommate-form textarea{min-height:94px;resize:vertical}.tag-options{display:flex;flex-wrap:wrap;gap:7px}.tag-option{border:1px solid #d7e7f2;border-radius:20px;padding:7px 10px;background:#f8fcff;color:#47617d;font-size:12px}.tag-option.selected{background:#e2f6f2;border-color:#65c9b5;color:#116c5d}.roommate-filters{display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:9px;margin-bottom:14px}.roommate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.person-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;box-shadow:var(--shadow);min-width:0}.person-head{display:flex;gap:12px;align-items:center}.person-photo{width:72px;height:72px;border-radius:50%;object-fit:cover;background:#e8f3fc;flex-shrink:0}.person-name{font-weight:800;font-size:16px;color:#183354;margin:0 0 5px}.online-dot{color:#168344;font-size:12px;font-weight:700}.match-score{margin-left:auto;background:#e3faf3;color:#087b64;border-radius:12px;padding:8px;font-weight:850;white-space:nowrap}.person-tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}.person-tag{font-size:11px;background:#eaf6ff;color:#2a6489;border-radius:20px;padding:5px 8px}.person-intro{font-size:13px;line-height:1.55;color:#53677c;min-height:58px}.person-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.person-actions button{font-size:12px;padding:10px 7px}.connection-note{background:#eff8ff;border:1px solid #d7eaf8;border-radius:11px;padding:13px;color:#496780;font-size:13px;line-height:1.5;margin-top:14px}.request-status{font-size:12px;font-weight:800;padding:5px 8px;border-radius:20px;background:#fff3d7;color:#946100}.request-status.accepted{background:#e5f7e9;color:#168344}.request-status.declined{background:#fff0f0;color:#a32727}.roommate-empty{border:1px dashed #b9d5e9;border-radius:12px;padding:25px;text-align:center;color:#60768b;grid-column:1/-1}
+@media(max-width:950px){.roommate-layout{grid-template-columns:1fr}.roommate-filters{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.roommate-hero{grid-template-columns:1fr}.roommate-hero-art{display:none}.roommate-grid{grid-template-columns:1fr}.roommate-form{grid-template-columns:1fr}.roommate-form .wide{grid-column:auto}.roommate-filters{grid-template-columns:1fr 1fr}.nav button[data-page="roommates"]{display:none}}
+
+
+</style>
+</head>
+<body class="auth-pending">
+
+<div class="auth-gate" id="authGate">
+  <div class="auth-card">
+    <div class="auth-brand"><span>◆</span> TìmTrọ</div>
+    <h1 id="authTitle">Chào mừng bạn trở lại</h1>
+    <p class="auth-copy" id="authCopy">Đăng nhập để tiếp tục tìm phòng trọ.</p>
+    <div class="auth-tabs" role="group" aria-label="Tài khoản">
+      <button type="button" class="auth-tab active" id="loginTab" aria-pressed="true" data-auth-mode="login">Log In</button>
+      <button type="button" class="auth-tab" id="signupTab" aria-pressed="false" data-auth-mode="signup">Sign Up</button>
+    </div>
+    <form id="authForm">
+      <div id="usernameWrap" class="hidden">
+        <label for="authUsername">Username</label>
+        <input id="authUsername" type="text" autocomplete="username" minlength="2" maxlength="40" placeholder="Tên người dùng" />
+      </div>
+      <label for="authEmail">Email sinh viên UEH</label>
+      <input id="authEmail" type="email" autocomplete="email" placeholder="mssv@st.ueh.edu.vn" required />
+      <label for="authPassword">Password</label>
+      <input id="authPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Ít nhất 6 ký tự" required />
+      <div class="auth-options" id="forgotPasswordWrap"><span class="forgot-password" aria-disabled="true" title="Chức năng đang được phát triển">Forgot Password?</span></div>
+      <button id="sendAuth" type="submit">Log In</button>
+    </form>
+    <form id="otpForm" class="hidden" style="margin-top:14px">
+      <label for="authOtp">Six-digit email OTP</label>
+      <input id="authOtp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required />
+      <button id="verifyOtp" type="submit">Verify email and continue</button>
+      <button id="resendOtp" type="button" class="secondary" style="margin-top:9px;background:#fff;color:#0872dc">Resend code</button>
+    </form>
+    <div id="authMessage" class="auth-msg" role="status" aria-live="polite"></div>
+    <p class="auth-small">Dành cho sinh viên thuê trọ với email <strong>@st.ueh.edu.vn</strong>.</p>
+  </div>
+</div>
+
+<div class="shell">
+<header class="topbar">
+  <div class="brand"><span class="brandmark">◆</span><span>TìmTrọ</span></div>
+  <nav class="nav" aria-label="Điều hướng">
+    <button class="active" data-page="home">Trang chủ</button><button data-page="search">Tìm phòng</button><button data-page="roommates">Tìm bạn cùng phòng</button><button data-page="favorites">Yêu thích</button><button data-page="notifications">Thông báo</button><button data-page="account">Tài khoản</button><button class="avatar" data-page="account" aria-label="Tài khoản">●</button>
+  </nav>
+</header>
+<main class="page">
+<section id="homePage">
+  <div class="hero"><div class="hero-copy"><h1>Tìm phòng trọ<br>phù hợp với bạn</h1><p>Tìm nơi ở phù hợp với ngân sách, gần trường học và có thông tin minh bạch.</p><div class="trust-row"><span><b>🛡️</b> An toàn</span><span><b>🤝</b> Minh bạch</span><span><b>🎓</b> Dành riêng cho sinh viên</span></div></div></div>
+  <div class="search-card">
+    <label class="field-label">Loại phòng</label>
+    <div class="room-types"><button class="type-option" data-type="shared">♧　Ở ghép</button><button class="type-option selected" data-type="single">◉　Phòng đơn</button></div>
+    <div class="fields"><div class="field"><label class="field-label">📍 Campus</label><select id="campus"><option>Cơ sở B Đại học Kinh tế TP.HCM (UEH)</option><option>Cơ sở A Đại học Kinh tế TP.HCM (UEH)</option><option>UEH Nguyễn Tri Phương</option></select></div><div class="field"><label class="field-label">🎓 Trường đại học</label><select id="school"><option>Đại học Kinh tế TP.HCM (UEH)</option><option>Đại học Bách khoa TP.HCM</option><option>Đại học Khoa học Tự nhiên</option></select></div></div>
+    <div class="fields three"><div class="field"><label class="field-label">₫ Giá thuê (triệu/tháng)</label><select id="minPrice"><option value="2">Từ 2 triệu</option><option value="0">Từ 0 triệu</option><option value="3">Từ 3 triệu</option></select></div><div class="field"><label class="field-label">Đến</label><select id="maxPrice"><option value="3.5">Đến 3.5 triệu</option><option value="2.5">Đến 2.5 triệu</option><option value="5">Đến 5 triệu</option></select></div><div class="field"><label class="field-label">Khoảng cách đến campus</label><select id="distance"><option value="3">≤ 3 km</option><option value="1">≤ 1 km</option><option value="5">≤ 5 km</option></select></div></div>
+    <button class="primary full" id="searchBtn">⌕　Tìm phòng</button>
+  </div>
+  <div class="content"><div class="section-head"><div><h2>Phòng trọ nổi bật</h2><div class="muted">Một vài lựa chọn được xác minh dành cho sinh viên</div></div><button class="secondary" data-page="search">Xem tất cả phòng →</button></div><div id="featuredRooms" class="room-list"></div></div>
+</section>
+<section id="searchPage" class="content hidden">
+  <button class="back" data-page="home">←　Quay lại trang chủ</button>
+  <div class="section-head"><div><h2>Kết quả tìm kiếm</h2><div class="muted" id="resultCount">3 phòng trọ phù hợp với tiêu chí của bạn</div></div><div class="field"><label class="small-label">Sắp xếp</label><select id="sort"><option value="asc">Giá tăng dần</option><option value="desc">Giá giảm dần</option><option value="rating">Đánh giá cao nhất</option></select></div></div>
+  <div class="result-layout"><aside class="panel filter-panel"><h3>Thông tin tìm kiếm</h3><p class="filter-line"><strong>Loại phòng:</strong> <span id="summaryType">Phòng đơn</span></p><p class="filter-line"><strong>Campus:</strong> ĐH Kinh tế TP.HCM (UEH)</p><p class="filter-line"><strong>Trường:</strong> ĐH Kinh tế TP.HCM (UEH)</p><p class="filter-line"><strong>Giá thuê:</strong> <span id="summaryPrice">2–3.5 triệu</span></p><p class="filter-line"><strong>Khoảng cách:</strong> <span id="summaryDistance">≤ 3 km</span></p><button class="secondary full" data-page="home">Chỉnh sửa tìm kiếm</button></aside><div id="roomResults" class="room-list"></div></div>
+</section>
+<section id="detailPage" class="content hidden">
+  <button class="back" data-page="search">←　Quay lại danh sách phòng</button>
+  <div class="detail-grid"><div><img id="mainGallery" class="gallery-main" src="" alt="Ảnh phòng trọ"><div id="thumbs" class="thumbs"></div><div class="amenities"><h3>Tiện nghi <span class="verified-pill">✓ Đã xác thực</span></h3><div class="amenity-grid"><span>🛏️ Giường</span><span>🗄️ Tủ đồ</span><span>❄️ Máy lạnh</span><span>📶 Wifi</span><span>🧺 Máy giặt chung</span><span>🍳 Bếp chung</span></div></div></div>
+  <div class="detail-panel" style="padding:18px"><h2 id="detailTitle" style="margin:0 0 5px">Phòng trọ 1 người – Quận 10</h2><div class="price" id="detailPrice">2.800.000đ/tháng</div><div class="muted">📍 <span id="detailAddress">Quận 10, TP. Hồ Chí Minh</span></div><div class="cost-card"><strong>Tổng chi phí mỗi tháng</strong><div class="cost-total" id="totalCost">3.200.000đ</div><div class="cost-row"><span>◆ Tiền thuê phòng</span><span id="rentCost">2.800.000đ</span></div><div class="cost-row"><span>ϟ Điện (ước tính)</span><span>100.000đ</span></div><div class="cost-row"><span>♢ Nước (ước tính)</span><span>50.000đ</span></div><div class="cost-row"><span>◉ Wifi</span><span>100.000đ</span></div><div class="cost-row"><span>⊙ Phí dịch vụ</span><span>150.000đ</span></div><button class="back" id="costDetails">Chi tiết chi phí⌄</button><div id="costExtra" class="hidden small-label">Chi phí là ước tính minh họa; vui lòng xác nhận trực tiếp với chủ trọ trước khi thuê.</div></div><div class="verify-box"><h3>🛡 Đã xác thực 3/3 lớp</h3><div class="checkline">✓ Ảnh đã xác thực</div><div class="checkline">✓ Thông tin phòng đã xác thực</div><div class="checkline">✓ Người thuê đã xác nhận</div></div><button class="primary full" data-page="verification">Xem chi tiết xác thực</button><div class="detail-actions"><button class="secondary" data-page="reviews">Xem đánh giá</button><button class="secondary" data-page="contact">♙ Liên hệ chủ trọ</button></div></div></div>
+  <button class="primary full" style="margin-top:14px" data-page="search">↶　Quay lại danh sách phòng</button>
+</section>
+<section id="verificationPage" class="hidden">
+ <div class="verify-banner"><div class="shield">🛡️</div><div><h2>PHÒNG ĐÃ HOÀN TẤT 3/3 LỚP XÁC THỰC</h2><div>Đảm bảo thông tin minh bạch, an toàn cho bạn</div></div></div>
+ <div class="verify-list">
+  <div class="verify-step"><div class="step-icon">♟</div><div><h3>Lớp 1 - Xác thực từ người thuê</h3><p>🟢 Trải nghiệm thực tế từ người đã ở hoặc đã đến xem.</p><p>Miêu tả trải nghiệm, ưu nhược điểm cần tránh, chấp nhận.</p></div><button class="secondary" data-page="reviews">Xem thông tin xác thực</button></div>
+  <div class="verify-step"><div class="step-icon">📍</div><div><h3>Lớp 2 - Xác thực địa điểm & thông tin phòng</h3><p>Địa chỉ: <span id="verifyAddress">Quận 10, TP. Hồ Chí Minh</span></p><p>Thông tin phòng: 20m² – 1 người – Tầng 3 – Thang bộ</p><p>✓ Đã đối chiếu với thực tế (mẫu minh họa)</p></div><button class="secondary" id="mapBtn">Xem bản đồ & thông tin</button></div>
+  <div class="verify-step"><div class="step-icon">📷</div><div><h3>Lớp 3 - Xác thực hình ảnh 360° / video</h3><p>Hình ảnh / Video toàn bộ phòng</p><p>✓ Đã kiểm chứng (trạng thái demo)</p><div class="thumbs" style="max-width:240px"><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=300&q=80" alt="Phòng"><img src="https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&w=300&q=80" alt="Phòng khác"></div></div><button class="secondary" data-page="detail">Xem hình ảnh / video</button></div>
+  <div class="verify-box"><h3>✓ Hoàn tất 3/3 lớp xác thực</h3><div class="checkline">Bạn có thể yên tâm hơn về độ tin cậy của thông tin này.</div><div class="small-label">Lưu ý: đây là bản demo giao diện, không phải xác minh pháp lý thực tế.</div></div>
+  <button class="primary" data-page="detail">↶ Quay lại phòng</button>
+ </div>
+</section>
+<section id="reviewsPage" class="content hidden">
+ <button class="back" data-page="detail">←　Quay lại phòng</button><div class="reviews-grid"><div class="review-panel"><h2 style="margin:0 0 5px">Đánh giá phòng</h2><div><span class="rating-big">4.8/5</span> <span class="star" style="font-size:29px">★★★★★</span> <span class="muted">(32 đánh giá)</span></div><div class="review-tabs"><button class="active" data-review-filter="all">Tất cả (32)</button><button data-review-filter="room">Phòng (20)</button><button data-review-filter="owner">Chủ trọ (8)</button><button data-review-filter="info">Thông tin (4)</button></div><div id="reviewList"></div><button class="secondary full" id="moreReviews">Xem thêm đánh giá</button></div><aside class="checklist"><h3>Checklist phòng</h3><div class="muted">(từ sinh viên đã thuê)</div><div class="checkitem"><span>●</span> Sạch sẽ</div><div class="checkitem"><span>●</span> Đúng mô tả</div><div class="checkitem"><span>●</span> An ninh tốt</div><div class="checkitem"><span>●</span> Không chung chủ</div><div class="checkitem"><span>●</span> Wifi ổn định</div><div class="checkitem"><span>●</span> Đủ nội thất cơ bản</div><button class="secondary full" id="checklistBtn" style="margin-top:14px">Xem chi tiết checklist</button><div id="checklistExtra" class="hidden small-label" style="margin-top:12px">Kiểm tra khóa cửa, lối thoát hiểm, hóa đơn điện nước, tiền cọc và điều khoản hợp đồng trước khi chuyển vào.</div></aside></div>
+</section>
+<section id="contactPage" class="content hidden">
+ <button class="back" data-page="detail">←　Quay lại phòng</button><div class="panel contact-card"><div class="landlord"><img class="landlord-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80" alt="Ảnh đại diện chủ trọ"><div><h2>Nguyễn Thị Hằng</h2><div>Chủ trọ　<span class="verified-text">✓ Đã xác thực (demo)</span></div><p class="muted">☎ 090 123 4567<br>📍 Quận 10, TP. Hồ Chí Minh</p></div></div><div class="contact-methods"><button class="primary" id="callBtn">☎　Gọi điện</button><button class="secondary" id="zaloBtn">Nhắn tin qua Zalo</button></div><h3>Gửi tin nhắn</h3><label class="small-label" for="message">Lời nhắn của bạn</label><textarea id="message" maxlength="500">Xin chào, mình quan tâm đến phòng trọ này. Phòng còn trống không ạ?</textarea><div class="small-label" style="text-align:right" id="charCount">68/500</div><button class="primary full" id="sendMessage">➤　Gửi tin nhắn</button><p class="small-label">Bản demo: tin nhắn chưa được gửi đến chủ trọ thật.</p></div>
+</section>
+
+
+<section id="roommatesPage" class="content hidden">
+ <div class="section-head"><div><h2>Tìm bạn cùng phòng</h2><div class="muted">Tìm người phù hợp với ngân sách, lối sống và lịch học của bạn.</div></div><button class="secondary" id="myConnectionsBtn">🤝 Kết nối của tôi <span id="connectionCount">0</span></button></div>
+ <div class="roommate-hero"><div><h2>Get matched with the right roommate</h2><p>Tạo hồ sơ cá nhân, khám phá những người có lối sống tương thích và gửi lời mời kết nối. Chỉ bắt đầu trò chuyện khi cả hai đồng ý.</p><div class="person-tags" style="margin-top:14px"><span class="person-tag">🎓 Sinh viên UEH</span><span class="person-tag">🤝 Kết nối hai chiều</span><span class="person-tag">🔒 Riêng tư</span></div></div><div class="roommate-hero-art" aria-hidden="true">👩🏻‍🎓 🤝 👨🏻‍🎓</div></div>
+ <div class="roommate-layout">
+  <aside class="panel"><h3 id="roommateFormTitle">Tạo hồ sơ bạn cùng phòng</h3><p class="muted">Các thông tin có dấu * là bắt buộc. Bạn có thể cập nhật hồ sơ bất cứ lúc nào.</p>
+   <form id="roommateProfileForm" class="roommate-form">
+    <div class="wide"><label class="field-label" for="rpName">Tên hiển thị *</label><input id="rpName" maxlength="40" required placeholder="Tên bạn muốn mọi người thấy"></div>
+    <div class="wide"><label class="field-label" for="rpCampus">Cơ sở / trường *</label><select id="rpCampus" required><option value="UEH - Campus B">UEH - Campus B</option><option value="UEH - Campus A">UEH - Campus A</option><option value="UEH - Nguyễn Tri Phương">UEH - Nguyễn Tri Phương</option><option value="Trường khác tại TP.HCM">Trường khác tại TP.HCM</option></select></div>
+    <div><label class="field-label" for="rpGender">Giới tính</label><select id="rpGender"><option value="No preference">Không muốn nêu</option><option>Male</option><option>Female</option><option>LGBTQ+ (Male)</option><option>LGBTQ+ (Female)</option><option>Other</option></select></div>
+    <div><label class="field-label" for="rpStudy">Năm học</label><select id="rpStudy"><option>Any study level</option><option>Năm 1</option><option>Năm 2</option><option>Năm 3</option><option>Năm 4+</option><option>Đã tốt nghiệp / đi làm</option></select></div>
+    <div><label class="field-label" for="rpRoomType">Loại phòng *</label><select id="rpRoomType" required><option value="Shared room">Ở ghép</option><option value="Apartment / Shared room">Căn hộ / ở ghép</option><option value="Private room">Phòng riêng</option></select></div>
+    <div><label class="field-label" for="rpBudgetMin">Ngân sách thấp nhất *</label><select id="rpBudgetMin" required><option value="1500000">1.5 triệu</option><option value="2000000" selected>2 triệu</option><option value="2500000">2.5 triệu</option><option value="3000000">3 triệu</option><option value="4000000">4 triệu</option></select></div>
+    <div><label class="field-label" for="rpBudgetMax">Ngân sách cao nhất *</label><select id="rpBudgetMax" required><option value="2500000">2.5 triệu</option><option value="3000000" selected>3 triệu</option><option value="3500000">3.5 triệu</option><option value="4000000">4 triệu</option><option value="5000000">5 triệu</option><option value="7000000">7 triệu</option></select></div>
+    <div class="wide"><label class="field-label" for="rpArea">Khu vực muốn ở</label><input id="rpArea" maxlength="100" placeholder="VD: Quận 10, Quận 3, gần UEH"></div>
+    <div class="wide"><label class="field-label">Tính cách & lối sống (chọn nhiều)</label><div class="tag-options" id="rpLifestyle"><button type="button" class="tag-option" data-lifestyle="Study-focused">📚 Tập trung học</button><button type="button" class="tag-option" data-lifestyle="Clean and tidy">🧹 Sạch sẽ, gọn gàng</button><button type="button" class="tag-option" data-lifestyle="No smoking">🚭 Không hút thuốc</button><button type="button" class="tag-option" data-lifestyle="Outgoing">🎉 Hướng ngoại</button><button type="button" class="tag-option" data-lifestyle="Quiet lifestyle">🌙 Yên tĩnh</button><button type="button" class="tag-option" data-lifestyle="Healthy lifestyle">🌿 Lối sống lành mạnh</button><button type="button" class="tag-option" data-lifestyle="Sports">⚽ Thích thể thao</button><button type="button" class="tag-option" data-lifestyle="No pets">🐾 Không nuôi thú cưng</button></div></div>
+    <div class="wide"><label class="field-label" for="rpIntro">Giới thiệu bản thân</label><textarea id="rpIntro" maxlength="500" placeholder="Thói quen, lịch sinh hoạt, điều bạn mong muốn ở bạn cùng phòng..."></textarea></div>
+    <div class="wide"><button class="primary full" type="submit" id="saveRoommateProfile">Lưu hồ sơ của tôi →</button><p class="small-label">Hồ sơ có thể hiển thị với người dùng đã đăng nhập. Không ghi thông tin liên hệ riêng tư vào phần giới thiệu.</p></div>
+   </form>
+  </aside>
+  <div>
+   <div class="panel roommate-filters"><div><label class="small-label" for="rfGender">Giới tính</label><select id="rfGender"><option value="Any">Tất cả</option><option>Male</option><option>Female</option><option>LGBTQ+ (Male)</option><option>LGBTQ+ (Female)</option><option>Other</option></select></div><div><label class="small-label" for="rfLifestyle">Lối sống</label><select id="rfLifestyle"><option value="Any">Tất cả</option><option>Study-focused</option><option>Clean and tidy</option><option>No smoking</option><option>Outgoing</option><option>Quiet lifestyle</option><option>Healthy lifestyle</option><option>Sports</option><option>No pets</option></select></div><div><label class="small-label" for="rfStudy">Năm học</label><select id="rfStudy"><option value="Any">Tất cả</option><option>Năm 1</option><option>Năm 2</option><option>Năm 3</option><option>Năm 4+</option><option>Đã tốt nghiệp / đi làm</option></select></div><div><label class="small-label" for="rfRoomType">Loại phòng</label><select id="rfRoomType"><option value="Any">Tất cả</option><option>Shared room</option><option>Apartment / Shared room</option><option>Private room</option></select></div><div><label class="small-label" for="rfBudget">Ngân sách tối đa</label><select id="rfBudget"><option value="7000000">Mọi mức giá</option><option value="2500000">2.5 triệu</option><option value="3000000">3 triệu</option><option value="3500000">3.5 triệu</option><option value="4000000">4 triệu</option><option value="5000000">5 triệu</option></select></div><button class="secondary" id="resetRoommateFilters" style="grid-column:1/-1">Đặt lại bộ lọc</button></div>
+   <div class="section-head"><div><h2 id="roommateResultsTitle">Bạn cùng phòng phù hợp</h2><div class="muted" id="roommateResultsCount">Đang tải hồ sơ…</div></div><button class="secondary" id="refreshRoommates">↻ Làm mới</button></div>
+   <div id="roommateResults" class="roommate-grid"></div>
+   <div class="connection-note" id="roommateDataNote">Hồ sơ mẫu minh họa giúp bạn xem trước giao diện. Khi Supabase tables được tạo, hồ sơ và lời mời kết nối sẽ được lưu trực tuyến.</div>
+   <div id="myConnectionsPanel" class="panel hidden" style="margin-top:18px"><div class="section-head"><div><h3>Kết nối của tôi</h3><div class="muted">Các lời mời gửi đi và nhận được.</div></div><button class="back" id="closeConnections">Đóng</button></div><div id="myConnectionsList"></div></div><div id="roommateChatPanel" class="panel hidden" style="margin-top:18px"><div class="section-head"><div><h3 id="roommateChatTitle">Trò chuyện</h3><div class="muted">Chỉ nhắn tin sau khi cả hai đã chấp nhận kết nối.</div></div><button class="back" id="closeRoommateChat">Đóng</button></div><div id="roommateChatMessages" style="max-height:300px;overflow:auto;margin-bottom:12px"></div><form id="roommateChatForm"><label class="field-label" for="roommateChatInput">Tin nhắn</label><textarea id="roommateChatInput" maxlength="1000" required style="width:100%;min-height:70px;padding:12px;border:1px solid var(--line);border-radius:9px" placeholder="Viết tin nhắn lịch sự..."></textarea><button class="primary" type="submit" style="margin-top:8px">Gửi tin nhắn</button></form></div>
+  </div>
+ </div>
+</section>
+
+<section id="favoritesPage" class="content hidden"><div class="section-head"><div><h2>Phòng yêu thích</h2><div class="muted">Những phòng bạn đã lưu sẽ xuất hiện ở đây.</div></div></div><div id="favoriteRooms" class="room-list"></div></section>
+<section id="notificationsPage" class="content hidden"><h2>Thông báo</h2><div class="panel"><p>🔔 Chào mừng bạn đến với TìmTrọ!</p><p class="muted">Thông báo về phòng mới, tin nhắn và trạng thái xác thực sẽ xuất hiện ở đây.</p></div></section>
+<section id="accountPage" class="content hidden">
+<div class="content"><button class="secondary" id="logoutBtn" type="button">Đăng xuất</button><p class="muted" id="signedInEmail"></p></div>
+<h2>Tài khoản của tôi</h2><div class="panel" style="max-width:600px"><div class="landlord"><img class="landlord-avatar" id="accountPfp" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2750%27 fill=%27%23e4effb%27/%3E%3Ctext x=%2750%27 y=%2764%27 text-anchor=%27middle%27 font-size=%2750%27%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E" alt="Ảnh đại diện" style="width:82px;height:82px;border-radius:50%;object-fit:cover;background:#e4effb"><div><h2>Sinh viên UEH</h2><div class="muted">Ảnh đại diện</div><button class="secondary" type="button" id="choosePfp" style="margin-top:8px">＋ Thêm ảnh</button><input type="file" id="pfpFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden></div></div><div class="field" style="margin-bottom:14px"><label class="field-label">Tên hiển thị</label><input value="Sinh viên UEH"></div><div class="field" style="margin-bottom:14px"><label class="field-label">Trường đại học</label><input value="Đại học Kinh tế TP.HCM (UEH)"></div><button class="primary" id="saveAccount">Lưu thông tin</button></div></section>
+</main>
+<footer>TìmTrọ © 2026 · Tìm nơi ở phù hợp, minh bạch và an tâm hơn.</footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const photos=[
+'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=900&q=85',
+'https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&w=900&q=85',
+'https://images.unsplash.com/photo-1615874694520-474822394e73?auto=format&fit=crop&w=900&q=85',
+'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=85'
+];
+const rooms=[
+{id:1,title:'Phòng trọ 1 người – Quận 10',rent:2800000,area:20,distance:1,rating:4.8,reviews:32,address:'Quận 10, TP. Hồ Chí Minh',photo:photos[0],type:'single',floor:'Tầng 3 · Thang bộ'},
+{id:2,title:'Phòng 1 người – Quận 10',rent:3200000,area:26,distance:1.5,rating:4.7,reviews:18,address:'Gần cơ sở B UEH, Quận 10',photo:photos[1],type:'single',floor:'Tầng 2 · Thang máy'},
+{id:3,title:'Phòng sáng thoáng – Quận 10',rent:2500000,area:28,distance:2.8,rating:4.7,reviews:25,address:'Quận 10, TP. Hồ Chí Minh',photo:photos[2],type:'single',floor:'Tầng 3 · Thang bộ'},
+{id:4,title:'Phòng ở ghép gần UEH',rent:1800000,area:18,distance:.8,rating:4.6,reviews:14,address:'Quận 10, TP. Hồ Chí Minh',photo:photos[3],type:'shared',floor:'Tầng 2 · Thang bộ'}
+];
+let currentRoom=rooms[0],typeSelected='single',saved=new Set(),reviewFilter='all',extraReviews=false;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function toast(msg){const t=$('#toast');t.textContent=msg;t.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display='none',3000)}
+function money(n){return n.toLocaleString('vi-VN')+'đ'}
+function getPublishedHostRooms(){
+  // Preserve read-only access to demo listings saved by earlier versions.
+  // For cross-device/public sharing, replace this with Supabase-backed listings.
+  try {
+    const items=JSON.parse(localStorage.getItem('timtro_host_rooms_v2')||'[]');
+    if(!Array.isArray(items)) return [];
+    return items.filter(r=>r.status==='available').map(r=>({
+      id:String(r.id),title:r.title,rent:Number(r.rent)||0,area:Number(r.area)||0,
+      distance:3,rating:0,reviews:0,address:r.address||'TP. Hồ Chí Minh',
+      photo:(r.photos&&r.photos[0])||'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=900&q=80',
+      type:(/ghép|shared/i.test(r.type||'')?'shared':'single'),floor:'Thông tin do chủ trọ cung cấp',
+      description:r.description||'',deposit:Number(r.deposit)||0,utilities:Number(r.utilities)||0,isHostListing:true
+    }));
+  } catch(e){ return []; }
+}
+function allFinderRooms(){return [...rooms,...getPublishedHostRooms()]}
+function roomCard(r){return `<article class="room-card" data-room="${r.id}"><img class="room-image" src="${r.photo}" alt="${r.title}"><div class="room-info"><div class="room-title-row"><div><h3 class="room-title">${r.title}</h3><div class="price">${money(r.rent)}/tháng</div></div><button class="heart ${saved.has(String(r.id))?'saved':''}" data-save="${r.id}" aria-label="Lưu yêu thích">${saved.has(String(r.id))?'♥':'♡'}</button></div><div class="meta"><span>▦ ${r.area}m²</span><span>📍 ${r.address||'Địa chỉ chưa có'}</span></div>${r.isHostListing?'<div class="verified-pill">Tin đăng từ chủ trọ · Demo</div>':`<div class="rating"><span class="star">★</span> ${r.rating} (${r.reviews} đánh giá)</div>`}<div class="meta">♙ ${r.isHostListing?'Khoảng cách chưa xác minh':`Cách Campus B ${r.distance} km`} </div><div class="room-actions"><button class="secondary" data-go="reviews" data-id="${r.id}">Xem đánh giá</button><button class="secondary" data-map="${r.id}">Xem bản đồ</button><button class="primary" data-detail="${r.id}">Xem phòng</button></div></div></article>`}
+function renderCards(target,list){$(target).innerHTML=list.length?list.map(roomCard).join(''):'<div class="empty">Chưa có phòng phù hợp. Hãy điều chỉnh bộ lọc hoặc lưu phòng từ danh sách.</div>'}
+function showPage(page){if(page==='account'&&currentUser&&$('#signedInEmail'))$('#signedInEmail').textContent='Đã đăng nhập: '+currentUser.email;$$('main section').forEach(s=>s.classList.add('hidden'));const el=$('#'+page+'Page');if(el)el.classList.remove('hidden');$$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='favorites')renderCards('#favoriteRooms',allFinderRooms().filter(r=>saved.has(String(r.id))));if(page==='search')renderSearch();if(page==='roommates')loadRoommateData();window.scrollTo({top:0,behavior:'smooth'})}
+function openRoom(id){currentRoom=allFinderRooms().find(r=>String(r.id)===String(id))||rooms[0];$('#detailTitle').textContent=currentRoom.title;$('#detailPrice').textContent=money(currentRoom.rent)+'/tháng';$('#detailAddress').textContent=currentRoom.address;$('#verifyAddress').textContent=currentRoom.address;$('#rentCost').textContent=money(currentRoom.rent);const total=currentRoom.rent+(Number(currentRoom.utilities)||400000);$('#totalCost').textContent=money(total);if(currentRoom.isHostListing){const d=$('.amenities');if(d){const p=document.getElementById('hostRoomDescription');if(p)p.remove();const desc=document.createElement('p');desc.id='hostRoomDescription';desc.textContent=currentRoom.description||'Chủ trọ chưa thêm mô tả.';desc.style.cssText='line-height:1.6;margin-top:12px';d.appendChild(desc)}}$('#mainGallery').src=currentRoom.photo;$('#thumbs').innerHTML=[currentRoom.photo,...(currentRoom.isHostListing?[]:photos.filter(p=>p!==currentRoom.photo))].map(p=>`<img src="${p}" alt="Ảnh phòng" data-photo="${p}">`).join('');showPage('detail')}
+function renderSearch(){const min=Number($('#minPrice').value||0)*1000000,max=Number($('#maxPrice').value||3.5)*1000000,dist=Number($('#distance').value||3);let list=allFinderRooms().filter(r=>r.type===typeSelected&&r.rent>=min&&r.rent<=max&&(r.isHostListing||r.distance<=dist));const sort=$('#sort').value;if(sort==='asc')list.sort((a,b)=>a.rent-b.rent);if(sort==='desc')list.sort((a,b)=>b.rent-a.rent);if(sort==='rating')list.sort((a,b)=>b.rating-a.rating);$('#resultCount').textContent=`${list.length} phòng trọ phù hợp với tiêu chí của bạn`;$('#summaryType').textContent=typeSelected==='single'?'Phòng đơn':'Ở ghép';$('#summaryPrice').textContent=`${min/1e6}–${max/1e6} triệu`;$('#summaryDistance').textContent=`≤ ${dist} km`;renderCards('#roomResults',list)}
+function renderReviews(){const data=[{name:'Nguyễn Thị Mai',date:'05/10/2026',stars:5,tag:'room',text:'Phòng giống hình, sạch sẽ, chủ trọ nhiệt tình. Rất đáng để thuê!',avatar:'M'},{name:'Lê Minh Anh',date:'10/09/2025',stars:4,tag:'owner',text:'Vị trí thuận tiện, xung quanh có nhiều tiện ích. Nhưng mà phòng hơi nóng.',avatar:'A'},{name:'Trần Quốc Bảo',date:'05/11/2024',stars:5,tag:'info',text:'Phòng sạch, an ninh tốt, có hơi ồn vào buổi tối nhưng vẫn ổn.',avatar:'B'},{name:'Phạm Gia Linh',date:'12/08/2024',stars:5,tag:'room',text:'Ảnh khá sát thực tế, khu vực dễ tìm và gần trường.',avatar:'L'},{name:'Võ Thanh Tùng',date:'22/06/2024',stars:4,tag:'owner',text:'Chủ nhà phản hồi nhanh. Nên hỏi kỹ tiền điện nước trước khi ký.',avatar:'T'}];const filtered=data.filter(r=>reviewFilter==='all'||r.tag===reviewFilter);$('#reviewList').innerHTML=filtered.slice(0,extraReviews?5:3).map(r=>`<div class="review"><div class="review-avatar">${r.avatar}</div><div><h4>${r.name} <span class="muted" style="font-weight:400">${r.date}</span></h4><div class="star">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</div><p>${r.text}</p><span class="lightbtn" style="display:inline-block;padding:5px 9px;font-size:12px">Thông tin hữu ích</span></div></div>`).join('')||'<p class="muted">Chưa có đánh giá trong mục này.</p>'}
+document.addEventListener('click',e=>{const page=e.target.closest('[data-page]');if(page){showPage(page.dataset.page);return}const type=e.target.closest('[data-type]');if(type){typeSelected=type.dataset.type;$$('[data-type]').forEach(b=>b.classList.toggle('selected',b===type));return}const save=e.target.closest('[data-save]');if(save){e.stopPropagation();const id=String(save.dataset.save);saved.has(id)?saved.delete(id):saved.add(id);save.classList.toggle('saved',saved.has(id));save.textContent=saved.has(id)?'♥':'♡';toast(saved.has(id)?'Đã thêm vào yêu thích':'Đã xóa khỏi yêu thích');return}const det=e.target.closest('[data-detail]');if(det){openRoom(det.dataset.detail);return}const card=e.target.closest('.room-card');if(card&&!e.target.closest('button')){openRoom(card.dataset.room);return}const rev=e.target.closest('[data-go="reviews"]');if(rev){openRoom(rev.dataset.id);showPage('reviews');return}const map=e.target.closest('[data-map]');if(map){toast('Bản đồ minh họa: vị trí sẽ được tích hợp khi có dữ liệu địa chỉ thật.');return}const photo=e.target.closest('[data-photo]');if(photo){$('#mainGallery').src=photo.dataset.photo;return}const rf=e.target.closest('[data-review-filter]');if(rf){reviewFilter=rf.dataset.reviewFilter;$$('[data-review-filter]').forEach(b=>b.classList.toggle('active',b===rf));renderReviews();return}});
+$('#searchBtn').addEventListener('click',()=>{showPage('search');renderSearch()});$('#sort').addEventListener('change',renderSearch);$('#costDetails').addEventListener('click',()=>$('#costExtra').classList.toggle('hidden'));$('#mapBtn').addEventListener('click',()=>toast('Bản đồ chỉ hoạt động khi kết nối dịch vụ bản đồ và địa chỉ thực.'));$('#moreReviews').addEventListener('click',()=>{extraReviews=!extraReviews;$('#moreReviews').textContent=extraReviews?'Thu gọn đánh giá':'Xem thêm đánh giá';renderReviews()});$('#checklistBtn').addEventListener('click',()=>$('#checklistExtra').classList.toggle('hidden'));$('#callBtn').addEventListener('click',()=>toast('Số điện thoại minh họa: 090 123 4567'));$('#zaloBtn').addEventListener('click',()=>toast('Liên kết Zalo sẽ được thêm khi có tài khoản chủ trọ thật.'));$('#message').addEventListener('input',()=>$('#charCount').textContent=$('#message').value.length+'/500');$('#sendMessage').addEventListener('click',()=>{if(!$('#message').value.trim()){toast('Vui lòng nhập lời nhắn trước.');return}toast('Tin nhắn đã được ghi nhận trong bản demo. Chưa gửi đến chủ trọ thật.')});$('#saveAccount').addEventListener('click',()=>toast('Đã lưu thông tin trong phiên demo.'));
+// Simple profile picture picker: preview and save this browser's selected image.
+const pfpInput=$('#pfpFile'), pfpButton=$('#choosePfp'), pfpImage=$('#accountPfp');
+function applySavedPfp(){try{const savedPfp=localStorage.getItem('timtro_profile_picture');if(savedPfp&&pfpImage)pfpImage.src=savedPfp;}catch(e){}}
+if(pfpButton&&pfpInput&&pfpImage){pfpButton.addEventListener('click',()=>pfpInput.click());pfpInput.addEventListener('change',()=>{const file=pfpInput.files&&pfpInput.files[0];if(!file)return;if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)){toast('Vui lòng chọn ảnh JPG, PNG, WebP hoặc GIF.');pfpInput.value='';return;}if(file.size>2*1024*1024){toast('Ảnh tối đa 2 MB nhé.');pfpInput.value='';return;}const reader=new FileReader();reader.onload=()=>{pfpImage.src=reader.result;try{localStorage.setItem('timtro_profile_picture',reader.result);toast('Đã cập nhật ảnh đại diện trên trình duyệt này.');}catch(e){toast('Không thể lưu ảnh này trên trình duyệt. Hãy chọn ảnh nhỏ hơn.');}};reader.readAsDataURL(file);});applySavedPfp();}
+
+const logoutBtn=$('#logoutBtn');
+if(logoutBtn) logoutBtn.addEventListener('click',async()=>{if(!supabaseClient)return;const {error}=await supabaseClient.auth.signOut();if(error){toast('Không thể đăng xuất: '+error.message);return}currentUser=null;showAuth();toast('Đã đăng xuất. Đăng nhập để tiếp tục.');});
+
+
+
+
+// Roommate finder: remote Supabase storage when schema is installed, with clearly labelled demo profiles as fallback.
+const roommateDemoProfiles=[
+ {id:'demo-mai-anh',user_id:null,username:'Mai Anh',campus:'UEH - Campus B',gender:'Female',study_level:'Năm 2',room_type:'Shared room',budget_min:2000000,budget_max:2800000,living_area:'Quận 10, Quận 3',lifestyle:['Outgoing','Study-focused','No smoking','Healthy lifestyle'],intro:'Mình thân thiện và cởi mở, thích học tập, đọc sách và dành thời gian với bạn bè. Mong tìm người tôn trọng không gian riêng và sống gọn gàng.',photo_url:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=240&q=80'},
+ {id:'demo-minh-quan',user_id:null,username:'Minh Quân',campus:'UEH - Campus A',gender:'Male',study_level:'Năm 3',room_type:'Apartment / Shared room',budget_min:2000000,budget_max:3000000,living_area:'Quận 10, Quận 5',lifestyle:['Sports','Tidy','Outgoing','Study-focused'],intro:'Mình khá điềm tĩnh, thích thể thao và hoạt động ngoài trời. Đang tìm bạn ở ghép có trách nhiệm, rõ ràng về chi phí và việc nhà.',photo_url:'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80'},
+ {id:'demo-thao-vy',user_id:null,username:'Thảo Vy',campus:'UEH - Campus B',gender:'Female',study_level:'Năm 1',room_type:'Shared room',budget_min:1800000,budget_max:2600000,living_area:'Quận 10',lifestyle:['Clean and tidy','No smoking','Quiet lifestyle','Study-focused'],intro:'Mình thích không gian yên tĩnh, sạch sẽ và có lịch sinh hoạt khá ổn định. Mong tìm bạn cùng phòng biết tôn trọng nhau.',photo_url:'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=240&q=80'},
+ {id:'demo-bao-ngoc',user_id:null,username:'Bảo Ngọc',campus:'UEH - Nguyễn Tri Phương',gender:'Female',study_level:'Năm 2',room_type:'Private room',budget_min:2500000,budget_max:3500000,living_area:'Quận 10, Quận 11',lifestyle:['Healthy lifestyle','No smoking','No pets'],intro:'Mình thích nấu ăn đơn giản, đi bộ và giữ nhà cửa sạch sẽ. Ưu tiên bạn cùng nhà trao đổi thẳng thắn, văn minh.',photo_url:'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=240&q=80'}
+];
+// Expanded fictional demo directory: varied combinations for testing filters and match scores.
+// All generated profiles are clearly marked as examples and cannot receive real connection requests.
+const demoNames=['Gia Hân','Đức Anh','Khánh Linh','Hoàng Nam','Minh Châu','Tuấn Kiệt','Phương Thảo','Quốc Bảo','Yến Nhi','Hải Đăng','Ngọc Hà','Trung Hiếu','Thanh Trúc','Nhật Minh','Bích Phương','Anh Khoa','Mỹ Duyên','Gia Bảo','Thùy Dương','Quang Huy','Kim Anh','Duy Khánh','Hồng Nhung','Thành Đạt','Tú Uyên','Văn Phúc','Linh Đan','Bảo Long','Khả Vy','Thiên An','Đình Phong','Mai Chi'];
+const demoCampuses=['UEH - Campus A','UEH - Campus B','UEH - Nguyễn Tri Phương','UEH - Vĩnh Long'];
+const demoGenders=['Male','Female','LGBTQ+ (Male)','LGBTQ+ (Female)','Other'];
+const demoStudies=['Năm 1','Năm 2','Năm 3','Năm 4+','Đã tốt nghiệp / đi làm'];
+const demoRooms=['Shared room','Apartment / Shared room','Private room'];
+const demoBudgets=[[1500000,2200000],[1800000,2600000],[2000000,2800000],[2200000,3000000],[2500000,3500000],[3000000,4000000],[3500000,5000000],[4000000,6000000]];
+const demoLives=[['Study-focused','Clean and tidy','No smoking'],['Outgoing','Sports','Healthy lifestyle'],['Quiet lifestyle','Study-focused','No pets'],['Clean and tidy','No smoking','No pets'],['Outgoing','Healthy lifestyle'],['Study-focused','Tidy','No smoking'],['Sports','Outgoing','No pets'],['Quiet lifestyle','Clean and tidy','Healthy lifestyle'],['No smoking','Study-focused','No pets'],['Outgoing','Clean and tidy','Sports']];
+const demoIntros=[
+'Mình thích học ở thư viện, giữ không gian chung gọn gàng và trao đổi rõ ràng về chi phí.',
+'Mình khá hòa đồng, thích thể thao và thỉnh thoảng đi khám phá quán ăn mới quanh trường.',
+'Mình ưu tiên môi trường yên tĩnh để học, ngủ đúng giờ và tôn trọng thời gian riêng của nhau.',
+'Mình sống ngăn nắp, không hút thuốc và mong chia sẻ việc nhà một cách công bằng.',
+'Mình thích kết bạn mới nhưng cũng tôn trọng ranh giới cá nhân. Cùng thống nhất quy tắc sinh hoạt nhé.',
+'Mình thường học buổi tối, thích lên kế hoạch chi tiêu và tìm người ở ghép có trách nhiệm.'
+];
+const demoPhotos=[
+'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=240&q=80',
+'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=240&q=80',
+'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=240&q=80',
+'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=240&q=80',
+'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=240&q=80',
+'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=240&q=80',
+'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=240&q=80',
+'https://images.unsplash.com/photo-1504590609088-3e9f7f3d8a1a?auto=format&fit=crop&w=240&q=80'
+];
+for(let i=0;i<demoNames.length;i++){
+ const budget=demoBudgets[i%demoBudgets.length];
+ roommateDemoProfiles.push({id:`demo-extra-${i+1}`,user_id:null,username:demoNames[i],campus:demoCampuses[i%demoCampuses.length],gender:demoGenders[i%demoGenders.length],study_level:demoStudies[(i*3)%demoStudies.length],room_type:demoRooms[(i*2)%demoRooms.length],budget_min:budget[0],budget_max:budget[1],living_area:['Quận 10','Quận 3, Quận 10','Quận 5','Quận 11','Bình Thạnh','Gần UEH - Campus B'][i%6],lifestyle:demoLives[i%demoLives.length],intro:demoIntros[i%demoIntros.length],photo_url:demoPhotos[i%demoPhotos.length]});
+}
+let roommateProfiles=[...roommateDemoProfiles],myRoommateProfile=null,roommateConnections=[],roommateSaved=new Set(),roommateDbReady=false,activeChatUserId=null;
+const lifestyleLabels={'Study-focused':'Tập trung học','Clean and tidy':'Sạch sẽ, gọn gàng','No smoking':'Không hút thuốc','Outgoing':'Hướng ngoại','Quiet lifestyle':'Yên tĩnh','Healthy lifestyle':'Lối sống lành mạnh','Sports':'Thể thao','No pets':'Không nuôi thú cưng','Tidy':'Gọn gàng'};
+function selectedLifestyle(){return $$('#rpLifestyle [data-lifestyle].selected').map(b=>b.dataset.lifestyle)}
+function currentStudent(){return !!(currentUser&&validUehEmail(currentUser.email))}
+function profileScore(p){if(!myRoommateProfile)return 82;let score=60;const mine=myRoommateProfile;const a=mine.lifestyle||[],b=p.lifestyle||[];const overlap=a.filter(x=>b.includes(x)).length;score+=Math.min(25,overlap*7);if(mine.campus===p.campus)score+=8;const budgetOverlap=Math.max(0,Math.min(mine.budget_max,p.budget_max)-Math.max(mine.budget_min,p.budget_min));if(budgetOverlap>0)score+=7;else score-=12;if(mine.room_type===p.room_type)score+=5;return Math.max(55,Math.min(98,score))}
+function roommateFiltered(){const gender=$('#rfGender').value,life=$('#rfLifestyle').value,study=$('#rfStudy').value,room=$('#rfRoomType').value,budget=Number($('#rfBudget').value);return roommateProfiles.filter(p=>{if(currentUser&&p.user_id===currentUser.id)return false;if(gender!=='Any'&&p.gender!==gender)return false;if(life!=='Any'&&!(p.lifestyle||[]).includes(life))return false;if(study!=='Any'&&p.study_level!==study)return false;if(room!=='Any'&&p.room_type!==room)return false;if(Number(p.budget_min)>budget)return false;return true}).sort((a,b)=>profileScore(b)-profileScore(a))}
+function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function connectionFor(profile){return roommateConnections.find(c=>(c.to_user_id&&profile.user_id&&c.to_user_id===profile.user_id)||(c.to_profile_id===profile.id&&c.from_user_id===currentUser?.id)||(c.from_profile_id===profile.id&&c.to_user_id===currentUser?.id))}
+function renderRoommateCards(){const list=roommateFiltered();$('#roommateResultsCount').textContent=`${list.length} hồ sơ phù hợp với bộ lọc`;$('#roommateResults').innerHTML=list.length?list.map(p=>{const score=profileScore(p),conn=connectionFor(p),saved=roommateSaved.has(p.id);const tags=(p.lifestyle||[]).slice(0,4).map(t=>`<span class="person-tag">${escapeHTML(lifestyleLabels[t]||t)}</span>`).join('');let action=conn?.status==='accepted'?'<span class="request-status accepted">Đã kết nối</span>':conn?.status==='pending'?'<span class="request-status">Đang chờ phản hồi</span>':conn?.status==='declined'?'<span class="request-status declined">Đã từ chối</span>':`<button class="primary" data-connect="${escapeHTML(p.id)}">🤝 Gửi lời mời</button>`;return `<article class="person-card"><div class="person-head"><img class="person-photo" src="${escapeHTML(p.photo_url||'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=240&q=80')}" alt="Ảnh đại diện"><div style="min-width:0"><h3 class="person-name">${escapeHTML(p.username)}</h3><div class="online-dot">● ${String(p.id).startsWith('demo-')?'HỒ SƠ MẪU · DEMO':'Thành viên'}</div><div class="muted" style="font-size:12px;margin-top:4px">${escapeHTML(p.gender||'Không nêu')} · ${escapeHTML(p.campus||'')}</div></div><div class="match-score">${score}%<div style="font-size:10px;font-weight:650">Tương thích</div></div></div><div class="meta" style="margin-top:12px"><span>₫ ${money(Number(p.budget_min)||0)} – ${money(Number(p.budget_max)||0)}/tháng</span><span>🎓 ${escapeHTML(p.study_level||'Chưa nêu')}</span></div><div class="meta"><span>⌂ ${escapeHTML(p.room_type||'Chưa nêu')}</span><span>📍 ${escapeHTML(p.living_area||'Chưa nêu khu vực')}</span></div><p class="person-intro">${escapeHTML(p.intro||'Chưa có phần giới thiệu.')}</p><div class="person-tags">${tags}</div><div class="person-actions"><button class="secondary" data-profile="${escapeHTML(p.id)}">Xem hồ sơ</button><button class="secondary" data-roommate-save="${escapeHTML(p.id)}">${saved?'♥ Đã lưu':'♡ Lưu hồ sơ'}</button>${action}${conn?.status==='accepted'?`<button class="secondary" data-chat="${escapeHTML(p.id)}">💬 Nhắn tin</button>`:''}</div></article>`}).join(''):'<div class="roommate-empty">Chưa có hồ sơ phù hợp. Hãy thử nới bộ lọc hoặc tạo hồ sơ của bạn.</div>'}
+function renderConnections(){const target=$('#myConnectionsList');const all=roommateConnections.filter(c=>c.from_user_id===currentUser?.id||c.to_user_id===currentUser?.id||String(c.from_profile_id||'').startsWith('demo-')||String(c.to_profile_id||'').startsWith('demo-'));$('#connectionCount').textContent=all.filter(c=>c.status!=='declined').length;target.innerHTML=all.length?all.map(c=>{const incoming=c.to_user_id===currentUser?.id;const otherId=incoming?c.from_user_id:c.to_user_id;const person=roommateProfiles.find(p=>p.user_id===otherId)||roommateProfiles.find(p=>p.id===otherId)||{};const status=c.status||'pending';return `<div class="review" style="align-items:center"><div class="review-avatar">${escapeHTML((person.username||'U').slice(0,1).toUpperCase())}</div><div><h4>${escapeHTML(person.username||'Thành viên')}</h4><div class="muted">${incoming?'Lời mời nhận được':'Lời mời đã gửi'} · <span class="request-status ${status==='accepted'?'accepted':status==='declined'?'declined':''}">${status==='accepted'?'Đã chấp nhận':status==='declined'?'Đã từ chối':'Đang chờ'}</span></div>${incoming&&status==='pending'?`<div style="display:flex;gap:8px;margin-top:8px"><button class="primary" data-accept="${escapeHTML(c.id)}">Chấp nhận</button><button class="secondary" data-decline="${escapeHTML(c.id)}">Từ chối</button></div>`:''}${status==='accepted'?`<button class="secondary" style="margin-top:8px" data-chat="${escapeHTML(person.id||otherId)}">💬 Bắt đầu trò chuyện</button>`:''}</div></div>`}).join(''):'<div class="empty">Bạn chưa có lời mời kết nối nào.</div>'}
+async function loadRoommateData(){roommateProfiles=[...roommateDemoProfiles];roommateConnections=[];roommateDbReady=false;myRoommateProfile=null;
+ if(supabaseClient&&currentStudent()){
+  try{const {data,error}=await supabaseClient.from('roommate_profiles').select('*').order('created_at',{ascending:false});if(error)throw error;roommateDbReady=true;const remote=data||[];roommateProfiles=[...remote,...roommateDemoProfiles];myRoommateProfile=remote.find(p=>p.user_id===currentUser.id)||null;if(myRoommateProfile)fillRoommateForm(myRoommateProfile);
+   const {data:conns,error:connErr}=await supabaseClient.from('roommate_connections').select('*');if(!connErr)roommateConnections=conns||[];
+   $('#roommateDataNote').textContent='Hồ sơ và kết nối đang được tải từ Supabase. Hồ sơ mẫu được gắn nhãn minh họa; lời mời thực tế cần tài khoản sinh viên đã đăng nhập.';
+  }catch(err){$('#roommateDataNote').textContent='Chưa kết nối được bảng hồ sơ Supabase. Đang hiển thị hồ sơ mẫu. Hãy chạy SQL trong tệp roommate_setup.sql để bật lưu hồ sơ và kết nối trực tuyến.';}
+ }else{$('#roommateDataNote').textContent='Bạn đang xem hồ sơ mẫu minh họa. Để tạo hồ sơ cá nhân và gửi lời mời kết nối thực tế, hãy đăng nhập bằng email sinh viên UEH.'}
+ renderRoommateCards();renderConnections();}
+function fillRoommateForm(p){$('#rpName').value=p.username||'';$('#rpCampus').value=p.campus||'UEH - Campus B';$('#rpGender').value=p.gender||'No preference';$('#rpStudy').value=p.study_level||'Any study level';$('#rpRoomType').value=p.room_type||'Shared room';$('#rpBudgetMin').value=String(p.budget_min||2000000);$('#rpBudgetMax').value=String(p.budget_max||3000000);$('#rpArea').value=p.living_area||'';$('#rpIntro').value=p.intro||'';$$('#rpLifestyle [data-lifestyle]').forEach(b=>b.classList.toggle('selected',(p.lifestyle||[]).includes(b.dataset.lifestyle)));$('#roommateFormTitle').textContent='Cập nhật hồ sơ bạn cùng phòng';$('#saveRoommateProfile').textContent='Cập nhật hồ sơ của tôi →'}
+$$('#rpLifestyle [data-lifestyle]').forEach(b=>b.addEventListener('click',()=>b.classList.toggle('selected')));
+$('#roommateProfileForm').addEventListener('submit',async e=>{e.preventDefault();if(!currentStudent()){toast('Hãy đăng nhập bằng email @st.ueh.edu.vn trước.');return}const min=Number($('#rpBudgetMin').value),max=Number($('#rpBudgetMax').value);if(max<min){toast('Ngân sách tối đa phải lớn hơn hoặc bằng ngân sách tối thiểu.');return}const payload={user_id:currentUser.id,username:$('#rpName').value.trim(),campus:$('#rpCampus').value,gender:$('#rpGender').value,study_level:$('#rpStudy').value,room_type:$('#rpRoomType').value,budget_min:min,budget_max:max,living_area:$('#rpArea').value.trim(),lifestyle:selectedLifestyle(),intro:$('#rpIntro').value.trim(),photo_url:null};const btn=$('#saveRoommateProfile');btn.disabled=true;try{if(!supabaseClient)throw new Error('Supabase chưa sẵn sàng.');let result;if(roommateDbReady&&myRoommateProfile?.id){result=await supabaseClient.from('roommate_profiles').update(payload).eq('user_id',currentUser.id).select().single()}else{result=await supabaseClient.from('roommate_profiles').upsert(payload,{onConflict:'user_id'}).select().single()}if(result.error)throw result.error;myRoommateProfile=result.data;toast('Đã lưu hồ sơ của bạn trực tuyến.');await loadRoommateData()}catch(err){toast('Chưa lưu được trực tuyến: '+err.message+'. Kiểm tra roommate_setup.sql và chính sách RLS.')}finally{btn.disabled=false}});
+['rfGender','rfLifestyle','rfStudy','rfRoomType','rfBudget'].forEach(id=>$('#'+id).addEventListener('change',renderRoommateCards));$('#resetRoommateFilters').addEventListener('click',()=>{ $('#rfGender').value='Any';$('#rfLifestyle').value='Any';$('#rfStudy').value='Any';$('#rfRoomType').value='Any';$('#rfBudget').value='7000000';renderRoommateCards()});$('#refreshRoommates').addEventListener('click',loadRoommateData);$('#myConnectionsBtn').addEventListener('click',()=>{$('#myConnectionsPanel').classList.toggle('hidden');renderConnections()});$('#closeConnections').addEventListener('click',()=>$('#myConnectionsPanel').classList.add('hidden'));
+
+async function openRoommateChat(profileOrUserId){if(!currentStudent()||!supabaseClient){toast('Đăng nhập bằng email UEH để nhắn tin.');return}const p=roommateProfiles.find(x=>x.id===profileOrUserId||x.user_id===profileOrUserId);const otherId=p?.user_id||profileOrUserId;if(!otherId||String(otherId).startsWith('demo-')){toast('Hồ sơ mẫu không có hộp thư thật.');return}const connected=roommateConnections.some(c=>c.status==='accepted'&&((c.from_user_id===currentUser.id&&c.to_user_id===otherId)||(c.to_user_id===currentUser.id&&c.from_user_id===otherId)));if(!connected){toast('Bạn chỉ có thể nhắn tin sau khi cả hai chấp nhận kết nối.');return}activeChatUserId=otherId;$('#roommateChatTitle').textContent='Trò chuyện với '+(p?.username||'bạn cùng phòng');$('#roommateChatPanel').classList.remove('hidden');await refreshRoommateChat();$('#roommateChatInput').focus()}
+async function refreshRoommateChat(){if(!activeChatUserId||!supabaseClient)return;const {data,error}=await supabaseClient.from('roommate_messages').select('*').order('created_at',{ascending:true}).limit(200);if(error){$('#roommateChatMessages').innerHTML='<p class="muted">Chưa tải được tin nhắn. Hãy kiểm tra roommate_setup.sql.</p>';return}const msgs=(data||[]).filter(m=>(m.sender_id===currentUser.id&&m.recipient_id===activeChatUserId)||(m.sender_id===activeChatUserId&&m.recipient_id===currentUser.id));$('#roommateChatMessages').innerHTML=msgs.length?msgs.map(m=>`<div style="display:flex;justify-content:${m.sender_id===currentUser.id?'flex-end':'flex-start'};margin:8px 0"><div style="max-width:85%;background:${m.sender_id===currentUser.id?'#e2f1ff':'#f1f5f9'};padding:10px 12px;border-radius:12px"><div style="font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere">${escapeHTML(m.body)}</div><div class="small-label" style="margin-top:5px">${new Date(m.created_at).toLocaleString()}</div></div></div>`).join(''):'<div class="empty">Chưa có tin nhắn. Hãy bắt đầu bằng lời chào nhé!</div>';$('#roommateChatMessages').scrollTop=$('#roommateChatMessages').scrollHeight}
+$('#closeRoommateChat').addEventListener('click',()=>{$('#roommateChatPanel').classList.add('hidden');activeChatUserId=null});$('#roommateChatForm').addEventListener('submit',async e=>{e.preventDefault();if(!activeChatUserId||!currentStudent())return;const body=$('#roommateChatInput').value.trim();if(!body)return;const btn=e.submitter;btn.disabled=true;try{const {error}=await supabaseClient.from('roommate_messages').insert({sender_id:currentUser.id,recipient_id:activeChatUserId,body});if(error)throw error;$('#roommateChatInput').value='';await refreshRoommateChat()}catch(err){toast('Tin nhắn chưa gửi được: '+err.message)}finally{btn.disabled=false}});
+
+async function updateConnection(id,status){if(!supabaseClient||!currentStudent()){toast('Đăng nhập bằng email UEH để quản lý kết nối.');return}try{const {error}=await supabaseClient.from('roommate_connections').update({status}).eq('id',id).eq('to_user_id',currentUser.id);if(error)throw error;await loadRoommateData();toast(status==='accepted'?'Đã chấp nhận lời mời. Hai bạn có thể bắt đầu trò chuyện.':'Đã từ chối lời mời.')}catch(err){toast('Không cập nhật được kết nối: '+err.message)}}
+document.addEventListener('click',async e=>{const connect=e.target.closest('[data-connect]');if(connect){const p=roommateProfiles.find(x=>x.id===connect.dataset.connect);if(!currentStudent()){toast('Đăng nhập bằng email UEH để gửi lời mời.');return}if(!p||!p.user_id){toast('Đây là hồ sơ mẫu minh họa, không thể gửi lời mời thật. Hồ sơ thành viên thật sẽ có nút kết nối hoạt động.');return}if(p.user_id===currentUser.id){toast('Đây là hồ sơ của bạn.');return}try{const {error}=await supabaseClient.from('roommate_connections').insert({from_user_id:currentUser.id,to_user_id:p.user_id,status:'pending'});if(error)throw error;toast('Đã gửi lời mời kết nối!');await loadRoommateData()}catch(err){toast('Chưa gửi được lời mời: '+err.message)}return}
+ const save=e.target.closest('[data-roommate-save]');if(save){const id=save.dataset.roommateSave;roommateSaved.has(id)?roommateSaved.delete(id):roommateSaved.add(id);renderRoommateCards();toast(roommateSaved.has(id)?'Đã lưu hồ sơ':'Đã bỏ lưu hồ sơ');return}
+ const profile=e.target.closest('[data-profile]');if(profile){const p=roommateProfiles.find(x=>x.id===profile.dataset.profile);if(p)alert(`${p.username}\n${p.campus}\nNgân sách: ${money(Number(p.budget_min)||0)} – ${money(Number(p.budget_max)||0)}/tháng\nKhu vực: ${p.living_area||'Chưa nêu'}\n\n${p.intro||'Chưa có giới thiệu.'}\n\nLối sống: ${(p.lifestyle||[]).map(t=>lifestyleLabels[t]||t).join(', ')||'Chưa nêu'}`);return}
+ const accept=e.target.closest('[data-accept]');if(accept){await updateConnection(accept.dataset.accept,'accepted');return}const decline=e.target.closest('[data-decline]');if(decline){await updateConnection(decline.dataset.decline,'declined');return}
+ const chat=e.target.closest('[data-chat]');if(chat){await openRoommateChat(chat.dataset.chat);return}
+});
+
+// Supabase Auth: public publishable key only. Never put a secret/service_role key in this file.
+const SUPABASE_URL = 'https://pkvbmoahccvatxzodaks.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_4dyL2o8Cy8xky5Ikq-K34Q_TBMF6X_5';
+let supabaseClient = null;
+let currentUser = null;
+function authMessage(message, kind='info'){
+ const el=$('#authMessage'); el.textContent=message; el.className='auth-msg '+kind;
+}
+function showAuth(){
+ $('#authGate').classList.remove('hidden');
+ document.body.classList.add('auth-pending');
+ $('#authPassword').value='';
+ $('#authUsername').value='';
+ setAuthMode('login');
+ updateAuthAccount();
+}
+function afterAuthentication(){
+ if(!currentUser || !validUehEmail(currentUser.email)){showAuth();return;}
+ $('#authGate').classList.add('hidden');
+ document.body.classList.remove('auth-pending');
+ $('#authPassword').value='';
+ showPage('home');
+}
+function validUehEmail(value){ return /^[^\s@]+@st\.ueh\.edu\.vn$/i.test(String(value||'').trim()); }
+function updateAuthAccount(){
+ const account=$('[data-page="account"]');
+ if(account) account.title=currentUser?.email || 'Tài khoản';
+ const signedInEmail=$('#signedInEmail'); if(signedInEmail) signedInEmail.textContent=currentUser?.email || '';
+}
+let authMode='login';
+let pendingOtpMode='signup';
+function setAuthMode(mode){
+ authMode=mode;
+ $('#loginTab').classList.toggle('active',mode==='login');
+ $('#signupTab').classList.toggle('active',mode==='signup');
+ $('#loginTab').setAttribute('aria-pressed',String(mode==='login'));
+ $('#signupTab').setAttribute('aria-pressed',String(mode==='signup'));
+ $('#forgotPasswordWrap').classList.toggle('hidden',mode!=='login');
+ $('#usernameWrap').classList.toggle('hidden',mode!=='signup');
+ $('#authUsername').required=mode==='signup';
+ $('#authPassword').autocomplete=mode==='login'?'current-password':'new-password';
+ $('#authTitle').textContent=mode==='login'?'Chào mừng bạn trở lại':'Tạo tài khoản TìmTrọ';
+ $('#authCopy').textContent=mode==='login'?'Đăng nhập bằng email và mật khẩu.':'Tạo tài khoản bằng username, email và mật khẩu; sau đó xác minh email bằng OTP.';
+ $('#sendAuth').textContent=mode==='login'?'Log In':'Sign Up';
+ $('#otpForm').classList.add('hidden');
+ $('#authForm').classList.remove('hidden');
+ $('#authOtp').value='';
+ $('#authMessage').className='auth-msg';$('#authMessage').textContent='';
+}
+$('#loginTab').addEventListener('click',()=>setAuthMode('login'));
+$('#signupTab').addEventListener('click',()=>setAuthMode('signup'));
+$('#authForm').addEventListener('submit',async (event)=>{
+ event.preventDefault();
+ const email=$('#authEmail').value.trim().toLowerCase();
+ const password=$('#authPassword').value;
+ const username=$('#authUsername').value.trim();
+ if(!validUehEmail(email)){authMessage('Please use your UEH student email ending in @st.ueh.edu.vn.','error');return;}
+ if(!supabaseClient){authMessage('Supabase is not ready. Reload the page and try again.','error');return;}
+ if(authMode==='signup' && username.length<2){authMessage('Please enter a username with at least 2 characters.','error');return;}
+ const btn=$('#sendAuth');btn.disabled=true;btn.textContent=authMode==='login'?'Logging in…':'Creating account…';
+ try{
+   if(authMode==='login'){
+     const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+     if(error) throw error;
+     currentUser=data.user||data.session?.user||null;
+     if(!currentUser||!validUehEmail(currentUser.email)){await supabaseClient.auth.signOut();currentUser=null;throw new Error('This account must use a valid UEH student email.');}
+     updateAuthAccount();authMessage('Login successful. Opening TìmTrọ…','success');afterAuthentication();
+   }else{
+     pendingOtpMode='signup';
+     const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{username},emailRedirectTo:window.location.origin}});
+     if(error) throw error;
+     if(data.session){
+       currentUser=data.user||data.session.user;
+       updateAuthAccount();authMessage('Account created and email verified. Opening TìmTrọ…','success');afterAuthentication();
+     }else{
+       $('#authForm').classList.add('hidden');$('#otpForm').classList.remove('hidden');$('#authOtp').focus();
+       authMessage('We sent a six-digit verification code if this email can receive mail from the configured Supabase email service. Enter it below to finish signing up.','success');
+     }
+   }
+ }catch(err){authMessage((authMode==='login'?'Login failed: ':'Sign-up failed: ')+(err.message||'Unknown error'),'error');}
+ finally{btn.disabled=false;btn.textContent=authMode==='login'?'Log In':'Sign Up';}
+});
+$('#otpForm').addEventListener('submit',async(event)=>{
+ event.preventDefault();
+ const email=$('#authEmail').value.trim().toLowerCase();
+ const token=$('#authOtp').value.trim();
+ if(!validUehEmail(email)){authMessage('Please use your UEH student email ending in @st.ueh.edu.vn.','error');return;}
+ if(!/^\d{6}$/.test(token)){authMessage('Enter the six-digit OTP from your email.','error');return;}
+ const btn=$('#verifyOtp');btn.disabled=true;btn.textContent='Verifying…';
+ try{
+   const {data,error}=await supabaseClient.auth.verifyOtp({email,token,type:pendingOtpMode==='signup'?'signup':'email'});
+   if(error) throw error;
+   currentUser=data.user||data.session?.user||null;
+   if(!currentUser||!validUehEmail(currentUser.email)){await supabaseClient.auth.signOut();currentUser=null;throw new Error('This account must use a valid UEH student email.');}
+   updateAuthAccount();authMessage('Email verified successfully. Opening TìmTrọ…','success');afterAuthentication();
+ }catch(err){authMessage('Could not verify the code: '+(err.message||'The code may be incorrect or expired.'),'error');}
+ finally{btn.disabled=false;btn.textContent='Verify email and continue';}
+});
+$('#resendOtp').addEventListener('click',async()=>{
+ const email=$('#authEmail').value.trim().toLowerCase();
+ if(!validUehEmail(email)){authMessage('Please use your UEH student email ending in @st.ueh.edu.vn.','error');return;}
+ try{
+   const {error}=await supabaseClient.auth.resend({type:'signup',email});
+   if(error) throw error;
+   authMessage('A new code request was sent. Check your inbox and spam folder.','success');
+ }catch(err){authMessage('Could not resend the code: '+err.message,'error');}
+});
+
+setAuthMode('login');
+try {
+ if(window.supabase && window.supabase.createClient){
+   supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+   supabaseClient.auth.getSession().then(({data,error})=>{
+     if(error){showAuth();authMessage('Không thể kiểm tra phiên đăng nhập. Hãy tải lại trang.','error');return;}
+     currentUser=data.session?.user||null;
+     updateAuthAccount();
+     if(currentUser && validUehEmail(currentUser.email)){afterAuthentication();} else {showAuth();}
+   }).catch(()=>{showAuth();authMessage('Không thể kiểm tra phiên đăng nhập. Hãy tải lại trang.','error');});
+   supabaseClient.auth.onAuthStateChange((event,session)=>{
+     currentUser=session?.user||null;
+     updateAuthAccount();
+     if(currentUser && validUehEmail(currentUser.email)){
+       if(event==='SIGNED_IN') afterAuthentication();
+     } else if(event==='SIGNED_OUT' || currentUser){showAuth();}
+   });
+ } else { showAuth(); authMessage('Không tải được thư viện Supabase. Kiểm tra kết nối mạng rồi tải lại trang.','error'); }
+} catch(err){ showAuth(); authMessage('Không khởi tạo được Supabase: '+err.message,'error'); }
+
+renderCards('#featuredRooms',allFinderRooms().filter(r=>!r.isHostListing||r.type==='single').slice(0,6));renderSearch();renderReviews();
+</script>
+</body>
+</html>
