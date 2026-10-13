@@ -398,7 +398,7 @@ function applySavedPfp(){try{const savedPfp=localStorage.getItem('timtro_profile
 if(pfpButton&&pfpInput&&pfpImage){pfpButton.addEventListener('click',()=>pfpInput.click());pfpInput.addEventListener('change',()=>{const file=pfpInput.files&&pfpInput.files[0];if(!file)return;if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)){toast('Vui lòng chọn ảnh JPG, PNG, WebP hoặc GIF.');pfpInput.value='';return;}if(file.size>2*1024*1024){toast('Ảnh tối đa 2 MB nhé.');pfpInput.value='';return;}const reader=new FileReader();reader.onload=()=>{pfpImage.src=reader.result;try{localStorage.setItem('timtro_profile_picture',reader.result);toast('Đã cập nhật ảnh đại diện trên trình duyệt này.');}catch(e){toast('Không thể lưu ảnh này trên trình duyệt. Hãy chọn ảnh nhỏ hơn.');}};reader.readAsDataURL(file);});applySavedPfp();}
 
 const logoutBtn=$('#logoutBtn');
-if(logoutBtn) logoutBtn.addEventListener('click',async()=>{if(!supabaseClient)return;const {error}=await supabaseClient.auth.signOut();if(error){toast('Không thể đăng xuất: '+error.message);return}currentUser=null;showAuth();toast('Đã đăng xuất. Đăng nhập để tiếp tục.');});
+if(logoutBtn) logoutBtn.addEventListener('click',async()=>{try{localStorage.removeItem('timtro_current_session');}catch(e){}if(supabaseClient){try{await supabaseClient.auth.signOut();}catch(e){}}currentUser=null;showAuth();toast('Đã đăng xuất. Đăng nhập để tiếp tục.');});
 
 
 
