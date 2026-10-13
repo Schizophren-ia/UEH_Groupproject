@@ -115,3 +115,24 @@ create policy "Only connected users can send roommate messages"
     )
   );
 grant select, insert on public.roommate_messages to authenticated;
+
+-- Optional profile contact details. Private by default; UI only shows to accepted matches when enabled.
+alter table public.roommate_profiles add column if not exists phone text not null default '';
+alter table public.roommate_profiles add column if not exists zalo text not null default '';
+alter table public.roommate_profiles add column if not exists contact_visibility text not null default 'private' check (contact_visibility in ('private','matches'));
+
+-- Private in-app text messages between accepted roommate connections.
+create table if not exists public.roommate_messages (
+  id uuid primary key default gen_random_uuid(),
+  sender_id uuid not null references auth.users(id) on delete cascade,
+  recipient_id uuid not null references auth.users(id) on delete cascade,
+  body text not null check (char_length(body) between 1 and 1000),
+  created_at timestamptz not null default now(),
+  constraint roommate_message_no_self check (sender_id <> recipient_id)
+);
+create index if not exists roommate_messages_created_at_idx on public.roommate_messages (created_at asc);
+alter table public.roommate_messages enable row level security;
+drop policy if exists "Connected users can read their messages" on public.roommate_messages;
+create policy "Connected users can read their messages" on public.roommate_messages for select to authenticated using (auth.uid() = sender_id or auth.uid() = recipient_id);
+drop policy if exists "Connected users can send messages" on public.roommate_messages;
+create policy "Connected users can send messages" on public.roommate_messages for insert to authenticated with check (auth.uid() = sender_id and exists (select 1 from public.roommate_connections c where c.status = 'accepted' and ((c.from_user_id = auth.uid() and c.to_user_id = recipient_id) or (c.to_user_id = auth.uid() and c.from_user_id = recipient_id))));

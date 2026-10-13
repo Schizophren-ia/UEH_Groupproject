@@ -1,34 +1,31 @@
-# TìmTrọ website prototype
+# TìmTrọ — repaired prototype build (any-input login)
 
-## What's included
-- Student room search, listing detail, favorites, reviews and verification.
-- Supabase email/password authentication for UEH student addresses (`@st.ueh.edu.vn`) with signup OTP.
-- Roommate finder with profile form, lifestyle tags, adjustable filters, compatibility estimate, saved profiles, connection requests, accept/decline, and private messaging after mutual acceptance.
-- 36+ fictional roommate demo profiles cover varied genders, study levels, room types, budgets, campuses and lifestyle combinations for testing filters. Demo profiles are visibly labelled “HỒ SƠ MẪU · DEMO” and cannot receive real connection requests.
+## Important prototype login behavior
+The entry screen is intentionally a demo bypass: click **Log In** or **Sign Up** with any text, random text, or empty fields and it opens the website. Email/password authentication and OTP validation are bypassed for this school prototype. Do not use this as a production authentication system.
 
-## Enable real roommate profiles and connection requests
-1. Open the Supabase project for TìmTrọ.
-2. Go to **SQL Editor** → **New query**.
-3. Open `roommate_setup.sql`, copy all of it into the editor, and click **Run**.
-4. Deploy the folder containing `index.html` to Netlify.
-5. Sign in with a verified `@st.ueh.edu.vn` account, open **Tìm bạn cùng phòng**, and save a profile.
+## Included
+- Fixes the entry-overlay/navigation conflict that could make account navigation appear unresponsive.
+- Removes native browser form validation from the prototype entry form so arbitrary or empty values are accepted.
+- Includes editable account profile, profile picture, optional contact details and local visibility preferences.
+- Includes roommate discovery cards with compatibility scores, Pass/Interested actions, simulated matches and demo chat.
+- Keeps demo interactions in the browser, not shared with other users or devices.
 
-The SQL enables Row Level Security. Signed-in users can discover profiles, but can only edit their own profile. Connection requests are visible only to the two participants, and only the recipient can accept/decline. Private messages can only be sent between users whose connection is accepted.
+## Test before deploying
+1. Extract the ZIP.
+2. Open `timtro_website/index.html` in a modern browser.
+3. At the entry screen, try a nonsense string in both fields, then try the fields empty; click **Log In** each time.
+4. Confirm it enters the site, then click **Tài khoản** and verify the profile opens.
+5. Test roommate discovery and local demo chat.
+6. Only deploy after those checks work locally.
 
-## Important limitations
-- The compatibility score is a simple estimate based on shared lifestyle tags, campus, budget overlap and room preference; it is not a guarantee.
-- Demo profiles are illustrative. Only real profiles stored in Supabase can receive real connection requests.
-- The compatibility score is a heuristic and demo profiles are illustrative; only real profiles stored in Supabase can receive real connection requests.
-- The site uses a Supabase publishable key in the browser, which is intended to be public. Never put a Supabase secret or `service_role` key in `index.html`.
-- Verify Supabase email delivery and RLS policies before using with real students.
+## Prototype limitations
+Demo profile edits, demo matches and demo chat are saved in this browser only. The simulated login does not create a verified identity, so contact privacy and access controls are not production-secure. Do not enter sensitive real contact information. To make real cross-user profiles and chat, restore proper Supabase authentication and test the database access rules.
 
 
-## Student login and sign-up
-The site opens directly to Log In / Sign Up. Sign-up uses username, UEH student email and password, followed by email OTP verification. Valid saved student sessions open the home page automatically; signing out returns to Log In. The role-selection screen, role controls and landlord management dashboard have been removed.
+Update: roommate discovery now uses a swipe deck. Swipe left to pass and right to show interest; buttons use the TìmTrọ blue palette. Left/right keyboard arrows also work when the card is focused.
 
-“Forgot Password?” appears only on Log In as a display-only placeholder; it has no click action or password-reset request.
 
-Available demo listings saved by an earlier version can still be read from this browser. This version does not create or manage landlord listings.
-
-## Check the login flow
-Run `node tests/login.cjs` from this folder. The check executes the inline application script against a small simulated DOM and mocked Supabase. It covers student-only entry, tabs, email validation, signup/OTP, login, saved sessions, logout and service errors without creating real accounts or sending emails. Browser layout and live Supabase email delivery require separate verification.
+## Latest prototype updates
+- The roommate page opens in a card-list view. Use the compact **↔ Chế độ vuốt** button next to Refresh to switch to swipe mode; both views use the same filtered profile list.
+- Demo interactions reset on a full page refresh: local mock connections, passed/swiped state, and demo chat messages are cleared. Saved profile details, profile picture, and room listings are kept locally.
+- This is prototype-only behavior; live Supabase connections/messages are not deleted by this local reset script.
