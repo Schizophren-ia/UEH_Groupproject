@@ -528,122 +528,179 @@ function setAuthMode(mode){
 $('#loginTab').addEventListener('click',()=>setAuthMode('login'));
 $('#signupTab').addEventListener('click',()=>setAuthMode('signup'));
 $('#authForm').addEventListener('submit',async (event)=>{
- event.preventDefault();
- const email=$('#authEmail').value.trim().toLowerCase();
- const password=$('#authPassword').value;
- const username=$('#authUsername').value.trim();
- if(!validUehEmail(email)){authMessage('Please use your UEH student email ending in @st.ueh.edu.vn.','error');return;}
- if(!supabaseClient){authMessage('Supabase is not ready. Reload the page and try again.','error');return;}
- if(authMode==='signup' && username.length<2){authMessage('Please enter a username with at least 2 characters.','error');return;}
- const btn=$('#sendAuth');btn.disabled=true;btn.textContent=authMode==='login'?'Logging in…':'Creating account…';
- try{
-   if(authMode==='login'){
-     const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
-     if(error) throw error;
-     currentUser=data.user||data.session?.user||null;
-     if(!currentUser||!validUehEmail(currentUser.email)){await supabaseClient.auth.signOut();currentUser=null;throw new Error('This account must use a valid UEH student email.');}
-     updateAuthAccount();authMessage('Login successful. Opening TìmTrọ…','success');afterAuthentication();
-   }else{
-     pendingOtpMode="signup";
-     let generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
-     sessionStorage.setItem("timtro_pending_otp", generatedOtp);
-     sessionStorage.setItem("timtro_pending_email", email);
-     sessionStorage.setItem("timtro_pending_username", username || "Sinh viên UEH");
+function saveRegisteredAccount(email, password, username, id){
+  try {
+    const list = JSON.parse(localStorage.getItem("timtro_registered_accounts") || "[]");
+    const existingIndex = list.findIndex(a => a.email === email);
+    const newAcc = { id: id || ("usr_" + Math.random().toString(36).substr(2, 9)), email, password, username: username || "Sinh viên UEH" };
+    if(existingIndex >= 0){
+      list[existingIndex] = newAcc;
+    } else {
+      list.push(newAcc);
+    }
+    localStorage.setItem("timtro_registered_accounts", JSON.stringify(list));
+  } catch(e){}
+}
 
-     try {
-       const {data,error}=await supabaseClient.auth.signUp({
-         email,
-         password,
-         options:{
-           data:{username},
-           emailRedirectTo:window.location.origin
-         }
-       });
-       if(!error && data.session){
-         currentUser=data.user||data.session.user;
-         updateAuthAccount();
-         authMessage("Tạo tài khoản thành công! Đang chuyển vào trang chủ…","success");
-         afterAuthentication();
-         return;
-       }
-     } catch(e) {
-       console.warn("Supabase mail notice:", e);
-     }
+$("#authForm").addEventListener("submit", async (event)=>{
+  event.preventDefault();
+  const email = $("#authEmail").value.trim().toLowerCase();
+  const password = $("#authPassword").value;
+  const username = $("#authUsername").value.trim();
+  if(!validUehEmail(email)){ authMessage("Vui lòng nhập đúng email sinh viên UEH đuôi @st.ueh.edu.vn.", "error"); return; }
+  if(!supabaseClient){ authMessage("Chưa kết nối được hệ thống. Vui lòng tải lại trang.", "error"); return; }
+  if(authMode === "signup" && username.length < 2){ authMessage("Vui lòng nhập tên người dùng từ 2 ký tự trở lên.", "error"); return; }
 
-     $("#authForm").classList.add("hidden");
-     $("#otpForm").classList.remove("hidden");
-     $("#authOtp").value="";
-     $("#authOtp").focus();
-     
-     const hint = $("#otpHint");
-     if(hint){
-       hint.innerHTML = "Mã xác thực đã được tạo cho <b>" + email + "</b>.<br>📬 Kiểm tra hòm thư sinh viên (cả mục Spam/Junk).<br>💡 <i>Nếu server email UEH chặn thư tự động, hãy nhập mã OTP dự phòng: <strong style=\"color:#0878ed;letter-spacing:1px;font-size:14px\">" + generatedOtp + "</strong></i>";
-     }
-     authMessage("Vui lòng nhập mã OTP gồm 6 chữ số để tiếp tục.","info");
-   }
- }catch(err){authMessage((authMode==="login"?"Đăng nhập thất bại: ":"Đăng ký thất bại: ")+(err.message||"Lỗi không xác định"),"error");}
- finally{btn.disabled=false;btn.textContent=authMode==="login"?"Log In":"Sign Up";}
-});
-$("#otpForm").addEventListener("submit",async(event)=>{
- event.preventDefault();
- const email=$("#authEmail").value.trim().toLowerCase();
- const token=$("#authOtp").value.trim();
- const savedOtp = sessionStorage.getItem("timtro_pending_otp");
- const savedUsername = sessionStorage.getItem("timtro_pending_username") || "Sinh viên UEH";
+  const btn = $("#sendAuth");
+  btn.disabled = true;
+  btn.textContent = authMode === "login" ? "Đang đăng nhập…" : "Đang tạo tài khoản…";
 
- if(!validUehEmail(email)){authMessage("Vui lòng dùng đúng định dạng email @st.ueh.edu.vn.","error");return;}
- if(!/^\d{6}$/.test(token)){authMessage("Vui lòng nhập đủ 6 chữ số của mã OTP.","error");return;}
- const btn=$("#verifyOtp");btn.disabled=true;btn.textContent="Đang xác thực…";
- 
- let verified = false;
- try {
-   const {data,error}=await supabaseClient.auth.verifyOtp({email,token,type:pendingOtpMode==="signup"?"signup":"email"});
-   if(!error && (data.user || data.session?.user)){
-     currentUser=data.user||data.session.user;
-     verified = true;
-   }
- } catch(e) {
-   console.warn("Supabase verifyOtp:", e);
- }
+  try {
+    if(authMode === "login"){
+      let loggedIn = false;
 
- if(!verified && savedOtp && token === savedOtp){
-   currentUser = {
-     id: "usr_" + Math.random().toString(36).substr(2, 9),
-     email: email,
-     user_metadata: { username: savedUsername }
-   };
-   try {
-     localStorage.setItem("timtro_session_backup", JSON.stringify(currentUser));
-   } catch(e){}
-   verified = true;
- }
+      // 1. Kiểm tra tài khoản đã đăng ký trên máy / phiên làm việc
+      try {
+        const accounts = JSON.parse(localStorage.getItem("timtro_registered_accounts") || "[]");
+        const matched = accounts.find(acc => acc.email === email && acc.password === password);
+        if(matched){
+          currentUser = {
+            id: matched.id || ("usr_" + Math.random().toString(36).substr(2, 9)),
+            email: matched.email,
+            user_metadata: { username: matched.username }
+          };
+          loggedIn = true;
+        }
+      } catch(e) {}
 
- btn.disabled=false;
- btn.textContent="Xác thực mã OTP và tiếp tục";
+      // 2. Nếu chưa có ở local, thử đăng nhập qua Supabase
+      if(!loggedIn){
+        try {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if(!error && (data.user || data.session?.user)){
+            currentUser = data.user || data.session.user;
+            saveRegisteredAccount(email, password, currentUser.user_metadata?.username, currentUser.id);
+            loggedIn = true;
+          }
+        } catch(e) {}
+      }
 
- if(verified){
-   updateAuthAccount();
-   authMessage("Xác thực OTP thành công! Đang chuyển vào TìmTrọ…","success");
-   setTimeout(()=>afterAuthentication(), 400);
- } else {
-   authMessage("Mã OTP không chính xác hoặc đã hết hạn. Vui lòng kiểm tra lại.","error");
- }
-});
-$("#resendOtp").addEventListener("click",async()=>{
- const email=$("#authEmail").value.trim().toLowerCase();
- if(!validUehEmail(email)){authMessage("Vui lòng nhập email @st.ueh.edu.vn.","error");return;}
- const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
- sessionStorage.setItem("timtro_pending_otp", newOtp);
- try{
-   await supabaseClient.auth.resend({type:"signup",email});
- }catch(e){}
- const hint = $("#otpHint");
- if(hint){
-   hint.innerHTML = "Đã cấp mã mới cho <b>" + email + "</b>.<br>📬 Kiểm tra hòm thư của bạn.<br>💡 <i>Mã OTP dự phòng mới: <strong style=\"color:#0878ed;letter-spacing:1px;font-size:14px\">" + newOtp + "</strong></i>";
- }
- authMessage("Đã tạo mã OTP mới. Vui lòng kiểm tra email hoặc dùng mã hiển thị trên màn hình.","success");
+      if(!loggedIn){
+        throw new Error("Email hoặc mật khẩu không chính xác, hoặc tài khoản chưa được đăng ký.");
+      }
+
+      try { localStorage.setItem("timtro_current_session", JSON.stringify(currentUser)); } catch(e){}
+      updateAuthAccount();
+      authMessage("Đăng nhập thành công! Đang chuyển vào TìmTrọ…", "success");
+      setTimeout(()=>afterAuthentication(), 250);
+    } else {
+      // SIGN UP MODE
+      pendingOtpMode = "signup";
+      let generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      sessionStorage.setItem("timtro_pending_otp", generatedOtp);
+      sessionStorage.setItem("timtro_pending_email", email);
+      sessionStorage.setItem("timtro_pending_password", password);
+      sessionStorage.setItem("timtro_pending_username", username || "Sinh viên UEH");
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({
+          email,
+          password,
+          options: { data: { username }, emailRedirectTo: window.location.origin }
+        });
+        if(!error && data.session){
+          currentUser = data.user || data.session.user;
+          saveRegisteredAccount(email, password, username, currentUser.id);
+          try { localStorage.setItem("timtro_current_session", JSON.stringify(currentUser)); } catch(e){}
+          updateAuthAccount();
+          authMessage("Tạo tài khoản thành công! Đang chuyển vào TìmTrọ…", "success");
+          afterAuthentication();
+          return;
+        }
+      } catch(e) {
+        console.warn("Supabase signup note:", e);
+      }
+
+      $("#authForm").classList.add("hidden");
+      $("#otpForm").classList.remove("hidden");
+      $("#authOtp").value = "";
+      $("#authOtp").focus();
+
+      const hint = $("#otpHint");
+      if(hint){
+        hint.innerHTML = "Mã xác thực đã được tạo cho <b>" + email + "</b>.<br>📬 Kiểm tra hòm thư sinh viên (cả mục Spam/Junk).<br>💡 <i>Nếu email trường chặn thư tự động, hãy nhập mã OTP dự phòng: <strong style=\"color:#0878ed;letter-spacing:1px;font-size:14px\">" + generatedOtp + "</strong></i>";
+      }
+      authMessage("Vui lòng nhập mã OTP gồm 6 chữ số để hoàn tất.", "info");
+    }
+  } catch(err) {
+    authMessage((authMode === "login" ? "Đăng nhập thất bại: " : "Đăng ký thất bại: ") + (err.message || "Lỗi không xác định"), "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = authMode === "login" ? "Log In" : "Sign Up";
+  }
 });
 
+$("#otpForm").addEventListener("submit", async (event)=>{
+  event.preventDefault();
+  const email = $("#authEmail").value.trim().toLowerCase();
+  const token = $("#authOtp").value.trim();
+  const savedOtp = sessionStorage.getItem("timtro_pending_otp");
+  const savedPassword = sessionStorage.getItem("timtro_pending_password") || "";
+  const savedUsername = sessionStorage.getItem("timtro_pending_username") || "Sinh viên UEH";
+
+  if(!validUehEmail(email)){ authMessage("Vui lòng dùng đúng định dạng email @st.ueh.edu.vn.", "error"); return; }
+  if(!/^\d{6}$/.test(token)){ authMessage("Vui lòng nhập đủ 6 chữ số của mã OTP.", "error"); return; }
+  const btn = $("#verifyOtp");
+  btn.disabled = true;
+  btn.textContent = "Đang xác thực…";
+
+  let verified = false;
+  try {
+    const { data, error } = await supabaseClient.auth.verifyOtp({ email, token, type: pendingOtpMode === "signup" ? "signup" : "email" });
+    if(!error && (data.user || data.session?.user)){
+      currentUser = data.user || data.session.user;
+      verified = true;
+    }
+  } catch(e) {
+    console.warn("Supabase verifyOtp:", e);
+  }
+
+  if(!verified && savedOtp && token === savedOtp){
+    currentUser = {
+      id: "usr_" + Math.random().toString(36).substr(2, 9),
+      email: email,
+      user_metadata: { username: savedUsername }
+    };
+    verified = true;
+  }
+
+  btn.disabled = false;
+  btn.textContent = "Xác thực mã OTP và tiếp tục";
+
+  if(verified){
+    // Ghi nhớ tài khoản vĩnh viễn để lần sau chỉ cần gõ email + mật khẩu là đăng nhập được ngay
+    saveRegisteredAccount(email, savedPassword, savedUsername, currentUser.id);
+    try { localStorage.setItem("timtro_current_session", JSON.stringify(currentUser)); } catch(e){}
+    updateAuthAccount();
+    authMessage("Xác thực OTP thành công! Đang chuyển vào TìmTrọ…", "success");
+    setTimeout(()=>afterAuthentication(), 300);
+  } else {
+    authMessage("Mã OTP không chính xác hoặc đã hết hạn. Vui lòng kiểm tra lại.", "error");
+  }
+});
+
+$("#resendOtp").addEventListener("click", async ()=>{
+  const email = $("#authEmail").value.trim().toLowerCase();
+  if(!validUehEmail(email)){ authMessage("Vui lòng nhập email @st.ueh.edu.vn.", "error"); return; }
+  const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  sessionStorage.setItem("timtro_pending_otp", newOtp);
+  try { await supabaseClient.auth.resend({ type: "signup", email }); } catch(e){}
+  const hint = $("#otpHint");
+  if(hint){
+    hint.innerHTML = "Đã cấp mã mới cho <b>" + email + "</b>.<br>📬 Kiểm tra hòm thư của bạn.<br>💡 <i>Mã OTP dự phòng mới: <strong style=\"color:#0878ed;letter-spacing:1px;font-size:14px\">" + newOtp + "</strong></i>";
+  }
+  authMessage("Đã tạo mã OTP mới. Vui lòng kiểm tra email hoặc dùng mã hiển thị trên màn hình.", "success");
+});
 setAuthMode('login');
 try {
  if(window.supabase && window.supabase.createClient){
