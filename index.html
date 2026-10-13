@@ -527,7 +527,6 @@ function setAuthMode(mode){
 }
 $('#loginTab').addEventListener('click',()=>setAuthMode('login'));
 $('#signupTab').addEventListener('click',()=>setAuthMode('signup'));
-$('#authForm').addEventListener('submit',async (event)=>{
 function saveRegisteredAccount(email, password, username, id){
   try {
     const list = JSON.parse(localStorage.getItem("timtro_registered_accounts") || "[]");
@@ -705,12 +704,24 @@ setAuthMode('login');
 try {
  if(window.supabase && window.supabase.createClient){
    supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-   supabaseClient.auth.getSession().then(({data,error})=>{
-     if(error){showAuth();authMessage('Không thể kiểm tra phiên đăng nhập. Hãy tải lại trang.','error');return;}
-     currentUser=data.session?.user||null;
-     updateAuthAccount();
-     if(currentUser && validUehEmail(currentUser.email)){afterAuthentication();} else {showAuth();}
-   }).catch(()=>{showAuth();authMessage('Không thể kiểm tra phiên đăng nhập. Hãy tải lại trang.','error');});
+    supabaseClient.auth.getSession().then(({data,error})=>{
+      currentUser = data?.session?.user || null;
+      if(!currentUser){
+        try {
+          const localSess = JSON.parse(localStorage.getItem("timtro_current_session") || "null");
+          if(localSess && validUehEmail(localSess.email)) currentUser = localSess;
+        } catch(e){}
+      }
+      updateAuthAccount();
+      if(currentUser && validUehEmail(currentUser.email)){ afterAuthentication(); } else { showAuth(); }
+    }).catch(()=>{
+      try {
+        const localSess = JSON.parse(localStorage.getItem("timtro_current_session") || "null");
+        if(localSess && validUehEmail(localSess.email)) currentUser = localSess;
+      } catch(e){}
+      updateAuthAccount();
+      if(currentUser && validUehEmail(currentUser.email)){ afterAuthentication(); } else { showAuth(); }
+    });
    supabaseClient.auth.onAuthStateChange((event,session)=>{
      currentUser=session?.user||null;
      updateAuthAccount();
