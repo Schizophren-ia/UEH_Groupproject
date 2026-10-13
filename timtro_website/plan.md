@@ -95,8 +95,10 @@ Người dùng đã duyệt: “Tạm thời giữ đăng nhập demo, không s�
 - Kiểm tra chiều rộng **375, 390, 768, 1024, 1440 px**: không cuộn ngang; menu ở ghép có thể dùng; menu mobile trong viewport; chat mobile trong viewport. Không có lỗi JavaScript được browser ghi nhận.
 - Đã xem ảnh chụp desktop trang chủ/ở ghép/360° và mobile ở ghép/chat. Ảnh cùng kết quả JSON ở `.qa/` (không commit). Browser test chặn mạng ngoài; không gửi tin nhắn/email thật hoặc thay đổi dữ liệu dịch vụ.
 - `git diff --check`: đạt. Remote `main` trước push là `e45542a5b98b4ce0c7d8de6bb1dc36538e10d1f3`, trùng commit nền local.
-- [ ] Commit/push và xác minh SHA trên GitHub — thực hiện sau báo cáo kiểm tra này; kết quả được ghi bổ sung bên dưới khi remote xác nhận.
+- [x] Commit/push và xác minh SHA trên GitHub: commit triển khai `585f91147d5afeec19515d73d074cea52a3eefa0` đã push thành công lên `origin/main`. `git ls-remote --heads origin main` trả đúng SHA đó, trùng HEAD local. Commit báo cáo tiếp theo chỉ cập nhật nhật ký kết quả này.
 
 ### Giới hạn của phạm vi đã duyệt
 
 Đăng nhập, hồ sơ, bài đăng và chat là demo cục bộ; chưa có trao đổi với người thật hoặc đồng bộ thiết bị. Quyền riêng tư trong đợt này là hành vi hiển thị, không thay thế kiểm soát truy cập máy chủ. Bộ câu hỏi theo phương án đã duyệt, còn cần bảng gốc để đối chiếu sau này. Ảnh panorama người dùng mở chỉ tồn tại trong phiên; viewer cần WebGL. B được hoãn theo lời người dùng, không tính là tính năng đã hoàn thành.
+
+Liên kết commit triển khai: https://github.com/Schizophren-ia/UEH_Groupproject/commit/585f91147d5afeec19515d73d074cea52a3eefa0. Đợt chỉnh sửa demo A/C/D/E/F đã được push; trạng thái triển khai GitHub Pages chưa được kiểm chứng riêng, không dùng kết quả push để tuyên bố hosting đã deploy thành công.
