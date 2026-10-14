@@ -22,10 +22,11 @@ function sampleOwnerAvatar(name,index){
  const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><rect width="160" height="160" rx="80" fill="'+colors[index%4]+'"/><circle cx="80" cy="58" r="27" fill="#fff" opacity=".92"/><path d="M28 144c0-38 23-56 52-56s52 18 52 56" fill="#fff" opacity=".92"/></svg>';
  return 'data:image/svg+xml,'+encodeURIComponent(svg);
 }
-const sampleOwners=['Nguyễn Thị Hằng','Trần Hoàng Nam','Lê Thu Hà','Nguyễn Gia Bảo'];
+const sampleOwners=['Nguyễn Thị Hằng','Trần Hoàng Nam','Lê Thu Hà','Nguyễn Gia Bảo','Phạm Khánh Linh','Vũ Đức Minh'];
 function decorateSampleRooms(list){
+ list.push({...list[0],id:5,title:'Phòng gần UEH — xác thực 1/3 lớp',rent:2300000,area:22,photo:list[2].photo},{...list[0],id:6,title:'Phòng chờ xác thực — chưa công khai',rent:2100000,area:18,photo:list[3].photo});
  list.forEach((room,i)=>{
-  Object.assign(room,{is_sample:true,verification:{tenant:i!==3,location:i!==3,media:i<2},ownerName:sampleOwners[i],ownerBio:'Hồ sơ chủ trọ mẫu cho phòng '+room.title+'. Thông tin liên hệ và xác thực chỉ phục vụ minh họa.',ownerAvatar:sampleOwnerAvatar(sampleOwners[i],i),ownerPhoneDisplay:'090 ••• '+String(4500+i),ownerVerifiedAt:i<3?'06/10/2026 · Mô phỏng':null});
+  Object.assign(room,{is_sample:true,verification:{tenant:i!==3&&i!==5,location:i<3,media:i<2},ownerName:sampleOwners[i],ownerBio:'Hồ sơ chủ trọ mẫu cho phòng '+room.title+'. Thông tin liên hệ và xác thực chỉ phục vụ minh họa.',ownerAvatar:sampleOwnerAvatar(sampleOwners[i],i),ownerPhoneDisplay:'090 ••• '+String(4500+i),ownerVerifiedAt:i!==3&&i!==5?'06/10/2026 · Mô phỏng':null});
   room.room_check_verified=checkCount(room)===3;
  });
 }

@@ -47,15 +47,20 @@
   showPage('home');document.querySelector('[data-type="shared"]').click();check(!el('roommatesPage').classList.contains('hidden'),'Shared option routes to roommates');
   showPage('home');value('minPrice','0');value('maxPrice','20000000');value('distance','10');click('searchBtn');check(!el('finderFilterError').textContent,'Full price and distance range accepted');
   value('minPrice','20000000');value('maxPrice','0');renderSearch();check(el('finderFilterError').textContent,'Inverted range rejected');
-  value('minPrice','0');value('maxPrice','20000000');value('distance','0');renderSearch();check(!el('finderFilterError').textContent,'Zero distance accepted');value('distance','10');el('finderRoomCheck').checked=true;renderSearch();check(el('roomResults').querySelectorAll('.room-card').length===2,'Only two fully verified sample rooms pass Room Check');el('finderRoomCheck').checked=false;
+  value('minPrice','0');value('maxPrice','20000000');value('distance','0');renderSearch();check(!el('finderFilterError').textContent,'Zero distance accepted');value('distance','10');renderSearch();check(el('roomResults').querySelectorAll('.room-card').length===4,'Finder shows rooms verified 1/3, 2/3 and 3/3');
   openRoom('1');showPage('contact');check(el('contactLandlord').textContent.includes('CCCD')&&el('contactLandlord').textContent.includes('Mô phỏng'),'Owner verification states are labeled illustrative');value('ownerMessage','Quan tâm phòng thử');submit('ownerMessageForm');check(el('ownerMessageStatus').textContent.includes('Chưa gửi'),'Message local-only status disclosed');check(el('ownerMessage').maxLength===200,'Owner message capped at 200');
   check(document.querySelectorAll('.nav [data-page="account"]').length===1&&document.querySelector('.nav [data-page="settings"] svg'),'Account and settings icon controls present');
   showPage('roommates');await loadRoommateData();click('resetRoommateFilters');check(roommateSlots.filter(s=>s.is_sample).length===6,'Six ready sample posts available');
-  for(const level of ['3','2','0']){value('rfVerification',level);click('searchRoommateFilters');check(document.querySelectorAll('.slot-card').length>0,'Roommate Room Check level '+level+' has results');}
+  check(!el('rfVerified')&&!el('rfVerification'),'Room Check controls removed from roommate search');
   click('resetRoommateFilters');await openRoommateChat('sample-slot-1');check(el('roommateChatContext').textContent.includes('Người đăng mẫu'),'Sample chat explicitly labeled');value('roommateChatInput','Thử chat bài mẫu');submit('roommateChatForm');await until(()=>el('roommateChatMessages').textContent.includes('Thử chat bài mẫu'),'Sample chat not persisted');check(el('roommateChatMessages').querySelectorAll('.chat-message').length===1,'Sample chat creates no invented reply');click('closeRoommateChat');
-  showPage('home');value('campus','all');value('livingArea','all');value('minPrice','0');value('maxPrice','20000000');value('distance','10');el('finderRoomCheck').checked=false;
-  value('finderVerification','3');renderSearch();check(el('roomResults').querySelectorAll('.room-card').length===2,'Room finder has two 3/3 samples');
-  value('finderVerification','2');renderSearch();check(el('roomResults').querySelectorAll('.room-card').length===1,'Room finder has one 2/3 sample');
+  showPage('home');value('campus','all');value('livingArea','all');value('minPrice','0');value('maxPrice','20000000');value('distance','10');
+  renderSearch();check(el('roomResults').querySelectorAll('.room-card').length===4,'Verified room search includes four sample rooms');
+  check(!el('finderVerification')&&!el('finderRoomCheck'),'Room Check controls removed from room finder');
+  check(el('roomResults').querySelector('[data-room="5"]'),'1/3 sample room remains visible');
+  check(!el('roomResults').querySelector('[data-room="6"]'),'0/3 sample room excluded from search');
+  check(!el('featuredRooms').querySelector('[data-room="6"]')&&el('featuredRooms').querySelector('[data-room="5"]'),'Featured list excludes 0/3 and includes 1/3');
+  saved.add('6');saved.add('5');showPage('favorites');check(!el('favoriteRooms').querySelector('[data-room="6"]')&&el('favoriteRooms').querySelector('[data-room="5"]'),'Favorites follows minimum one-layer rule');
+  openRoom('5');showPage('verification');check(el('verificationPage').textContent.includes('1/3'),'One-layer verification detail matches badge');
   openRoom('3');showPage('verification');check(el('verificationPage').textContent.includes('2/3')&&el('verificationPage').textContent.includes('Chưa hoàn tất'),'2/3 verification shows missing layer');
   openRoom('1');showPage('verification');check(el('verificationPage').textContent.includes('3/3')&&!el('verificationPage').textContent.includes('Chưa hoàn tất'),'3/3 verification completes all layers');
   openRoom('2');showPage('contact');check(el('contactLandlord').textContent.includes('Trần Hoàng Nam')&&el('contactLandlord').textContent.includes('Quận 10'),'Room switch updates owner and address');check(el('contactLandlord').querySelector('.landlord-photo'),'Owner illustrated avatar visible');

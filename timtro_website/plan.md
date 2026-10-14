@@ -226,3 +226,15 @@ Người dùng đã duyệt triển khai đầy đủ dựa trên ba ảnh tham 
 - [x] Kiểm thử tĩnh PASS: JavaScript, IDs duy nhất và hai entry đồng bộ.
 - [x] Chrome PASS: 73 tình huống × 1440px/390px, gồm đăng ký/đăng nhập, hồ sơ/riêng tư, chat hai tài khoản, bài mẫu/chat không giả phản hồi, bộ lọc 2/3–3/3, lớp còn thiếu, đổi chủ trọ theo phòng, bản đồ và không tràn ngang. Đã xem ảnh chụp chủ trọ desktop/mobile.
 - [ ] Xác thực trên các phòng mẫu là mô phỏng. Dịch vụ backend/OTP thật và gửi lời nhắn chủ trọ xuyên thiết bị vẫn thuộc các mục chờ quản trị đã ghi trước.
+
+## 2026-10-15 — Hiển thị phòng từ 1/3 lớp và bỏ Room Check khỏi bộ lọc
+
+Người dùng đã duyệt: xác thực 1/3 vẫn hiển thị; chỉ ẩn phòng 0/3.
+
+- [x] Kết quả Tìm phòng, Phòng trọ nổi bật và Yêu thích chỉ hiển thị phòng có ít nhất một lớp xác thực; phòng 0/3 không xuất hiện trong các danh sách.
+- [x] Bổ sung phòng mẫu 1/3 cùng hồ sơ chủ trọ demo riêng để trải nghiệm; giữ phòng 0/3 trong dữ liệu nội bộ để kiểm tra việc ẩn, không công khai trong danh sách.
+- [x] Gỡ cả lựa chọn mức xác thực và checkbox Room Check khỏi bộ lọc Tìm phòng và Tìm bạn cùng phòng; xóa tham chiếu JavaScript tương ứng.
+- [x] Giữ huy hiệu và trang chi tiết xác thực, hồ sơ chủ trọ theo từng phòng. Dữ liệu mẫu vẫn ghi Xác thực mô phỏng.
+- [x] Tìm bạn không tự ẩn bài 0/3; giữ bộ lọc giá, khu vực, sức chứa/slot và sinh hoạt cùng nút Tìm kiếm, bài mẫu và chat.
+- [x] node tests/login.cjs PASS: IDs, cú pháp JavaScript và hai entry đồng bộ.
+- [x] node tests/browser.cjs --demo PASS: 76 tình huống ở 1440px và 76 ở 390px, gồm xác nhận phòng 1/3 xuất hiện, 0/3 bị ẩn ở tìm kiếm/nổi bật/yêu thích, bộ lọc Room Check đã gỡ, hồ sơ, riêng tư, slot/chat, bản đồ, đăng nhập/tải lại và không lỗi JavaScript.
