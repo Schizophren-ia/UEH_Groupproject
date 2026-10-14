@@ -190,3 +190,22 @@ Người dùng đã duyệt triển khai yêu cầu A/B/C mới. Quyết định
 - [x] Commit triển khai `fc29e18cde9f1b1e33f023043378cdf27f79dbe8` đã push lên `origin/main`; `git ls-remote` trả đúng SHA. `git diff --cached --check` và kiểm tra tĩnh đạt. Lần Chrome cuối: 42 tình huống demo × 2 viewport, không có lỗi JS; báo cáo `.qa/demo-results.json` dùng Auth/bộ nhớ demo thực, không giả lập logic OTP/mật khẩu.
 - [x] GitHub Pages https://schizophren-ia.github.io/UEH_Groupproject/ trả 200; HTML và bốn asset `auth-demo.js`, `auth-demo.css`, `demo-data.js`, `room-contact.js` đều trả 200 và nội dung khớp bản local đã push. Kiểm tra GET ngoài sandbox được duyệt, không thay đổi cấu hình dịch vụ.
 - [ ] Chế độ dịch vụ thật vẫn cần quản trị áp dụng SQL/Auth Hook/SMTP và kiểm thử hai tài khoản thật. Tài khoản/OTP demo hiện hoạt động độc lập với phần cấu hình này.
+
+## 2026-10-14 — Kết quả chỉnh giao diện, tài khoản, tìm bạn và tìm phòng (A–D)
+
+Người dùng đã duyệt phương án trước khi triển khai.
+
+- [x] Thanh điều hướng chỉ còn một nút Tài khoản dùng icon người; thêm icon Cài đặt cạnh tài khoản, có tên truy cập, tooltip và hiển thị trên thanh điều hướng mobile.
+- [x] Bỏ lối vào Quản lý phòng demo khỏi Tài khoản. Đưa hồ sơ và nhu cầu tìm bạn vào form tài khoản, dùng chung thao tác lưu; các trường tương thích cũ được giữ ẩn cho luồng hiện có.
+- [x] Chuyển quyền riêng tư sang Cài đặt → Quyền riêng tư, có thao tác lưu và xem trước hồ sơ công khai. Lưu vào cùng hồ sơ theo tài khoản; đăng xuất xóa dữ liệu riêng tư khỏi giao diện.
+- [x] Trang Tìm bạn chỉ còn bộ lọc, bài đăng, đăng phòng còn chỗ, danh sách quan tâm và tin nhắn. Bộ lọc dùng trạng thái nháp và nút Tìm kiếm để áp dụng; Đặt lại khôi phục kết quả.
+- [x] Giữ số chỗ trống / sức chứa trên card và Quan tâm → Chat. Kiểm thử chat gửi/nhận giữa hai tài khoản demo, avatar, escape HTML và tách dữ liệu riêng tư.
+- [x] Chọn Ở ghép chuyển sang Tìm bạn cùng phòng; tìm phòng thuê không còn lọc lẫn bài ở ghép.
+- [x] Giá thuê nhập bằng đồng từ 0 đến 20.000.000; khoảng cách tối đa từ 0 đến 10 km (bước 0,1 km). Chặn khoảng giá đảo, giá/khoảng cách ngoài giới hạn.
+- [x] Thêm bộ lọc và trạng thái Room Check trên card phòng thuê, trạng thái trong chi tiết và lối vào xác thực 3 lớp. Phòng chưa kiểm chứng hiển thị Chưa xác minh.
+- [x] Trang chủ trọ có avatar, tên, vai trò, địa chỉ, điện thoại, thông tin xác thực CCCD/địa chỉ/hình ảnh-video, lần xác minh, Gọi điện/Zalo, ô gửi lời nhắn tối đa 200 ký tự.
+- [x] Không dựng số điện thoại hay dữ liệu xác minh giả. Thiếu số/Zalo thì nút bị vô hiệu hóa; lời nhắn lưu riêng theo tài khoản và phòng trên trình duyệt, giao diện báo rõ chưa gửi chủ trọ.
+- [x] Đồng bộ index.html ở root và timtro_website/index.html.
+- [x] node tests/login.cjs: PASS (ID duy nhất, cú pháp JavaScript, wiring và đồng bộ hai entry).
+- [x] node tests/browser.cjs --demo: PASS — 58 kiểm tra × 2 viewport (1440px và 390px), cùng tải lại phiên/scroll/nút quay lại, không có lỗi JavaScript. Đã xem ảnh chụp trang chủ trọ mobile và sửa xung đột CSS làm ẩn icon tài khoản.
+- [ ] Dịch vụ thật vẫn cần SQL/Auth/SMTP như ghi chú trước. Gửi lời nhắn chủ trọ xuyên thiết bị chưa có backend; đợt này không tuyên bố đã kết nối dịch vụ gửi tin thật.

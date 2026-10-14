@@ -1,6 +1,11 @@
 function safeZalo(value){try{const url=new URL(String(value||'').trim());return url.protocol==='https:'&&url.hostname==='zalo.me'&&!url.username&&!url.password?url.href:null;}catch{return null;}}
 function roomOwner(room){return {name:room.ownerName||(!room.isHostListing?['Minh Anh','Hoàng Nam','Thu Hà','Gia Bảo'][Number(room.id)-1]+' · Hồ sơ mẫu':'Chủ trọ chưa cung cấp tên'),bio:room.ownerBio||(!room.isHostListing?'Hồ sơ chủ trọ minh họa của dự án sinh viên UEH. Liên hệ thật chưa được cung cấp.':'Chủ trọ chưa thêm giới thiệu.'),zalo:safeZalo(room.ownerZalo)};}
-function ownerCard(room){const owner=roomOwner(room);return `<div class="landlord-person"><span class="landlord-avatar" aria-label="Avatar chủ trọ">${hostEscape(owner.name[0])}</span><div><strong>${hostEscape(owner.name)}</strong><div class="small-label">Chủ trọ · ${room.isHostListing?'Thông tin do người đăng cung cấp':'Minh họa'}</div></div></div><p>${hostEscape(owner.bio)}</p>${owner.zalo?`<a class="primary" data-landlord-zalo href="${hostEscape(owner.zalo)}" target="_blank" rel="noopener noreferrer">Liên hệ qua Zalo ↗</a>`:'<p class="small-label">Chủ trọ chưa cung cấp liên kết Zalo.</p>'}<button type="button" class="secondary" data-owner-map="${hostEscape(room.id)}">Xem vị trí phòng</button>`;}
+function ownerCard(room){
+ const owner=roomOwner(room),phone=String(room.ownerPhone||'').trim(),safePhone=/^\+?[0-9 ()-]{8,20}$/.test(phone)?phone:null;
+ const checks=[['CCCD',room.ownerIdentityVerified===true],['Địa chỉ',room.ownerAddressVerified===true],['Hình ảnh/video',room.ownerMediaVerified===true]];
+ const verified=checks.every(([,ok])=>ok),label=verified?'Đã xác thực':'Chưa xác minh';
+ return `<div class="owner-summary"><div><div class="landlord-person"><span class="landlord-avatar" aria-label="Avatar chủ trọ">${hostEscape(owner.name[0])}</span><div><h2>${hostEscape(owner.name)}</h2><p>Chủ trọ</p><span class="verified-pill">${label}</span></div></div><p>${hostEscape(owner.bio)}</p><p>Điện thoại: ${safePhone?hostEscape(safePhone):'Chưa cung cấp'}</p><p>Địa chỉ phòng: ${hostEscape(room.address||'Chưa cung cấp')}</p></div><div class="owner-verification"><h3>Thông tin xác thực</h3><p class="small-label">Lần xác minh cuối: ${hostEscape(room.ownerVerifiedAt||'Chưa có dữ liệu')}</p>${checks.map(([name,ok])=>`<p>${ok?'✓':'○'} ${name}: ${ok?'Đã xác minh':'Chưa xác minh'}</p>`).join('')}<button class="back" data-page="verification">Xem thông tin chi tiết</button></div></div><div class="owner-contact-actions">${safePhone?`<a class="primary" href="tel:${hostEscape(safePhone.replace(/[ ()-]/g,''))}">Gọi điện</a>`:'<button class="primary" disabled>Chưa có số điện thoại</button>'}${owner.zalo?`<a class="secondary" data-landlord-zalo href="${hostEscape(owner.zalo)}" target="_blank" rel="noopener noreferrer">Nhắn tin qua Zalo ↗</a>`:'<button class="secondary" disabled>Chưa có liên kết Zalo</button>'}</div><button type="button" class="secondary" data-owner-map="${hostEscape(room.id)}">Xem vị trí phòng</button>`;
+}
 function renderRoomOwner(){for(const id of ['detailLandlord','contactLandlord'])$('#'+id).innerHTML=ownerCard(currentRoom);$('#contactRoomTitle').textContent=currentRoom.title;$('.amenities .verified-pill').textContent=currentRoom.isHostListing?'Tin do chủ trọ cung cấp · Chưa xác minh':'Phòng mẫu · Chưa xác minh';}
 const originalOpenRoom=openRoom;
 openRoom=function(id){$('#hostRoomDescription')?.remove();originalOpenRoom(id);renderRoomOwner();};
@@ -21,3 +26,21 @@ $('#closeRoomMap').addEventListener('click',()=>{$('#roomMapDialog').close();$('
 $('#roomMapDialog').addEventListener('close',()=>$('#roomMapFrame').removeAttribute('src'));
 document.addEventListener('click',event=>{const button=event.target.closest('[data-owner-map]');if(button)openRoomMap(button.dataset.ownerMap);});
 renderRoomOwner();
+
+
+function roomVerification(room){return room.room_check_verified===true;}
+const baseRenderOwner=renderRoomOwner;
+renderRoomOwner=function(){
+ baseRenderOwner();
+ const verified=roomVerification(currentRoom);
+ const box=$('#detailPage .verify-box');
+ box.innerHTML='<h3>Room Check · '+(verified?'Đã xác minh':'Chưa xác minh')+'</h3><p>'+(verified?'Phòng có dữ liệu Room Check. Xem từng lớp xác thực để đối chiếu.':'Chưa có bằng chứng xác minh thực tế. Bạn vẫn có thể xem quy trình kiểm tra phòng.')+'</p>';
+ const message=$('#ownerMessage');
+ if(message){message.value='Xin chào, mình quan tâm đến phòng trọ này. Phòng còn trống không ạ?';$('#ownerMessageCount').textContent=message.value.length+'/200';}
+};
+$('#ownerMessage').addEventListener('input',()=>$('#ownerMessageCount').textContent=$('#ownerMessage').value.length+'/200');
+$('#ownerMessageForm').addEventListener('submit',event=>{
+ event.preventDefault();const body=$('#ownerMessage').value.trim();if(!body)return;
+ const key='timtro_owner_messages_'+currentUser.id;
+ try{const items=JSON.parse(localStorage.getItem(key)||'[]');items.push({roomId:currentRoom.id,body,createdAt:new Date().toISOString()});localStorage.setItem(key,JSON.stringify(items));$('#ownerMessageStatus').textContent='Đã lưu lời nhắn trên trình duyệt này. Chưa gửi đến chủ trọ; dùng Gọi điện hoặc Zalo để liên hệ trực tiếp.';}catch{$('#ownerMessageStatus').textContent='Không lưu được lời nhắn. Vui lòng thử lại.';}
+});

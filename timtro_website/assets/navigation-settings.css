@@ -1,0 +1,19 @@
+.nav .nav-icon{display:inline-flex!important;align-items:center;justify-content:center;width:44px;height:44px;flex:0 0 44px;padding:8px;border-radius:50%;background:#edf1ff;color:var(--navy)}
+.nav-icon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8}
+.nav-icon.active,.nav-icon:hover{background:var(--blue);color:white}
+.nav-icon:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+#accountRoommateDetails details,#privacySettingsForm details{border-bottom:1px solid var(--line);padding:16px 0}
+#accountRoommateDetails summary,#privacySettingsForm summary{font-size:18px;font-weight:700;cursor:pointer;margin-bottom:14px}
+.roommate-layout{grid-template-columns:300px minmax(0,1fr)}
+.owner-summary{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.owner-verification{background:#f4f5ff;padding:20px;border-radius:14px}
+.owner-contact-actions{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.owner-contact-actions a{display:flex;align-items:center;justify-content:center;text-decoration:none}
+.owner-contact-actions button:disabled{opacity:.65;cursor:not-allowed}
+#ownerMessageForm{margin-top:20px}
+#ownerMessage{width:100%;min-height:130px;padding:16px;border:1px solid var(--line);border-radius:12px;font:inherit}
+#ownerMessageCount{text-align:right;margin:8px 0}
+#privacySettingsForm{max-width:800px}
+@media(max-width:950px){.roommate-layout{grid-template-columns:1fr}}
+@media(max-width:600px){.owner-summary,.owner-contact-actions{grid-template-columns:1fr}.nav{gap:4px}.nav .nav-icon{width:40px;flex-basis:40px}.owner-verification{padding:16px}}
+@media(max-width:760px){.nav button[data-page="account"].avatar.nav-icon,.nav button[data-page="settings"].nav-icon{display:flex!important;min-width:40px;flex:0 0 40px}.nav button[data-page]{max-width:18%}}
