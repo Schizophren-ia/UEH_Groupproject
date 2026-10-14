@@ -213,12 +213,6 @@ main section:not(.hidden) {
        <button id="sendAuth" type="submit">Đăng nhập</button>
     </form>
      <button id="backToAuthChoice" type="button" class="auth-back hidden">← Quay lại lựa chọn</button>
-    <form id="otpForm" class="hidden" style="margin-top:14px">
-      <label for="authOtp">Six-digit email OTP</label>
-      <input id="authOtp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456" required />
-      <button id="verifyOtp" type="submit">Verify email and continue</button>
-      <button id="resendOtp" type="button" class="secondary" style="margin-top:9px;background:#fff;color:#0872dc">Resend code</button>
-    </form>
     <div id="authMessage" class="auth-msg" role="status" aria-live="polite"></div>
      <p class="auth-small">Chỉ dùng email sinh viên UEH đúng dạng ten.mã-số-sinh-viên@st.ueh.edu.vn. Đăng ký cần xác nhận email theo hướng dẫn trong hộp thư.</p>
   </div>
@@ -382,7 +376,7 @@ main section:not(.hidden) {
     <button class="primary full" type="submit" id="saveRoommateProfile" style="margin-top:18px">Lưu hồ sơ & nhu cầu</button>
    </form>
    <details class="roommate-publish"><summary>Bạn có phòng và cần tìm người ở chung? Đăng bài</summary><p class="small-label">Bài đăng sẽ hiển thị cho các tài khoản sinh viên UEH khác.</p><form id="slotListingForm" class="roommate-form"><input id="slotEditId" type="hidden">
-    <div><label for="slotTitle">Tiêu đề *</label><input id="slotTitle" required maxlength="90" placeholder="Phòng gần UEH cần thêm 1 bạn"></div>
+    <div><label for="slotTitle">Tiêu đề *</label><input id="slotTitle" required minlength="5" maxlength="90" placeholder="Phòng gần UEH cần thêm 1 bạn"></div>
     <div><label for="slotArea">Khu vực *</label><input id="slotArea" required maxlength="100" placeholder="Quận 10"></div>
     <div><label for="slotCampus">Gần cơ sở UEH</label><select id="slotCampus"><option value="">Không xác định</option><option>Campus A</option><option>Campus B</option><option>Nguyễn Tri Phương</option><option>Nam Sài Gòn</option></select></div>
     <div><label for="slotCapacity">Tổng sức chứa</label><select id="slotCapacity"><option value="2">2 người</option><option value="3">3 người</option><option value="4">4 người</option></select></div>
@@ -488,7 +482,7 @@ main section:not(.hidden) {
 <footer>TìmTrọ © 2026 · Tìm nơi ở phù hợp, minh bạch và an tâm hơn.</footer>
 </div>
 <div class="dialog-backdrop hidden" id="slotDialog" role="dialog" aria-modal="true" aria-labelledby="slotDialogTitle"><div class="dialog-card"><div class="dialog-heading"><h2 id="slotDialogTitle">Chi tiết phòng</h2><button type="button" class="dialog-close" id="closeSlotDialog" aria-label="Đóng chi tiết phòng">×</button></div><div id="slotDialogBody"></div></div></div>
-<div class="dialog-backdrop hidden" id="roommateChatPanel" role="dialog" aria-modal="true" aria-labelledby="roommateChatTitle"><div class="dialog-card chat-dialog"><div class="dialog-heading chat-header"><div><h3 id="roommateChatTitle">Trò chuyện</h3><p id="roommateChatContext"></p></div><button class="dialog-close" id="closeRoommateChat" type="button" aria-label="Đóng cuộc trò chuyện">×</button></div><div id="roommateChatMessages" role="log" aria-live="polite" aria-relevant="additions"></div><form id="roommateChatForm"><label class="small-label" for="roommateChatInput">Tin nhắn cho người đăng</label><textarea id="roommateChatInput" required maxlength="1000" placeholder="Chào bạn, phòng còn chỗ không?"></textarea><button type="submit" class="primary">Gửi tin nhắn demo</button><p class="privacy-note">Tin nhắn lưu tại trình duyệt, chưa gửi đến người thật.</p></form></div></div>
+<div class="dialog-backdrop hidden" id="roommateChatPanel" role="dialog" aria-modal="true" aria-labelledby="roommateChatTitle"><div class="dialog-card chat-dialog"><div class="dialog-heading chat-header"><div><h3 id="roommateChatTitle">Trò chuyện</h3><p id="roommateChatContext"></p></div><button class="secondary" id="refreshRoommateChat" type="button">Làm mới</button><button class="dialog-close" id="closeRoommateChat" type="button" aria-label="Đóng cuộc trò chuyện">×</button></div><div id="roommateChatMessages" role="log" aria-live="polite" aria-relevant="additions"></div><form id="roommateChatForm"><label class="small-label" for="roommateChatInput">Tin nhắn</label><textarea id="roommateChatInput" required maxlength="1000" placeholder="Chào bạn, phòng còn chỗ không?"></textarea><button type="submit" class="primary">Gửi tin nhắn</button><p class="privacy-note">Chỉ hai người trong cuộc trò chuyện có thể xem tin nhắn.</p></form></div></div>
 <div class="toast" id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -580,13 +574,13 @@ let supabaseClient = null, currentUser = null;
 function authMessage(message,kind='info'){ const el=$('#authMessage');el.textContent=message;el.className='auth-msg '+kind; }
 function validUehEmail(value){return /^[a-z][a-z0-9_-]*\.[0-9]{6,15}@st\.ueh\.edu\.vn$/i.test(String(value||'').trim());}
 function authenticated(){return !!(currentUser&&validUehEmail(currentUser.email)&&currentUser.email_confirmed_at);}
-function showAuth(){ $('#authGate').classList.remove('hidden');$('#roleGate').classList.add('hidden');document.body.classList.add('role-pending'); }
+function showAuth(){ if(!authenticated()&&typeof clearRoommateData==='function')clearRoommateData();$('#authGate').classList.remove('hidden');$('#roleGate').classList.add('hidden');document.body.classList.add('role-pending'); }
 function showRoleChoice(){showAuth();}
 function enterSelectedRole(){if(!authenticated()){showAuth();return;}$('#authGate').classList.add('hidden');$('#roleGate').classList.add('hidden');document.body.classList.remove('role-pending','host-mode');showPage('home');}
 function afterAuthentication(){enterSelectedRole();if(typeof loadRoommateData==='function')loadRoommateData();}
 function updateAuthAccount(){const account=$('[data-page="account"]');if(account)account.title=currentUser?.email||'Tài khoản';const el=$('#signedInEmail');if(el)el.textContent=currentUser?.email||'';}
 let authMode=null;
-function setAuthMode(mode){authMode=mode;$('#loginTab').classList.toggle('active',mode==='login');$('#signupTab').classList.toggle('active',mode==='signup');$('#usernameWrap').classList.toggle('hidden',mode!=='signup');$('#confirmPasswordWrap').classList.toggle('hidden',mode!=='signup');$('#authUsername').required=mode==='signup';$('#authConfirmPassword').required=mode==='signup';$('#authPassword').autocomplete=mode==='signup'?'new-password':'current-password';$('#authTitle').textContent=mode==='signup'?'Tạo tài khoản UEH':'Đăng nhập TìmTrọ';$('#authCopy').textContent=mode==='signup'?'Dùng email sinh viên UEH và xác nhận email sau khi đăng ký.':'Đăng nhập bằng email và mật khẩu đã đăng ký.';$('#sendAuth').textContent=mode==='signup'?'Đăng ký':'Đăng nhập';$('#authForm').classList.remove('hidden');$('#backToAuthChoice').classList.remove('hidden');$('#otpForm').classList.add('hidden');authMessage('');}
+function setAuthMode(mode){authMode=mode;$('#loginTab').classList.toggle('active',mode==='login');$('#signupTab').classList.toggle('active',mode==='signup');$('#usernameWrap').classList.toggle('hidden',mode!=='signup');$('#confirmPasswordWrap').classList.toggle('hidden',mode!=='signup');$('#authUsername').required=mode==='signup';$('#authConfirmPassword').required=mode==='signup';$('#authPassword').autocomplete=mode==='signup'?'new-password':'current-password';$('#authTitle').textContent=mode==='signup'?'Tạo tài khoản UEH':'Đăng nhập TìmTrọ';$('#authCopy').textContent=mode==='signup'?'Dùng email sinh viên UEH và xác nhận qua liên kết gửi đến email.':'Đăng nhập bằng email và mật khẩu đã đăng ký.';$('#sendAuth').textContent=mode==='signup'?'Đăng ký':'Đăng nhập';$('#authForm').classList.remove('hidden');$('#backToAuthChoice').classList.remove('hidden');authMessage('');}
 $('#loginTab').addEventListener('click',()=>setAuthMode('login'));
 $('#signupTab').addEventListener('click',()=>setAuthMode('signup'));
 $('#backToAuthChoice').addEventListener('click',()=>{authMode=null;$('#authForm').classList.add('hidden');$('#backToAuthChoice').classList.add('hidden');$('#loginTab').classList.remove('active');$('#signupTab').classList.remove('active');$('#authTitle').textContent='Chào mừng bạn';$('#authCopy').textContent='Chọn Đăng nhập hoặc Đăng ký để tiếp tục.';authMessage('');});
@@ -611,7 +605,6 @@ $('#authForm').addEventListener('submit',async event=>{
  }catch(err){authMessage(err.message||'Không thể đăng nhập. Hãy thử lại.','error');}
  finally{btn.disabled=false;}
 });
-$('#otpForm').classList.add('hidden');
 $('#backToRole').addEventListener('click',()=>showAuth());
 $$('[data-role]').forEach(b=>b.addEventListener('click',()=>{if(authenticated())enterSelectedRole();else showAuth();}));
 $('#switchRole')?.addEventListener('click',()=>showPage('roommates'));
@@ -620,7 +613,7 @@ try{
  if(!window.supabase?.createClient)throw Error('Không tải được thư viện Supabase. Kiểm tra kết nối mạng.');
  supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
  supabaseClient.auth.getSession().then(async({data,error})=>{if(error)throw error;currentUser=data?.session?.user||null;if(currentUser&&!authenticated()){await supabaseClient.auth.signOut();currentUser=null;}updateAuthAccount();if(authenticated())afterAuthentication();else showAuth();}).catch(err=>authMessage(err.message,'error'));
- supabaseClient.auth.onAuthStateChange((event,session)=>{currentUser=session?.user||null;if(!authenticated()){if(event==='SIGNED_OUT'||event==='INITIAL_SESSION')showAuth();return;}updateAuthAccount();if(event==='SIGNED_IN')afterAuthentication();});
+ supabaseClient.auth.onAuthStateChange((event,session)=>{const previousId=currentUser?.id;currentUser=session?.user||null;if(previousId!==currentUser?.id&&typeof clearRoommateData==='function')clearRoommateData();if(!authenticated()){if(event==='SIGNED_OUT'||event==='INITIAL_SESSION')showAuth();return;}updateAuthAccount();if(event==='SIGNED_IN')afterAuthentication();});
 }catch(err){authMessage(err.message,'error');}
 
 const HOST_STORAGE_KEY='timtro_host_rooms_v2';

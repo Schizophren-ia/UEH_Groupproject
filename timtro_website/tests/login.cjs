@@ -10,6 +10,7 @@ for(const [,attrs,body] of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/
 }
 assert.match(html,/id="authForm" class="hidden"/,'Account form must be behind first choice');
 assert.match(html,/id="authConfirmPassword"/);
+assert.doesNotMatch(html,/id="otpForm"|id="authOtp"|id="verifyOtp"|id="resendOtp"/,'OTP entry is deferred');
 assert.match(html,/signUp\(/);assert.match(html,/signInWithPassword\(/);
 assert.match(html,/email_confirmed_at/);
 assert.doesNotMatch(html,/prototypeMode=true|prototype-visitor|Enter anything \(optional\)/);

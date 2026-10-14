@@ -97,7 +97,8 @@ create policy "Participants read threads" on public.student_roommate_threads for
 create policy "Interested students start threads" on public.student_roommate_threads for insert to authenticated with check (
  public.is_ueh_student() and auth.uid()=interested_user_id and exists (
   select 1 from public.student_roommate_listings l
-  where l.id=listing_id and l.owner_id=owner_id and l.status='open'
+  where l.id=student_roommate_threads.listing_id
+   and l.owner_id=student_roommate_threads.owner_id and l.status='open'
  )
 );
 create policy "Participants read messages" on public.student_roommate_messages for select to authenticated using (
@@ -107,10 +108,15 @@ create policy "Participants send messages" on public.student_roommate_messages f
  public.is_ueh_student() and auth.uid()=sender_id and exists (select 1 from public.student_roommate_threads t where t.id=thread_id and auth.uid() in (t.owner_id,t.interested_user_id))
 );
 -- Clients can read verification data, but never grant insert/update/delete to them.
-revoke insert,update,delete on public.student_room_checks from anon,authenticated;
+revoke all on public.student_profiles,public.student_private_profiles,public.student_roommate_listings,
+ public.student_roommate_threads,public.student_roommate_messages,public.student_room_checks,
+ public.student_public_profiles,public.student_roommate_listing_cards from anon,authenticated;
+grant select,insert,update,delete on public.student_profiles,public.student_private_profiles,public.student_roommate_listings to authenticated;
+grant select,insert on public.student_roommate_threads,public.student_roommate_messages to authenticated;
+grant select on public.student_room_checks,public.student_public_profiles,public.student_roommate_listing_cards to authenticated;
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
 values ('student-avatars','student-avatars',true,2097152,array['image/png','image/jpeg','image/webp'])
 on conflict(id) do nothing;
 create policy "Avatar images are visible" on storage.objects for select to public using (bucket_id='student-avatars');
-create policy "Owners upload avatars" on storage.objects for insert to authenticated with check (bucket_id='student-avatars' and (storage.foldername(name))[1]=auth.uid()::text);
-create policy "Owners replace avatars" on storage.objects for update to authenticated using (bucket_id='student-avatars' and (storage.foldername(name))[1]=auth.uid()::text) with check (bucket_id='student-avatars' and (storage.foldername(name))[1]=auth.uid()::text);
+create policy "Owners upload avatars" on storage.objects for insert to authenticated with check (public.is_ueh_student() and bucket_id='student-avatars' and (storage.foldername(name))[1]=auth.uid()::text);
+create policy "Owners replace avatars" on storage.objects for update to authenticated using (public.is_ueh_student() and bucket_id='student-avatars' and (storage.foldername(name))[1]=auth.uid()::text) with check (public.is_ueh_student() and bucket_id='student-avatars' and (storage.foldername(name))[1]=auth.uid()::text);

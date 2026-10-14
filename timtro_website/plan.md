@@ -137,3 +137,16 @@ Người dùng đã duyệt triển khai các mục logo, bộ lọc theo tài l
 - [x] Kiểm tra tĩnh và Chrome với Supabase giả lập: chọn form, mật khẩu xác nhận sai, đăng ký, đăng nhập, ảnh logo và lọc bài đăng đều qua. Hai entry HTML đã đồng bộ.
 - [ ] **Chưa kích hoạt trên Supabase thật:** kiểm tra GET công khai `/rest/v1/student_roommate_listing_cards?select=id&limit=1` trả 404 `PGRST205` ngày 14/10/2026. Không có Supabase CLI, access token, database URL hoặc quyền quản trị trong môi trường. Cần chạy hai file SQL, bật Auth Hook, Confirm email/SMTP/Redirect URL rồi thử hai tài khoản thật trước khi xác nhận chức năng end-to-end.
 - [x] Commit mã nguồn `a81b55c965e0fad28ecc36d7c6b700628d939269` đã push lên `origin/main`; `git ls-remote --heads origin main` trả đúng SHA này. Kết quả kiểm tra: `node timtro_website/tests/login.cjs` PASS; `node timtro_website/tests/browser.cjs` PASS với Supabase giả lập; `git diff --cached --check` PASS. Kiểm tra dịch vụ thật vẫn đang chờ quyền quản trị như mục trên.
+
+## 2026-10-14 — Tạm hoãn OTP, ưu tiên các phần còn lại
+
+Người dùng yêu cầu: “tạm thời bỏ qua mã otp trước, ưu tiên cái khác”. Giữ mục tiêu A–F và ghi OTP/quên mật khẩu là phần tạm hoãn; không coi toàn bộ mục tiêu đã hoàn thành. Đăng ký/đăng nhập vẫn dùng tài khoản Supabase, email UEH và mật khẩu; xác nhận email hiện dùng liên kết trong thư, không nhập mã OTP.
+
+- [x] Xóa form/ô mã/nút OTP còn sót và tham chiếu JavaScript; cập nhật kiểm tra để tránh form bị lỗi khi đổi tab.
+- [x] Sửa nhãn gửi tin còn ghi demo và thêm nút làm mới chat. Nút Quan tâm mở cuộc trò chuyện với đúng người đăng.
+- [x] Sửa lỗi nội dung chat trước còn xuất hiện khi mở chat mới; bỏ phản hồi tải chậm của cuộc chat/tài khoản cũ. Khi đăng xuất, xóa DOM hồ sơ, liên hệ, avatar và tin nhắn cũ. Chặn gửi lặp trong lúc yêu cầu trước chưa xong.
+- [x] Xem trước hồ sơ tuân theo các lựa chọn ẩn/hiện, gồm ngành/tuổi/sở thích và nhu cầu; chuyển nhãn nhu cầu/tiện nghi sang tiếng Việt. Khôi phục focus và giữ bàn phím trong hộp thoại.
+- [x] Sửa SQL tạo hội thoại: đối chiếu `l.owner_id=student_roommate_threads.owner_id` để không nhầm tên cột với chính cột trong truy vấn con. Thêm quyền bảng rõ ràng và yêu cầu email UEH cho ghi avatar. **SQL chưa được chạy trên dịch vụ, nên chưa có bằng chứng kiểm thử RLS thật.**
+- [x] Chrome thật qua 34 kiểm tra giao diện ở 1440px và 34 ở 390px, trên cả hai entry. Bao phủ đăng ký/mật khẩu sai, bộ lọc 2/3/4 người/slot/cơ sở/giá/ngày/tiện nghi/Room Check, quyền ẩn hồ sơ, đăng/sửa/đóng bài, gửi/nhận tin, chống HTML trong tin nhắn, avatar, tách chat, đăng xuất và hình ảnh 360° thay đổi khi xoay/zoom. Supabase dùng fixture cục bộ, không gửi email hay ghi dữ liệu thật. Đã xem ảnh chụp logo và chat mobile, không tràn ngang.
+- [ ] Supabase thật vẫn cần quyền quản trị để cài bảng/view và Auth/SMTP; OTP tạm hoãn theo người dùng. Lần đọc cấu hình Auth tiếp theo bị auto-review từ chối vì hết hạn mức kiểm duyệt, lệnh chưa chạy; không dùng kết quả cũ để tuyên bố cấu hình đã đổi.
+- [ ] Commit/push bản sửa lỗi mới và xác minh remote sau kiểm tra cuối.
