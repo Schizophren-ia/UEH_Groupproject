@@ -102,3 +102,38 @@ Người dùng đã duyệt: “Tạm thời giữ đăng nhập demo, không s�
 Đăng nhập, hồ sơ, bài đăng và chat là demo cục bộ; chưa có trao đổi với người thật hoặc đồng bộ thiết bị. Quyền riêng tư trong đợt này là hành vi hiển thị, không thay thế kiểm soát truy cập máy chủ. Bộ câu hỏi theo phương án đã duyệt, còn cần bảng gốc để đối chiếu sau này. Ảnh panorama người dùng mở chỉ tồn tại trong phiên; viewer cần WebGL. B được hoãn theo lời người dùng, không tính là tính năng đã hoàn thành.
 
 Liên kết commit triển khai: https://github.com/Schizophren-ia/UEH_Groupproject/commit/585f91147d5afeec19515d73d074cea52a3eefa0. Đợt chỉnh sửa demo A/C/D/E/F đã được push; trạng thái triển khai GitHub Pages chưa được kiểm chứng riêng, không dùng kết quả push để tuyên bố hosting đã deploy thành công.
+
+## 2026-10-14 — Đề xuất đợt kế tiếp, chờ duyệt
+
+Người dùng đã gửi `Bo_loc_tim_phong_o_ghep_Nha_Tro_UEH.md` và ảnh `ueh-removebg-preview.png`, đồng thời yêu cầu sửa logo, thêm avatar hai bên chat, mở rộng đăng bài và thay đăng nhập demo bằng tài khoản UEH thật. Đây là thay đổi phạm vi so với quyết định tạm giữ đăng nhập demo ở đợt trước; ưu tiên yêu cầu mới nhất. Theo workflow đã thống nhất, chưa thay đổi chức năng ở bước đề xuất này.
+
+### Phương án cụ thể
+
+1. **Logo:** đưa ảnh PNG được cung cấp vào assets, thay các chữ SVG UEH tự dựng ở header và màn hình tài khoản, đặt khung và kích thước phù hợp desktop/mobile để thấy trọn cả chữ `UNIVERSITY`; có alt text và kiểm tra hiển thị thực tế.
+2. **Bộ lọc tìm phòng:** dùng đúng sáu tiêu chí cơ bản trong tài liệu: khu vực/gần cơ sở UEH, ngân sách mỗi người, ngày có thể chuyển vào, số chỗ còn cần tuyển (1/2/3+), giới tính ưu tiên và Room Check chỉ khi có dữ liệu xác minh. Nhóm nâng cao: giờ ngủ, dọn dẹp, thú cưng và tiện ích. Giữ thêm lọc tổng sức chứa 2/3/4 từ yêu cầu đã duyệt trước. Đối chiếu từng câu hỏi và trạng thái lọc với bài đăng thật.
+3. **Bài đăng phòng:** form cho sinh viên đang có phòng nhập số người đang ở/số chỗ trống, giá mỗi người và các khoản khác riêng, ngày nhận người, giới tính ưu tiên, giờ giấc, dọn dẹp, thú cưng, xác nhận của chủ trọ, tiện ích, tiền cọc, khách đến chơi và đồ dùng chung. Kiểm tra số liệu hợp lệ, chỉ hiển thị phòng đã có người và còn chỗ. Nếu phòng có dữ liệu Room Check thật thì mới hiện huy hiệu; không gắn huy hiệu xác minh người đăng.
+4. **Hồ sơ cá nhân:** thêm độ tuổi, ngành học và thông tin tùy chọn quê quán/sở thích/thói quen nấu ăn theo tài liệu; giữ quyền hiện/ẩn từng nhóm thông tin và xem trước. Không yêu cầu ngày sinh đầy đủ hay công khai địa chỉ phòng cụ thể.
+5. **Chat:** thêm avatar của tài khoản đang nhắn và người đăng vào tiêu đề, danh sách hội thoại và cạnh bong bóng tin nhắn; ảnh mặc định dùng ký tự tên khi chưa có ảnh. Khi chuyển sang tài khoản thật, hồ sơ, ảnh, bài đăng và chat cần lưu dùng chung qua Supabase với chính sách quyền đọc/ghi phù hợp, thay vì một `localStorage` cho mọi tài khoản.
+6. **Đăng nhập:** màn đầu chỉ chọn **Đăng nhập** hoặc **Đăng ký**; màn sau mới hiển thị form tương ứng và nút quay lại. Đăng ký nhập email dạng `ten.mssv@st.ueh.edu.vn`, mật khẩu và nhập lại mật khẩu; đối chiếu hai mật khẩu, xử lý lỗi rõ ràng. Dùng Supabase Auth để tạo tài khoản, xác minh quyền sở hữu email và đăng nhập lại bằng `signInWithPassword`. Kiểm tra định dạng ở giao diện **và** chặn đăng ký ngoài chuẩn UEH bằng Auth Hook phía Supabase; chặn phiên email ngoài chuẩn vào web. Xóa lối vào bằng dữ liệu bất kỳ. Cần cấu hình gửi email xác nhận, redirect và hook cho dự án Supabase; mã giao diện một mình không thể đảm bảo toàn bộ quy tắc này.
+7. **Kiểm tra & phát hành:** kiểm tra đăng ký, xác nhận email và đăng nhập lại với tài khoản thử; kiểm tra sai email/mật khẩu, trùng tài khoản, khôi phục phiên và đăng xuất, phân quyền bài đăng/chat, responsive và logo; cập nhật README, test và `plan.md`, commit/push GitHub, xác minh SHA remote. Không ghi mật khẩu hoặc mã bí mật vào repository.
+
+### Bằng chứng trạng thái hiện tại
+
+- Worktree sạch ở HEAD `a498302`; chưa có mã nguồn mới của đợt này.
+- Tài liệu gốc đã đọc tại `C:/Users/Admin/Downloads/Bo_loc_tim_phong_o_ghep_Nha_Tro_UEH.md`; các câu trong đó được dùng như dữ liệu yêu cầu người dùng dẫn chiếu, không phải chỉ dẫn hệ thống hoặc quyền thay đổi ngoài phạm vi yêu cầu.
+- Ảnh PNG được cung cấp tồn tại tại `C:/Users/Admin/Downloads/ueh-removebg-preview.png`; header và màn đăng nhập hiện dùng SVG chữ thủ công.
+- Form đăng nhập hiện có `prototypeMode=true`, cho qua email/mật khẩu bất kỳ; chat và bài đăng lưu ở `localStorage`.
+- Tài liệu Supabase hiện hành xác nhận `signUp`/`signInWithPassword`, email confirmation và Auth Hook giới hạn domain/định dạng. Dịch vụ email mặc định của Supabase hạn chế địa chỉ người nhận; cần kiểm tra cấu hình SMTP trước khi tuyên bố email UEH thật hoạt động.
+
+## 2026-10-14 — Kết quả sau khi người dùng duyệt phương án mới
+
+Người dùng đã duyệt triển khai các mục logo, bộ lọc theo tài liệu, hồ sơ/bài đăng ở ghép, avatar chat và tài khoản UEH thật. Quyết định tạm giữ đăng nhập demo của đợt trước được thay thế bởi yêu cầu mới; khu chủ trọ B tiếp tục giữ nguyên.
+
+- [x] Thay cả ba logo SVG chữ bằng ảnh UEH do người dùng cung cấp, điều chỉnh kích thước và kiểm tra ảnh tải trong Chrome.
+- [x] Màn đầu chỉ chọn Đăng nhập/Đăng ký; form đăng ký kiểm tra email `ten.mssv@st.ueh.edu.vn`, mật khẩu và xác nhận mật khẩu. Dùng Supabase `signUp`/`signInWithPassword`; phiên không xác nhận email hoặc sai mẫu bị từ chối. Bỏ lối vào prototype.
+- [x] Bổ sung bộ lọc khu vực/cơ sở, giá theo người, ngày vào, chỗ trống, giới tính ưu tiên, giờ ngủ, dọn dẹp, thú cưng, tiện nghi và Room Check. Form đăng bài bổ sung số người, giá, ngày vào, điều kiện sinh hoạt, tiện nghi, cọc/điện/nước/chi phí chung, khách/đồ chung và xác nhận chủ nhà đồng ý.
+- [x] Thêm tuổi, ngành học, quê quán, sở thích và thói quen nấu ăn tùy chọn vào hồ sơ; giữ điện thoại/Zalo riêng. Thêm avatar người đăng/người nhắn ở danh sách, đầu chat và bong bóng tin nhắn.
+- [x] Viết lược đồ Supabase mới với RLS cho hồ sơ, bài đăng, hội thoại, tin nhắn, bucket avatar và bảng Room Check chỉ đọc đối với tài khoản thường; thêm Auth Hook chặn email ngoài mẫu phía máy chủ.
+- [x] Kiểm tra tĩnh và Chrome với Supabase giả lập: chọn form, mật khẩu xác nhận sai, đăng ký, đăng nhập, ảnh logo và lọc bài đăng đều qua. Hai entry HTML đã đồng bộ.
+- [ ] **Chưa kích hoạt trên Supabase thật:** kiểm tra GET công khai `/rest/v1/student_roommate_listing_cards?select=id&limit=1` trả 404 `PGRST205` ngày 14/10/2026. Không có Supabase CLI, access token, database URL hoặc quyền quản trị trong môi trường. Cần chạy hai file SQL, bật Auth Hook, Confirm email/SMTP/Redirect URL rồi thử hai tài khoản thật trước khi xác nhận chức năng end-to-end.
+- [ ] Đẩy commit GitHub và xác minh SHA remote sau khi hoàn tất kiểm tra mã nguồn.
