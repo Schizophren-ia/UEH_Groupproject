@@ -173,3 +173,19 @@ Người dùng yêu cầu: “tạm thời bỏ qua mã otp trước, ưu tiên 
 - [x] Bản bổ sung ba02e0365a6445807f1c9872dfa3c1c4bb524186 đã push lên origin/main; git ls-remote trả đúng SHA. Kiểm tra tĩnh, Chrome 45 tình huống × 2 viewport và git diff --cached --check đều đạt.
 - [x] GitHub Pages https://schizophren-ia.github.io/UEH_Groupproject/ trả 200, có rfBudgetMin và slotOtherAmenities; logo trả 200 và SHA-256 khớp ảnh UEH được cung cấp.
 - [ ] Mục tiêu đầy đủ chưa hoàn thành. Đã kiểm tra lại sau push: cả bốn view/bảng phòng, hồ sơ và chat vẫn trả 404/PGRST205. Phần dùng thật cần quyền quản trị cài SQL/Auth/email và kiểm thử hai tài khoản; OTP tiếp tục tạm hoãn theo người dùng.
+
+## 2026-10-14 — Đã duyệt A/B/C: OTP đăng ký demo, chủ trọ–Zalo và bản đồ
+
+Người dùng đã duyệt triển khai yêu cầu A/B/C mới. Quyết định tạm bỏ OTP trước đó được thay thế **đối với OTP đăng ký mô phỏng**; OTP email thật/quên mật khẩu và dữ liệu Supabase thật không được coi là đã hoàn thành.
+
+- [x] Mặc định chọn Đăng nhập/Đăng ký trước khi hiện form. Email đúng `ten.mssv@st.ueh.edu.vn`, xác nhận mật khẩu, quy tắc bảo vệ thông tin/văn hóa giao tiếp và kiểm tra Tôi không phải robot demo.
+- [x] Đăng ký chuyển sang form OTP 6 chữ số và Hộp thư mô phỏng ghi đúng email nhận. Chỉ lưu tài khoản sau OTP đúng; mã hết hạn 5 phút, chặn sau 5 lần sai, gửi lại thay mã cũ; quay lại hủy đăng ký đang chờ. Không gửi email thật.
+- [x] Đăng nhập lại bằng tài khoản đã xác nhận demo; mật khẩu lưu salt + PBKDF2-SHA256 120.000 vòng, không lưu mật khẩu rõ. Phiên tồn tại khi tải lại tab, đăng xuất xóa DOM riêng tư.
+- [x] Demo hồ sơ/tin ở ghép/chat/avatar lưu cục bộ, ghi rõ phạm vi cùng trình duyệt, không gọi Auth/RLS thật bằng ID demo. Hai tài khoản cục bộ có thể gửi/nhận trong hội thoại đúng người đăng; không tự tạo phản hồi giả. Luồng Supabase trước đây được giữ riêng tại `?auth=live`.
+- [x] Sửa CSS nút quay lại, tab đang chọn và checkbox. Màn auth cho cuộn chuột/chạm khi nội dung vượt chiều cao; Chrome kiểm tra 1440px/390px, chiều cao 500px, chữ nằm vừa nút và không tràn ngang. Đã xem ảnh chụp hai viewport.
+- [x] Hồ sơ chủ trọ riêng theo phòng, avatar chữ, giới thiệu; trang liên hệ cập nhật đúng phòng. Zalo chỉ mở HTTPS `zalo.me` do chủ trọ cung cấp; phòng thiếu liên kết báo chưa cung cấp. Không tạo số liên hệ giả.
+- [x] Hộp thoại bản đồ OpenStreetMap riêng theo phòng, địa chỉ, ghim, đường đi và mở bản đồ ngoài. Phòng mẫu có vị trí minh họa; tọa độ người đăng chưa được xác minh; phòng thiếu tọa độ không dựng ghim. Đổi các nhãn xác thực mẫu sang chưa xác minh/minh họa.
+- [x] Tài khoản → Quản lý phòng demo: lưu tên/giới thiệu/Zalo/cặp tọa độ cùng tin thuê trọ. Giữ lưu cục bộ; đây không phải dịch vụ đăng tin công khai. Bổ sung escape cho thông tin người dùng trong thẻ phòng/ảnh.
+- [x] Kiểm tra tĩnh: IDs duy nhất, cú pháp JavaScript và hai entry đồng bộ đạt. Chrome: 42 tình huống demo × 2 viewport cùng tải lại/scroll/nút quay lại; luồng cũ 45 tình huống × 2 viewport với fixture, gồm 360° nhập/xuất/xoay/zoom/fullscreen. Không gửi email, liên hệ người thật hay ghi Supabase thật trong test.
+- [ ] Push GitHub và xác nhận GitHub Pages: đang hoàn tất sau kiểm tra cuối.
+- [ ] Chế độ dịch vụ thật vẫn cần quản trị áp dụng SQL/Auth Hook/SMTP và kiểm thử hai tài khoản thật. Tài khoản/OTP demo hiện hoạt động độc lập với phần cấu hình này.

@@ -2,7 +2,8 @@
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),cp=require('node:child_process'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'../..'),out=path.join(root,'.qa');fs.mkdirSync(out,{recursive:true});
 const chrome=process.argv.includes('--chrome')?process.argv[process.argv.indexOf('--chrome')+1]:'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const mock=fs.readFileSync(path.join(__dirname,'fixtures/supabase.js'),'utf8'),harness=fs.readFileSync(path.join(__dirname,'fixtures/scenarios.js'),'utf8');
+const demo=process.argv.includes('--demo');
+const mock=fs.readFileSync(path.join(__dirname,'fixtures/supabase.js'),'utf8'),harness=fs.readFileSync(path.join(__dirname,demo?'fixtures/demo-scenarios.js':'fixtures/scenarios.js'),'utf8');
 const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.jpg':'image/jpeg'};
 const server=http.createServer((req,res)=>{
  const route=decodeURIComponent(req.url.split('?')[0]);
@@ -38,21 +39,38 @@ async function run(width,route){
  await request('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600},sessionId);
  await request('Page.navigate',{url:'http://127.0.0.1:'+server.address().port+route},sessionId);
  let report;
- for(let attempts=0;attempts<200;attempts++){
+ for(let attempts=0;attempts<(demo?900:200);attempts++){
   report=await evaluate('document.body?.dataset.testResult',sessionId);
   if(report)break;if(child.exitCode!==null)throw Error('Chrome exited during test');await sleep(100);
  }
  const html=await evaluate('document.documentElement.outerHTML',sessionId);fs.writeFileSync(path.join(out,'priority-'+width+'.html'),html);
  await screenshot('priority-'+width+'.png',sessionId);
- if(report!=='PASS')console.error(await evaluate("({errors:document.body.dataset.testErrors,invalidFields:[...document.querySelectorAll('#slotListingForm input,#slotListingForm select,#slotListingForm textarea')].filter(e=>!e.validity.valid).map(e=>({id:e.id,value:e.value,message:e.validationMessage})),occupants:document.getElementById('slotOccupied').value,capacity:document.getElementById('slotCapacity').value,toast:document.getElementById('toast').textContent})",sessionId));
+ if(report!=='PASS')console.error(await evaluate("({errors:document.body.dataset.testErrors,auth:document.getElementById('authMessage').textContent,question:document.getElementById('botQuestion')?.textContent,answer:document.getElementById('botAnswer')?.value,checked:document.getElementById('notRobot')?.checked,invalidFields:[...document.querySelectorAll('#authForm input')].filter(e=>!e.validity.valid).map(e=>({id:e.id,value:e.value,message:e.validationMessage})),toast:document.getElementById('toast').textContent})",sessionId));
  assert.equal(report,'PASS',report||'Browser scenario did not finish');
  const count=await evaluate('document.body.dataset.testCount',sessionId);
- if(width===1440){
+ if(width===1440&&!demo){
   const full=await request('Runtime.evaluate',{expression:"(async()=>{openRoom('1');document.getElementById('tourFull').click();for(let i=0;i<50;i++){if(document.fullscreenElement)return true;await new Promise(r=>setTimeout(r,20));}return false;})()",userGesture:true,awaitPromise:true,returnByValue:true},sessionId);
   assert.equal(full.result.value,true,'360 fullscreen must open after a user gesture');
   await screenshot('priority-tour-full.png',sessionId);
   const exited=await evaluate("(async()=>{document.getElementById('tourExitFull').click();for(let i=0;i<50;i++){if(!document.fullscreenElement)return true;await new Promise(r=>setTimeout(r,20));}return false;})()",sessionId);
   assert.equal(exited,true,'360 fullscreen exit button must work');
+ }
+ if(demo){
+  await evaluate('sessionStorage.setItem("__demoTestReload","1")',sessionId);
+  await request('Page.reload',{},sessionId);
+  for(let i=0;i<150;i++){if(await evaluate('typeof authenticated==="function"&&authenticated()&&currentUser.is_demo',sessionId))break;await sleep(100);}
+  assert.equal(await evaluate('authenticated()&&currentUser.is_demo&&document.getElementById("authGate").classList.contains("hidden")',sessionId),true,'Demo session persists across reload');
+  await evaluate('demoLogout();document.getElementById("signupTab").click()',sessionId);
+  await request('Emulation.setDeviceMetricsOverride',{width,height:500,deviceScaleFactor:1,mobile:width<600},sessionId);
+  await evaluate('document.getElementById("authGate").scrollTop=0',sessionId);
+  await request('Input.dispatchMouseEvent',{type:'mouseWheel',x:Math.floor(width/2),y:350,deltaX:0,deltaY:600},sessionId);await sleep(150);
+  assert(await evaluate('document.getElementById("authGate").scrollTop>0',sessionId),'Mouse wheel scrolls signup on short screens');
+  assert(await evaluate('document.documentElement.scrollWidth<=innerWidth+1',sessionId),'No horizontal overflow');
+  await evaluate('document.getElementById("backToAuthChoice").scrollIntoView()',sessionId);await screenshot('demo-auth-'+width+'.png',sessionId);
+  const back=await evaluate('(()=>{const b=document.getElementById("backToAuthChoice"),r=b.getBoundingClientRect();return {width:r.width,scroll:b.scrollWidth,height:r.height,background:getComputedStyle(b).backgroundColor};})()',sessionId);
+  assert(back.width>=back.scroll-1&&back.height>=40,'Back button fits text');
+  assert.equal(back.background,'rgb(243, 240, 255)','Back button has independent style');
+  await request('Target.closeTarget',{targetId});console.log('PASS: '+count+' demo checks + reload, wheel scrolling and back button at '+width+'px');return;
  }
  await evaluate("showPage('roommates')",sessionId);
  const chatFits=await evaluate("(async()=>{await openRoommateChat('slot-2');const r=document.querySelector('.chat-dialog').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1;})()",sessionId);
@@ -69,7 +87,12 @@ async function run(width,route){
  const portFile=path.join(profile,'DevToolsActivePort');
  for(let i=0;i<100&&!fs.existsSync(portFile);i++){if(child.exitCode!==null)throw Error(stderr.slice(-1000));await sleep(100);}
  assert(fs.existsSync(portFile),'Chrome did not open a debugging port');
- const [port,endpoint]=fs.readFileSync(portFile,'utf8').trim().split(/\r?\n/);
+ let port,endpoint;
+ for(let i=0;i<100;i++){
+  try{[port,endpoint]=fs.readFileSync(portFile,'utf8').trim().split(/\r?\n/);if(port&&endpoint)break;}catch(error){if(!['EBUSY','ENOENT'].includes(error.code))throw error;}
+  await sleep(100);
+ }
+ assert(port&&endpoint,'Chrome debugging port file must be complete');
  connection=new WebSocket('ws://127.0.0.1:'+port+endpoint);
  await new Promise((resolve,reject)=>{connection.addEventListener('open',resolve,{once:true});connection.addEventListener('error',reject,{once:true});});
  connection.addEventListener('message',event=>{
@@ -77,9 +100,9 @@ async function run(width,route){
   if(entry){clearTimeout(entry.timeout);pending.delete(message.id);message.error?entry.reject(Error(message.error.message)):entry.resolve(message.result);}
   if(message.method==='Runtime.exceptionThrown')browserErrors.push(message.params.exceptionDetails.text);
  });
- await run(1440,'/timtro_website/');await run(390,'/');
+ await run(1440,'/timtro_website/'+(demo?'':'?auth=live'));await run(390,'/'+(demo?'':'?auth=live'));
  assert.deepEqual(browserErrors,[],'No uncaught JavaScript errors');
- fs.writeFileSync(path.join(out,'priority-results.json'),JSON.stringify({passed:true,widths:[1440,390],browserErrors,backend:'in-memory fixture'},null,2));
+ fs.writeFileSync(path.join(out,demo?'demo-results.json':'priority-results.json'),JSON.stringify({passed:true,widths:[1440,390],browserErrors,backend:demo?'actual local demo Auth and storage':'in-memory Supabase fixture'},null,2));
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{
  if(connection?.readyState===WebSocket.OPEN){try{await request('Browser.close');}catch{}connection.close();}
  if(child&&child.exitCode===null)child.kill();server.close();

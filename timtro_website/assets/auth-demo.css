@@ -1,0 +1,12 @@
+.auth-gate{overflow-y:auto;overscroll-behavior:contain;align-items:flex-start!important;-webkit-overflow-scrolling:touch}
+.auth-card{flex-shrink:0;margin:auto;overflow-wrap:anywhere}
+.auth-card .auth-back,.auth-card #refreshBot,.auth-card #resendOtp{width:auto;max-width:100%;padding:10px 16px;margin:14px auto;border:1px solid #d6cffa!important;background:#f3f0ff!important;color:#514098!important;line-height:1.5;white-space:normal;border-radius:12px}
+.auth-card .auth-tabs button{background:#f3f0ff!important;color:#514098!important;border:1px solid #d6cffa!important}
+.auth-card .auth-tabs button.active{background:#6550c5!important;color:#fff!important}
+.auth-card .check-row{display:flex;gap:10px;align-items:flex-start;font-weight:500;line-height:1.5;margin:12px 0}
+.auth-card input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin:3px 0 0;padding:0;accent-color:#6550c5}
+.auth-card fieldset,.demo-mailbox{border:1px solid #d6cffa;border-radius:12px;padding:14px;margin:16px 0;background:#f8f7ff}
+.auth-card legend{font-weight:700;padding:0 5px}.auth-card ul{padding-left:20px;font-size:13px;line-height:1.6}
+.auth-card .auth-small{font-size:12px;line-height:1.6}.demo-mailbox output{display:block;font-size:30px;letter-spacing:6px;font-weight:800;color:#514098;padding:12px 0}
+.landlord-card{margin-top:18px;padding:20px;border:1px solid #d6cffa;border-radius:16px;background:#f8f7ff}.landlord-person{display:flex;align-items:center;gap:12px}.landlord-avatar{display:grid;place-items:center;flex-shrink:0;width:56px;height:56px;border-radius:50%;background:#e3ddff;color:#514098;font-size:24px;font-weight:800}.landlord-card p{line-height:1.65}.landlord-card a,.map-links a{display:inline-block;margin:8px 8px 0 0;text-decoration:none}
+.room-map-dialog{width:min(960px,calc(100% - 28px));max-height:90dvh;overflow:auto;border:1px solid #d6cffa;border-radius:20px;padding:24px;color:#292342}.room-map-dialog::backdrop{background:#21183e88}.room-map-dialog iframe{width:100%;height:clamp(240px,50vh,480px);border:0;border-radius:14px;background:#f3f0ff}.room-map-dialog .section-head{gap:12px}.map-links{display:flex;flex-wrap:wrap;gap:8px}.room-map-dialog p{line-height:1.6}

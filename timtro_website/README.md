@@ -1,30 +1,45 @@
-# TìmTrọ UEH
+﻿# TìmTrọ UEH
 
-Trang tĩnh cho sinh viên tìm phòng, tìm người ở chung và trò chuyện. GitHub Pages dùng `index.html` ở thư mục gốc; bản chỉnh sửa nằm trong `timtro_website/index.html`. Sau mỗi lần sửa, chạy `node timtro_website/scripts/sync-entry.cjs` từ gốc repository.
+Trang tĩnh cho sinh viên tìm phòng và tìm người ở chung. GitHub Pages dùng `index.html` ở gốc; nguồn chỉnh sửa nằm trong `timtro_website/index.html`. Chạy `node timtro_website/scripts/sync-entry.cjs` sau khi sửa.
 
-## Chạy và kiểm tra
+## Chế độ demo đã duyệt
 
-Mở trang qua HTTP server (không dùng `file://`) để Supabase Auth hoạt động ổn định. Kiểm tra cấu trúc và cú pháp bằng `node timtro_website/tests/login.cjs`; kiểm tra luồng trình duyệt bằng `node timtro_website/tests/browser.cjs` (Chrome cài tại đường dẫn mặc định, hoặc truyền `--chrome <đường dẫn>`). Browser test dùng Supabase giả lập trong bộ nhớ, không tạo tài khoản thật.
+Mặc định dùng tài khoản demo cục bộ, theo yêu cầu OTP mô phỏng ngày 14/10/2026:
 
-Logo UEH dùng ảnh do nhóm cung cấp tại `assets/ueh-logo.png`. Trình xem phòng giả tưởng 360° và khu quản lý chủ trọ tiếp tục là phần minh họa cục bộ như trước.
+1. Chọn Đăng ký, nhập tên, email `ten.mssv@st.ueh.edu.vn`, mật khẩu và xác nhận mật khẩu.
+2. Đồng ý quy tắc cộng đồng và hoàn thành câu hỏi Tôi không phải robot demo.
+3. Xem mã trong **Hộp thư mô phỏng**, nhập đúng 6 chữ số để hoàn tất đăng ký. Không gửi email thật. OTP hết hạn sau 5 phút, tối đa 5 lần nhập sai; Gửi lại tạo mã mới.
+4. Đăng nhập bằng email và mật khẩu vừa đăng ký, cùng kiểm tra robot demo. Tải lại trang giữ phiên trong tab; đăng xuất rồi đăng nhập lại vẫn dùng được tài khoản trên cùng trình duyệt.
 
-Theo yêu cầu mới, nhập mã OTP và khôi phục mật khẩu bằng OTP được tạm hoãn. Luồng đang dùng email/mật khẩu và xác nhận email qua liên kết, không nhập mã. Bỏ OTP không tự tạo các bảng bài đăng/chat trên dịch vụ.
+Tài khoản được lưu bằng salt và PBKDF2-SHA256 (120.000 vòng), không lưu mật khẩu rõ. Đây là mô phỏng ở trình duyệt, không phải cơ chế xác minh email/CAPTCHA máy chủ. Xóa bộ nhớ trình duyệt sẽ xóa tài khoản và dữ liệu demo. Không dùng mật khẩu email thật.
 
-Browser test kiểm tra 45 tình huống ở mỗi chiều rộng 1440px và 390px: email/mật khẩu, khoảng giá, bộ lọc nâng cao, tiện nghi khác, hồ sơ ẩn/hiện, đăng/sửa/đóng bài, avatar, tin nhắn HTML, tách cuộc chat, đăng xuất, bảng màu và ảnh 360°. Panorama xuất ra đúng 2048×1024, nhập lại theo từng phòng; ảnh sai tỷ lệ bị từ chối. Test desktop còn kiểm tra vào/thoát toàn màn hình. Ảnh chụp và kết quả ở `.qa/`, không commit. Fixture kiểm tra giao diện; chưa chứng minh RLS hoặc SMTP đã hoạt động trên Supabase thật.
+Hồ sơ, bài đăng ở ghép và chat demo cũng lưu cục bộ, không chia sẻ giữa thiết bị. Có thể thử hai tài khoản lần lượt trên cùng trình duyệt; chỉ người trong cuộc chat thấy tin qua giao diện. Số điện thoại/Zalo riêng không xuất hiện trong hồ sơ công khai. Bộ nhớ trình duyệt không phải ranh giới bảo mật máy chủ.
 
-## Kích hoạt tài khoản, bài đăng và chat thật
+## Thuê trọ, liên hệ và bản đồ
 
-Trang dùng Supabase Auth với publishable key công khai. Cần quyền quản trị dự án Supabase `pkvbmoahccvatxzodaks` để hoàn tất các bước sau:
+Chi tiết phòng và trang Liên hệ hiển thị đúng hồ sơ chủ trọ. Phòng mẫu có tên/avatar chữ minh họa; liên kết Zalo chưa được cung cấp sẽ hiển thị trạng thái thiếu. Qua **Tài khoản → Quản lý phòng demo**, có thể nhập tên, giới thiệu, liên kết HTTPS `zalo.me` và cặp vĩ độ/kinh độ của phòng. Khu quản lý thuê trọ là demo dùng chung bộ nhớ trình duyệt như trước, không phải dịch vụ đăng tin công khai.
 
-1. Chạy [`student_roommate_setup.sql`](student_roommate_setup.sql) trong SQL Editor để tạo bảng, view, bucket avatar và Row Level Security. Chạy một lần trên dự án chưa có các đối tượng này.
-2. Chạy [`student_auth_hook.sql`](student_auth_hook.sql), rồi bật **Authentication → Hooks → Before User Created** trỏ vào `public.before_ueh_student_created`. Hook chặn đăng ký email ngoài mẫu `ten.mssv@st.ueh.edu.vn` phía máy chủ.
-3. Bật **Confirm email** trong Authentication. Cấu hình SMTP gửi được tới `@st.ueh.edu.vn`, cùng Site URL và Redirect URLs cho domain GitHub Pages và môi trường thử nghiệm. Supabase mặc định có giới hạn người nhận khi chưa cấu hình SMTP riêng.
-4. Thử hai tài khoản sinh viên UEH thật: đăng ký, xác nhận email, đăng nhập lại, đăng bài, xem bài ở tài khoản thứ hai, nhắn tin hai chiều, tải avatar, sửa/đóng bài, kiểm tra tài khoản thứ ba không đọc được chat. Kiểm tra email sai mẫu và mật khẩu sai bị từ chối.
+Nút Xem bản đồ mở hộp thoại [OpenStreetMap nhúng](https://wiki.openstreetmap.org/wiki/Export), đúng địa chỉ/ghim của phòng, kèm đường đi và liên kết mở bản đồ. Phòng mẫu ghi Vị trí minh họa; tọa độ người đăng cung cấp chưa được xác minh thực tế. Không có tọa độ thì không dựng ghim tùy ý. Bản đồ cần mạng; ghim bản đồ không chứng minh phòng có thật.
 
-Không đưa service role key, mật khẩu SMTP hoặc mật khẩu người dùng vào repository. Khi chưa làm các bước trên, phần tài khoản và dữ liệu chung chưa thể hoạt động đầy đủ ở GitHub Pages; giao diện báo lỗi kết nối thay vì giả lập tài khoản thành công.
+Logo dùng ảnh UEH được cung cấp; màu aurora và trình xem 360° được giữ. Panorama hỗ trợ nhập/xuất ảnh 2048×1024, xoay/zoom và toàn màn hình.
 
-## Dữ liệu và quyền riêng tư
+## Kiểm tra
 
-Hồ sơ công khai tách khỏi số điện thoại/Zalo trong `student_private_profiles`. Bài đăng chỉ sửa được bởi người đăng. Chat chỉ đọc/gửi được bởi hai người trong cuộc hội thoại. Nhãn Room Check chỉ xuất hiện khi có bản ghi thật trong `student_room_checks`; người dùng thường không thể tự ghi bảng này. Ảnh đại diện nằm trong bucket `student-avatars`, theo thư mục ID của chính tài khoản.
+Chạy qua HTTP server/HTTPS, không mở bằng `file://` vì Web Crypto cần secure context (localhost được hỗ trợ).
 
-Bộ lọc và form đăng bài theo tài liệu `Bo_loc_tim_phong_o_ghep_Nha_Tro_UEH.md`: khu vực/cơ sở UEH, ngân sách theo người, ngày chuyển vào, chỗ trống, giới tính ưu tiên, giờ ngủ, dọn dẹp, thú cưng, tiện nghi và Room Check. Bài đăng có cọc, tiền điện/nước, chia chi phí, khách đến, đồ dùng chung và xác nhận đã được chủ nhà đồng ý. Không công khai địa chỉ phòng cụ thể hoặc ngày sinh đầy đủ.
+- `node timtro_website/tests/login.cjs`: IDs, cú pháp JS, auth gate và hai entry đồng bộ.
+- `node timtro_website/tests/browser.cjs --demo`: Chrome kiểm tra Auth demo thật và bộ nhớ cục bộ, OTP sai/hết hạn/gửi lại, robot/quy tắc, đăng nhập lại, hai tài khoản/chat riêng, hồ sơ chủ trọ, URL Zalo và bản đồ. Kiểm tra tải lại trang, cuộn chuột ở chiều cao 500px, nút quay lại và tràn ngang ở 1440px/390px.
+- `node timtro_website/tests/browser.cjs`: giữ 45 tình huống/viewport với Supabase fixture, kiểm tra bộ lọc, hồ sơ, tin/chat/avatar và 360°/fullscreen. Không chứng minh RLS/SMTP thật đã hoạt động.
+
+Chrome mặc định `C:/Program Files/Google/Chrome/Application/chrome.exe`; có thể truyền `--chrome <đường dẫn>`. Kết quả và ảnh ở `.qa/`, không commit.
+
+## Chế độ dịch vụ thật chưa kích hoạt đầy đủ
+
+Dùng `?auth=live` để giữ luồng Supabase Auth trước đây: xác nhận email thật qua liên kết. Luồng này tách khỏi OTP demo. Dữ liệu thật vẫn chờ quyền quản trị dự án `pkvbmoahccvatxzodaks`:
+
+1. Chạy `student_roommate_setup.sql` để tạo bảng/view/RLS và bucket avatar.
+2. Chạy `student_auth_hook.sql`, bật Before User Created hook `public.before_ueh_student_created` để chặn email ngoài mẫu phía máy chủ.
+3. Bật Confirm email, cấu hình SMTP/Site URL/Redirect URLs cho GitHub Pages.
+4. Thử hai tài khoản UEH thật: đăng ký, xác nhận, đăng nhập, bài đăng, chat hai chiều và avatar; dùng tài khoản thứ ba kiểm tra không đọc được chat riêng.
+
+Không đưa service role key, mật khẩu SMTP hoặc mật khẩu người dùng vào repository. Quên mật khẩu/OTP email thật vẫn tạm hoãn; đợt này chỉ hoàn tất OTP đăng ký mô phỏng đã được duyệt.
