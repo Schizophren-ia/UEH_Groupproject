@@ -170,4 +170,6 @@ Người dùng yêu cầu: “tạm thời bỏ qua mã otp trước, ưu tiên 
 | E — sinh viên, aurora và bảng màu | CSS, màu runtime, ảnh desktop/mobile; UI UX Pro Max tham khảo ở đợt trước | Đã áp dụng và kiểm tra hai viewport |
 | F — lỗi phát hiện | Auth gate, chat tải chậm, dữ liệu cũ, focus/nhãn và khoảng giá; Chrome không có lỗi JS | Các lỗi phát hiện đã sửa và kiểm tra |
 
-- [ ] Commit/push phần bổ sung và xác minh SHA remote. Mục tiêu đầy đủ chưa hoàn thành; phần còn lại cần quyền quản trị Supabase và người dùng cho tiếp tục OTP.
+- [x] Bản bổ sung ba02e0365a6445807f1c9872dfa3c1c4bb524186 đã push lên origin/main; git ls-remote trả đúng SHA. Kiểm tra tĩnh, Chrome 45 tình huống × 2 viewport và git diff --cached --check đều đạt.
+- [x] GitHub Pages https://schizophren-ia.github.io/UEH_Groupproject/ trả 200, có rfBudgetMin và slotOtherAmenities; logo trả 200 và SHA-256 khớp ảnh UEH được cung cấp.
+- [ ] Mục tiêu đầy đủ chưa hoàn thành. Đã kiểm tra lại sau push: cả bốn view/bảng phòng, hồ sơ và chat vẫn trả 404/PGRST205. Phần dùng thật cần quyền quản trị cài SQL/Auth/email và kiểm thử hai tài khoản; OTP tiếp tục tạm hoãn theo người dùng.
