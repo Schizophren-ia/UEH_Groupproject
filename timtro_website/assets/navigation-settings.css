@@ -6,6 +6,19 @@
 #accountRoommateDetails summary,#privacySettingsForm summary{font-size:18px;font-weight:700;cursor:pointer;margin-bottom:14px}
 .roommate-layout{grid-template-columns:300px minmax(0,1fr)}
 .owner-summary{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.landlord-photo{width:112px;height:112px;object-fit:cover;border-radius:50%;flex-shrink:0}
+.sample-label{display:block;font-size:11px;color:var(--muted);margin:5px 0}
+.check-level-3{background:#dff4e4;color:#176238}
+.check-level-2{background:#fff1ce;color:#72520e}
+.check-level-0,.check-level-1{background:#eef0f5;color:#526174}
+.layer-status{font-weight:700;color:#176238}
+.verify-banner.check-complete{background:linear-gradient(110deg,#e0f4e7,#f5fbf6);color:#176238}
+#finderVerification{width:100%;padding:12px;border:1px solid var(--line);border-radius:9px;margin-bottom:12px;background:#fff}
+.owner-summary h2{margin:0;overflow-wrap:anywhere}
+.owner-summary>div,.landlord-person>div{min-width:0}
+.owner-summary p{overflow-wrap:anywhere}
+.owner-summary .verified-pill{white-space:normal;max-width:100%;line-height:1.6}
+@media(max-width:600px){.owner-summary{grid-template-columns:minmax(0,1fr)}.landlord-person{align-items:flex-start;flex-wrap:wrap}.landlord-photo{width:88px;height:88px}.landlord-person>div{flex:1;min-width:130px}.owner-summary h2{font-size:20px}.owner-contact-actions{grid-template-columns:minmax(0,1fr)}}
 .owner-verification{background:#f4f5ff;padding:20px;border-radius:14px}
 .owner-contact-actions{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
 .owner-contact-actions a{display:flex;align-items:center;justify-content:center;text-decoration:none}

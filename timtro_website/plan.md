@@ -209,3 +209,20 @@ Người dùng đã duyệt phương án trước khi triển khai.
 - [x] node tests/login.cjs: PASS (ID duy nhất, cú pháp JavaScript, wiring và đồng bộ hai entry).
 - [x] node tests/browser.cjs --demo: PASS — 58 kiểm tra × 2 viewport (1440px và 390px), cùng tải lại phiên/scroll/nút quay lại, không có lỗi JavaScript. Đã xem ảnh chụp trang chủ trọ mobile và sửa xung đột CSS làm ẩn icon tài khoản.
 - [ ] Dịch vụ thật vẫn cần SQL/Auth/SMTP như ghi chú trước. Gửi lời nhắn chủ trọ xuyên thiết bị chưa có backend; đợt này không tuyên bố đã kết nối dịch vụ gửi tin thật.
+
+## 2026-10-14 — Bài tìm bạn có sẵn, chủ trọ theo phòng và Room Check 2/3–3/3
+
+Người dùng đã duyệt triển khai đầy đủ dựa trên ba ảnh tham chiếu. Giữ logo, bảng màu aurora, navigation và bố cục nền của web hiện tại.
+
+- [x] Bổ sung 6 bài tìm bạn mẫu có sẵn, đủ khu vực, cơ sở, giá/người, ngày vào, sức chứa, số người đang ở, slot trống, giới tính, sinh hoạt và tiện nghi. Đọc cùng tin đã lưu mà không xóa/ghi đè dữ liệu cũ; không nhân bản bài khi tải lại.
+- [x] Bài mẫu dùng hồ sơ người đăng riêng và ảnh phòng cục bộ. Nhãn Bài mẫu/Xác thực mô phỏng phân biệt dữ liệu minh họa.
+- [x] Chat bài mẫu mở hội thoại đúng người đăng, cho lưu tin của người dùng, báo rõ phạm vi demo và không tự tạo phản hồi giả. Chat hai tài khoản người dùng vẫn hoạt động.
+- [x] Phòng thuê mẫu số 1 và 2 đủ 3/3 lớp; phòng số 3 có 2/3; phòng số 4 chưa xác thực. Bài tìm bạn mẫu cũng có mức 3/3, 2/3 và chưa xác thực để trải nghiệm bộ lọc.
+- [x] Bộ lọc Room Check trên Tìm phòng và Tìm bạn có Tất cả / Đủ 3 lớp / Đã xác thực 2 lớp / Chưa xác thực. Checkbox đủ 3 lớp vẫn được hỗ trợ.
+- [x] Dùng chung dữ liệu ba lớp (người thuê, địa điểm/thông tin phòng, hình ảnh/video) để tính huy hiệu, lọc và trang chi tiết. Hiển thị số lớp bằng chữ và số; không chỉ dùng màu.
+- [x] Trang xác thực theo bố cục tham chiếu: banner tổng trạng thái, ba hàng lớp xác thực, lớp còn thiếu, thông tin phòng/địa chỉ theo phòng hiện tại và nút đánh giá/bản đồ/hình ảnh. Chuyển phòng cập nhật toàn bộ trạng thái.
+- [x] Mỗi phòng có hồ sơ chủ trọ riêng với avatar SVG minh họa, tên, vai trò, điện thoại mẫu che số, địa chỉ, ngày xác minh mẫu, bảng CCCD/địa chỉ/hình ảnh-video và trạng thái 2/3–3/3. Bố cục desktop hai cột, mobile một cột.
+- [x] Giữ Gọi điện/Zalo/ô nhắn tin 200 ký tự; thông tin mẫu không dẫn tới số hoặc tài khoản Zalo người thật. Lời nhắn chủ trọ vẫn lưu cục bộ và báo rõ trạng thái.
+- [x] Kiểm thử tĩnh PASS: JavaScript, IDs duy nhất và hai entry đồng bộ.
+- [x] Chrome PASS: 73 tình huống × 1440px/390px, gồm đăng ký/đăng nhập, hồ sơ/riêng tư, chat hai tài khoản, bài mẫu/chat không giả phản hồi, bộ lọc 2/3–3/3, lớp còn thiếu, đổi chủ trọ theo phòng, bản đồ và không tràn ngang. Đã xem ảnh chụp chủ trọ desktop/mobile.
+- [ ] Xác thực trên các phòng mẫu là mô phỏng. Dịch vụ backend/OTP thật và gửi lời nhắn chủ trọ xuyên thiết bị vẫn thuộc các mục chờ quản trị đã ghi trước.

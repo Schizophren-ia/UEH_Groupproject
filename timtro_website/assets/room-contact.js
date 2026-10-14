@@ -1,10 +1,10 @@
 function safeZalo(value){try{const url=new URL(String(value||'').trim());return url.protocol==='https:'&&url.hostname==='zalo.me'&&!url.username&&!url.password?url.href:null;}catch{return null;}}
-function roomOwner(room){return {name:room.ownerName||(!room.isHostListing?['Minh Anh','Hoàng Nam','Thu Hà','Gia Bảo'][Number(room.id)-1]+' · Hồ sơ mẫu':'Chủ trọ chưa cung cấp tên'),bio:room.ownerBio||(!room.isHostListing?'Hồ sơ chủ trọ minh họa của dự án sinh viên UEH. Liên hệ thật chưa được cung cấp.':'Chủ trọ chưa thêm giới thiệu.'),zalo:safeZalo(room.ownerZalo)};}
+function roomOwner(room){return {name:room.ownerName||(!room.isHostListing?['Minh Anh','Hoàng Nam','Thu Hà','Gia Bảo'][Number(room.id)-1]+' · Hồ sơ mẫu':'Chủ trọ chưa cung cấp tên'),bio:room.ownerBio||(!room.isHostListing?'Hồ sơ chủ trọ minh họa của dự án sinh viên UEH. Liên hệ thật chưa được cung cấp.':'Chủ trọ chưa thêm giới thiệu.'),zalo:safeZalo(room.is_sample?null:room.ownerZalo)};}
 function ownerCard(room){
- const owner=roomOwner(room),phone=String(room.ownerPhone||'').trim(),safePhone=/^\+?[0-9 ()-]{8,20}$/.test(phone)?phone:null;
- const checks=[['CCCD',room.ownerIdentityVerified===true],['Địa chỉ',room.ownerAddressVerified===true],['Hình ảnh/video',room.ownerMediaVerified===true]];
- const verified=checks.every(([,ok])=>ok),label=verified?'Đã xác thực':'Chưa xác minh';
- return `<div class="owner-summary"><div><div class="landlord-person"><span class="landlord-avatar" aria-label="Avatar chủ trọ">${hostEscape(owner.name[0])}</span><div><h2>${hostEscape(owner.name)}</h2><p>Chủ trọ</p><span class="verified-pill">${label}</span></div></div><p>${hostEscape(owner.bio)}</p><p>Điện thoại: ${safePhone?hostEscape(safePhone):'Chưa cung cấp'}</p><p>Địa chỉ phòng: ${hostEscape(room.address||'Chưa cung cấp')}</p></div><div class="owner-verification"><h3>Thông tin xác thực</h3><p class="small-label">Lần xác minh cuối: ${hostEscape(room.ownerVerifiedAt||'Chưa có dữ liệu')}</p>${checks.map(([name,ok])=>`<p>${ok?'✓':'○'} ${name}: ${ok?'Đã xác minh':'Chưa xác minh'}</p>`).join('')}<button class="back" data-page="verification">Xem thông tin chi tiết</button></div></div><div class="owner-contact-actions">${safePhone?`<a class="primary" href="tel:${hostEscape(safePhone.replace(/[ ()-]/g,''))}">Gọi điện</a>`:'<button class="primary" disabled>Chưa có số điện thoại</button>'}${owner.zalo?`<a class="secondary" data-landlord-zalo href="${hostEscape(owner.zalo)}" target="_blank" rel="noopener noreferrer">Nhắn tin qua Zalo ↗</a>`:'<button class="secondary" disabled>Chưa có liên kết Zalo</button>'}</div><button type="button" class="secondary" data-owner-map="${hostEscape(room.id)}">Xem vị trí phòng</button>`;
+ const owner=roomOwner(room),phone=String(room.ownerPhone||'').trim(),safePhone=!room.is_sample&&/^\+?[0-9 ()-]{8,20}$/.test(phone)?phone:null;
+ const checks=[['CCCD',room.is_sample?checkCount(room)>0:room.ownerIdentityVerified===true],['Địa chỉ',room.is_sample?checkLayers(room)[1]:room.ownerAddressVerified===true],['Hình ảnh/video',room.is_sample?checkLayers(room)[2]:room.ownerMediaVerified===true]];
+ const verified=checks.every(([,ok])=>ok),label=room.is_sample?checkLabel(room)+' · Mô phỏng':verified?'Đã xác thực':'Chưa xác minh';
+ return `<div class="owner-summary"><div><div class="landlord-person">${room.ownerAvatar?`<img class="landlord-photo" src="${hostEscape(room.ownerAvatar)}" alt="Avatar minh họa ${hostEscape(owner.name)}">`:`<span class="landlord-avatar" aria-label="Avatar chủ trọ">${hostEscape(owner.name[0])}</span>`}<div><h2>${hostEscape(owner.name)}</h2><p>Chủ trọ</p><span class="verified-pill">${label}</span></div></div><p>${hostEscape(owner.bio)}</p><p>Điện thoại: ${room.is_sample?hostEscape(room.ownerPhoneDisplay)+' · Số minh họa':safePhone?hostEscape(safePhone):'Chưa cung cấp'}</p><p>Địa chỉ phòng: ${hostEscape(room.address||'Chưa cung cấp')}</p></div><div class="owner-verification"><h3>Thông tin xác thực</h3><p class="small-label">Lần xác minh cuối: ${hostEscape(room.ownerVerifiedAt||'Chưa có dữ liệu')}</p>${checks.map(([name,ok])=>`<p>${ok?'✓':'○'} ${name}: ${ok?'Đã xác minh':'Chưa xác minh'}</p>`).join('')}<button class="back" data-page="verification">Xem thông tin chi tiết</button></div></div><div class="owner-contact-actions">${safePhone?`<a class="primary" href="tel:${hostEscape(safePhone.replace(/[ ()-]/g,''))}">Gọi điện</a>`:'<button class="primary" disabled>Chưa có số điện thoại</button>'}${owner.zalo?`<a class="secondary" data-landlord-zalo href="${hostEscape(owner.zalo)}" target="_blank" rel="noopener noreferrer">Nhắn tin qua Zalo ↗</a>`:'<button class="secondary" disabled>Chưa có liên kết Zalo</button>'}</div><button type="button" class="secondary" data-owner-map="${hostEscape(room.id)}">Xem vị trí phòng</button>`;
 }
 function renderRoomOwner(){for(const id of ['detailLandlord','contactLandlord'])$('#'+id).innerHTML=ownerCard(currentRoom);$('#contactRoomTitle').textContent=currentRoom.title;$('.amenities .verified-pill').textContent=currentRoom.isHostListing?'Tin do chủ trọ cung cấp · Chưa xác minh':'Phòng mẫu · Chưa xác minh';}
 const originalOpenRoom=openRoom;
@@ -28,16 +28,27 @@ document.addEventListener('click',event=>{const button=event.target.closest('[da
 renderRoomOwner();
 
 
-function roomVerification(room){return room.room_check_verified===true;}
+function renderRoomCheck(){
+ const room=currentRoom,layers=checkLayers(room),count=checkCount(room);
+ const label=checkLabel(room),note=room.is_sample?'Xác thực mô phỏng trên phòng mẫu. Không phải bằng chứng kiểm chứng phòng ngoài thực tế.':'Chỉ các lớp có bằng chứng xác minh mới được ghi nhận.';
+ $('#detailPage .verify-box').innerHTML='<h3>'+label+'</h3><p>'+note+'</p>';
+ $('.amenities .verified-pill').textContent=label;
+ const banner=$('#verificationPage .verify-banner');banner.classList.toggle('check-complete',count===3);banner.innerHTML='<div class="shield">✓</div><div><h2>'+ (count===3?'PHÒNG HOÀN TẤT 3/3 LỚP XÁC THỰC':count?'PHÒNG ĐÃ XÁC THỰC '+count+'/3 LỚP':'PHÒNG CHƯA XÁC THỰC')+'</h2><p>'+note+'</p></div>';
+ const titles=['Lớp 1 — Xác thực từ người thuê','Lớp 2 — Xác thực địa điểm & thông tin phòng','Lớp 3 — Xác thực hình ảnh 360° / video'];
+ const descriptions=[
+ 'Trải nghiệm và đánh giá từ người từng ở hoặc đến xem phòng.',
+ 'Địa chỉ: <span id="verifyAddress">'+hostEscape(room.address)+'</span><br>Thông tin: '+room.area+'m² · '+hostEscape(room.floor||'Chưa có thông tin tầng'),
+ 'Hình ảnh / panorama 360° của đúng phòng đang xem.'
+ ];
+ const actions=['<button class="secondary" data-page="reviews">Xem thông tin người thuê</button>','<button class="secondary" data-owner-map="'+hostEscape(room.id)+'">Xem bản đồ & thông tin</button>','<button class="secondary" data-page="detail">Xem hình ảnh / video</button>'];
+ $('#verificationPage .verify-list').innerHTML=titles.map((title,i)=>'<article class="verify-step"><div class="step-icon">'+(layers[i]?'✓':'○')+'</div><div><h3>'+title+'</h3><p class="layer-status">'+(layers[i]?'Đã hoàn tất':'Chưa hoàn tất')+(room.is_sample?' · Mô phỏng':'')+'</p><p>'+descriptions[i]+'</p></div>'+actions[i]+'</article>').join('')+'<div class="verify-box"><h3>'+label+'</h3><p>'+note+'</p></div><button class="primary" data-page="detail">Quay lại phòng</button>';
+}
 const baseRenderOwner=renderRoomOwner;
 renderRoomOwner=function(){
- baseRenderOwner();
- const verified=roomVerification(currentRoom);
- const box=$('#detailPage .verify-box');
- box.innerHTML='<h3>Room Check · '+(verified?'Đã xác minh':'Chưa xác minh')+'</h3><p>'+(verified?'Phòng có dữ liệu Room Check. Xem từng lớp xác thực để đối chiếu.':'Chưa có bằng chứng xác minh thực tế. Bạn vẫn có thể xem quy trình kiểm tra phòng.')+'</p>';
- const message=$('#ownerMessage');
- if(message){message.value='Xin chào, mình quan tâm đến phòng trọ này. Phòng còn trống không ạ?';$('#ownerMessageCount').textContent=message.value.length+'/200';}
+ baseRenderOwner();renderRoomCheck();
+ const message=$('#ownerMessage');if(message){message.value='Xin chào, mình quan tâm đến phòng trọ này. Phòng còn trống không ạ?';$('#ownerMessageCount').textContent=message.value.length+'/200';$('#ownerMessageStatus').textContent='';}
 };
+renderRoomOwner();
 $('#ownerMessage').addEventListener('input',()=>$('#ownerMessageCount').textContent=$('#ownerMessage').value.length+'/200');
 $('#ownerMessageForm').addEventListener('submit',event=>{
  event.preventDefault();const body=$('#ownerMessage').value.trim();if(!body)return;

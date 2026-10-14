@@ -13,8 +13,8 @@ function createDemoDataClient(){
     const user=currentUser.id,db=JSON.parse(localStorage.getItem(key)||'null')||empty();
     const member=t=>[t.owner_id,t.interested_user_id].includes(user);
     let rows;
-    if(name==='student_roommate_listing_cards')rows=db.student_roommate_listings.filter(r=>r.status==='open'||r.owner_id===user).map(r=>({...r,room_check_verified:false}));
-    else if(name==='student_public_profiles')rows=db.student_profiles.map(publicProfile);
+    if(name==='student_roommate_listing_cards')rows=[...db.student_roommate_listings.filter(r=>r.status==='open'||r.owner_id===user).map(r=>({...r,room_check_verified:false})),...sampleRoommateListings];
+    else if(name==='student_public_profiles')rows=[...db.student_profiles.map(publicProfile),...sampleStudents];
     else if(name in db)rows=db[name];else throw Error('Kho dữ liệu demo không hỗ trợ mục này.');
     const accessible=r=>name==='student_profiles'||name==='student_private_profiles'?r.user_id===user:name==='student_roommate_threads'?member(r):name==='student_roommate_messages'?db.student_roommate_threads.some(t=>t.id===r.thread_id&&member(t)):true;
     if(action==='read')rows=rows.filter(r=>accessible(r)&&filters.every(f=>f(r)));
@@ -25,7 +25,7 @@ function createDemoDataClient(){
      }else if(name==='student_roommate_listings'){
       if(payload.owner_id&&payload.owner_id!==user)throw Error('Bạn chỉ có thể sửa bài đăng của mình.');
      }else if(name==='student_roommate_threads'){
-      const listing=db.student_roommate_listings.find(r=>r.id===payload.listing_id&&r.status==='open');
+      const listing=[...db.student_roommate_listings,...sampleRoommateListings].find(r=>r.id===payload.listing_id&&r.status==='open');
       if(action!=='insert'||!listing||payload.owner_id!==listing.owner_id||payload.interested_user_id!==user||payload.owner_id===user)throw Error('Không thể tạo cuộc trò chuyện này.');
       const existing=rows.find(t=>t.listing_id===payload.listing_id&&t.interested_user_id===user);if(existing)return {data:copy(existing),error:null};
      }else if(name==='student_roommate_messages'){
