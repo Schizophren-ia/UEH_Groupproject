@@ -394,6 +394,7 @@ main section:not(.hidden) {
     <div><label for="slotGuests">Quy định khách đến</label><input id="slotGuests" maxlength="120" placeholder="VD: Báo trước khi có khách"></div>
     <div><label for="slotShared">Đồ dùng chung</label><input id="slotShared" maxlength="120" placeholder="VD: Tủ lạnh, bếp, bàn học"></div>
     <fieldset><legend>Tiện nghi</legend><label class="check-row"><input type="checkbox" name="slotAmenity" value="ac"> Máy lạnh</label><label class="check-row"><input type="checkbox" name="slotAmenity" value="washer"> Máy giặt</label><label class="check-row"><input type="checkbox" name="slotAmenity" value="kitchen"> Bếp</label><label class="check-row"><input type="checkbox" name="slotAmenity" value="parking"> Chỗ để xe</label></fieldset>
+    <div><label for="slotOtherAmenities">Tiện nghi khác</label><input id="slotOtherAmenities" maxlength="100" placeholder="Ví dụ: ban công, thang máy"></div>
     <label class="check-row"><input id="slotLandlordConsent" type="checkbox" required> Chủ nhà đã đồng ý cho tìm người ở chung *</label>
     <div><label for="slotDescription">Mô tả</label><textarea id="slotDescription" maxlength="500" placeholder="Phòng đang có ai, nội thất và chi phí khác…"></textarea></div>
     <button class="secondary" type="submit">Đăng phòng còn chỗ</button>
@@ -402,18 +403,21 @@ main section:not(.hidden) {
   <div>
    <div class="panel roommate-filters">
     <div><label for="rfCapacity" class="small-label">Ở chung tổng cộng</label><select id="rfCapacity"><option value="Any">2 / 3 / 4 người</option><option value="2">2 người</option><option value="3">3 người</option><option value="4">4 người</option></select></div>
+    <div><label for="rfBudgetMin" class="small-label">Giá từ / người</label><select id="rfBudgetMin"><option value="0">Không giới hạn</option><option value="1000000">1 triệu</option><option value="1500000">1,5 triệu</option><option value="2000000">2 triệu</option><option value="2500000">2,5 triệu</option></select></div>
     <div><label for="rfBudget" class="small-label">Giá tối đa / người</label><select id="rfBudget"><option value="20000000">Mọi mức giá</option><option value="1500000">1,5 triệu</option><option value="2000000">2 triệu</option><option value="2500000">2,5 triệu</option><option value="3000000">3 triệu</option></select></div>
     <div><label for="rfArea" class="small-label">Khu vực</label><input id="rfArea" type="search" placeholder="Quận, cơ sở…" maxlength="100"></div>
     <div><label for="rfCampus" class="small-label">Gần cơ sở</label><select id="rfCampus"><option value="Any">Tất cả</option><option>Campus A</option><option>Campus B</option><option>Nguyễn Tri Phương</option><option>Nam Sài Gòn</option></select></div>
     <div><label for="rfAvailable" class="small-label">Ngày muốn vào (để trống nếu linh hoạt)</label><input id="rfAvailable" type="date"></div>
     <div><label for="rfVacancies" class="small-label">Chỗ trống</label><select id="rfVacancies"><option value="Any">Bất kỳ</option><option value="1">1</option><option value="2">2</option><option value="3">3+</option></select></div>
     <div><label for="rfGender" class="small-label">Ưu tiên giới tính</label><select id="rfGender"><option value="Any">Bất kỳ</option><option value="Female">Nữ</option><option value="Male">Nam</option></select></div>
-    <div><label for="rfCleaning" class="small-label">Dọn dẹp</label><select id="rfCleaning"><option value="Any">Bất kỳ</option><option value="daily">Hằng ngày</option><option value="weekly">Theo tuần</option></select></div>
-    <div><label for="rfAmenity" class="small-label">Tiện nghi</label><select id="rfAmenity"><option value="Any">Bất kỳ</option><option value="ac">Máy lạnh</option><option value="washer">Máy giặt</option><option value="kitchen">Bếp</option><option value="parking">Chỗ để xe</option></select></div>
     <label class="check-row"><input type="checkbox" id="rfVerified"> Chỉ xem phòng đã Room Check</label>
+    <details class="roommate-advanced-filters"><summary>Bộ lọc nâng cao · sinh hoạt & tiện nghi</summary><div class="roommate-advanced-grid">
+    <div><label for="rfCleaning" class="small-label">Dọn dẹp</label><select id="rfCleaning"><option value="Any">Bất kỳ</option><option value="daily">Hằng ngày</option><option value="weekly">Theo tuần</option></select></div>
+    <div><label for="rfAmenity" class="small-label">Tiện nghi</label><select id="rfAmenity"><option value="Any">Bất kỳ</option><option value="ac">Máy lạnh</option><option value="washer">Máy giặt</option><option value="kitchen">Bếp</option><option value="parking">Chỗ để xe</option><option value="other">Khác</option></select></div>
     <div><label for="rfSleep" class="small-label">Giờ đi ngủ</label><select id="rfSleep"><option value="Any">Linh hoạt</option><option value="early">Trước 23 giờ</option><option value="late">Sau 23 giờ</option></select></div>
     <div><label for="rfSmoking" class="small-label">Hút thuốc</label><select id="rfSmoking"><option value="Any">Linh hoạt</option><option value="no">Không hút trong phòng</option><option value="outside">Chỉ bên ngoài</option></select></div>
     <div><label for="rfPets" class="small-label">Thú cưng</label><select id="rfPets"><option value="Any">Linh hoạt</option><option value="no">Không nuôi</option><option value="yes">Có thể nuôi</option></select></div>
+    </div></details>
     <button class="secondary" type="button" id="resetRoommateFilters">Đặt lại bộ lọc</button>
     <label class="check-row" style="grid-column:span 2"><input type="checkbox" id="onlySavedSlots"> Chỉ xem phòng đã lưu</label>
    </div>

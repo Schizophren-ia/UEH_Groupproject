@@ -14,3 +14,7 @@ input[type=checkbox]{width:20px!important;height:20px;min-height:20px!important;
 .brand-sub{background:var(--peach)!important;color:#603d2b!important}.brand-text{color:var(--navy)}
 @media(max-width:760px){.topbar{backdrop-filter:none!important}.nav{max-width:none;overflow:visible;position:fixed!important;z-index:80;bottom:0;top:auto}.nav button.avatar,.nav button[data-open-messages]{display:none!important}.nav button[data-page=account].avatar{display:none!important}.nav button[data-page]{flex:1;max-width:20%;font-size:11px}.nav button[data-page="roommates"]:not([data-open-messages]),.nav button[data-page="favorites"]{display:block!important}.roommate-layout>.needs-panel{order:1}.roommate-layout>div{order:0}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.roommate-advanced-filters{grid-column:1/-1;border-top:1px solid var(--line);padding-top:12px}
+.roommate-advanced-filters summary{cursor:pointer;font-size:13px;font-weight:750;min-height:44px;display:flex;align-items:center;color:var(--blue)}
+.roommate-advanced-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:10px 0}
+@media(max-width:760px){.roommate-advanced-grid{grid-template-columns:1fr 1fr;gap:10px}}

@@ -44,13 +44,22 @@ async function run(width,route){
  }
  const html=await evaluate('document.documentElement.outerHTML',sessionId);fs.writeFileSync(path.join(out,'priority-'+width+'.html'),html);
  await screenshot('priority-'+width+'.png',sessionId);
+ if(report!=='PASS')console.error(await evaluate("({errors:document.body.dataset.testErrors,invalidFields:[...document.querySelectorAll('#slotListingForm input,#slotListingForm select,#slotListingForm textarea')].filter(e=>!e.validity.valid).map(e=>({id:e.id,value:e.value,message:e.validationMessage})),occupants:document.getElementById('slotOccupied').value,capacity:document.getElementById('slotCapacity').value,toast:document.getElementById('toast').textContent})",sessionId));
  assert.equal(report,'PASS',report||'Browser scenario did not finish');
  const count=await evaluate('document.body.dataset.testCount',sessionId);
+ if(width===1440){
+  const full=await request('Runtime.evaluate',{expression:"(async()=>{openRoom('1');document.getElementById('tourFull').click();for(let i=0;i<50;i++){if(document.fullscreenElement)return true;await new Promise(r=>setTimeout(r,20));}return false;})()",userGesture:true,awaitPromise:true,returnByValue:true},sessionId);
+  assert.equal(full.result.value,true,'360 fullscreen must open after a user gesture');
+  await screenshot('priority-tour-full.png',sessionId);
+  const exited=await evaluate("(async()=>{document.getElementById('tourExitFull').click();for(let i=0;i<50;i++){if(!document.fullscreenElement)return true;await new Promise(r=>setTimeout(r,20));}return false;})()",sessionId);
+  assert.equal(exited,true,'360 fullscreen exit button must work');
+ }
+ await evaluate("showPage('roommates')",sessionId);
  const chatFits=await evaluate("(async()=>{await openRoommateChat('slot-2');const r=document.querySelector('.chat-dialog').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight+1;})()",sessionId);
  assert(chatFits,'Chat must fit inside the viewport at '+width+'px');
  await screenshot('priority-chat-'+width+'.png',sessionId);
  await request('Target.closeTarget',{targetId});
- console.log('PASS: '+count+' UI checks and chat layout at '+width+'px, '+route);
+ console.log('PASS: '+count+' UI checks, camera panorama and chat layout at '+width+'px, '+route+(width===1440?' + fullscreen':''));
 }
 (async()=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));

@@ -14,6 +14,8 @@
   check(el('authForm').classList.contains('hidden')&&!el('otpForm'),'Form ẩn trước lựa chọn; không có OTP');
   await until(()=>document.querySelector('.ueh-logo-image').naturalWidth>0,'Logo không tải');
   check(true,'Logo UEH tải thành công');
+  const theme=getComputedStyle(document.documentElement);check([['--ghost','#f8f7ff'],['--cream','#ffeedd'],['--peach','#ffd8be'],['--periwinkle','#b8b8ff'],['--soft','#9381ff']].every(([name,color])=>theme.getPropertyValue(name).trim().toLowerCase()===color),'Bảng màu khớp ảnh người dùng');
+  check(getComputedStyle(document.body).backgroundImage.includes('radial-gradient'),'Nền aurora/mesh gradient đã được áp dụng');
   click('signupTab');value('authUsername','Sinh viên thử');value('authEmail','test.123456789@st.ueh.edu.vn');value('authPassword','password123');value('authConfirmPassword','different');submit('authForm');await wait(20);
   check(fixture.signupCalls.length===0,'Mật khẩu xác nhận sai bị chặn');
   value('authConfirmPassword','password123');value('authEmail','test.123456789@gmail.com');submit('authForm');await wait(20);
@@ -29,6 +31,9 @@
   click('resetRoommateFilters');filter('rfCampus','Campus A');check(cards()===1,'Lọc cơ sở UEH');
   click('resetRoommateFilters');filter('rfAvailable','2026-10-14');check(cards()===0,'Lọc ngày có thể chuyển vào');
   click('resetRoommateFilters');filter('rfBudget','1500000');check(cards()===1,'Ngân sách tính theo người');
+  click('resetRoommateFilters');filter('rfBudgetMin','2000000');filter('rfBudget','2500000');check(cards()===2,'Lọc đúng khoảng giá tối thiểu và tối đa');
+  filter('rfBudget','1500000');check(el('rfBudget').getAttribute('aria-invalid')==='true'&&el('roommateResultsCount').textContent.includes('chưa hợp lệ'),'Báo khoảng giá bị đảo');
+  click('resetRoommateFilters');const advanced=document.querySelector('.roommate-advanced-filters');check(!advanced.open,'Câu hỏi nâng cao được thu gọn');advanced.open=true;
   click('resetRoommateFilters');filter('rfAmenity','washer');check(cards()===1,'Lọc tiện nghi máy giặt');
   click('resetRoommateFilters');el('rfVerified').checked=true;el('rfVerified').dispatchEvent(new Event('change'));check(cards()===0,'Không tự gắn Room Check');click('resetRoommateFilters');
   el('roommateProfileForm').querySelectorAll('details').forEach(d=>d.open=true);
@@ -42,9 +47,10 @@
   document.querySelector('.roommate-publish').open=true;
   value('slotTitle','Phòng kiểm thử cần bạn ở chung');value('slotArea','Quận 10');value('slotCapacity','3');value('slotOccupied','3');value('slotPrice','1800000');value('slotAvailable','2026-10-15');el('slotLandlordConsent').checked=true;
   const before=fixture.db.student_roommate_listings.length;submit('slotListingForm');await wait(30);check(fixture.db.student_roommate_listings.length===before,'Không đăng phòng đã đầy');
-  value('slotOccupied','2');value('slotElectricity','3500đ/kWh');el('slotLandlordConsent').checked=false;submit('slotListingForm');await wait(20);check(fixture.db.student_roommate_listings.length===before,'Phải có đồng ý của chủ nhà');
+  value('slotOccupied','2');value('slotElectricity','3500đ/kWh');value('slotOtherAmenities','Ban công');el('slotLandlordConsent').checked=false;submit('slotListingForm');await wait(20);check(fixture.db.student_roommate_listings.length===before,'Phải có đồng ý của chủ nhà');
   el('slotLandlordConsent').checked=true;submit('slotListingForm');await until(()=>fixture.db.student_roommate_listings.length===before+1,'Không đăng bài');await until(()=>cards()===4,'Không hiển thị bài mới');
   const own=fixture.db.student_roommate_listings.at(-1);check(own.occupied===2&&own.capacity===3&&own.price_per_person===1800000&&own.owner_id===fixture.ids.me,'Bài đăng có người ở, còn slot và đúng người đăng');
+  filter('rfAmenity','other');check(cards()===1&&own.amenities.includes('other:Ban công'),'Tiện nghi khác có thể đăng và lọc');click('resetRoommateFilters');
   document.querySelector('[data-slot-edit="'+own.id+'"]').click();value('slotTitle','Phòng đã sửa');submit('slotListingForm');await until(()=>own.title==='Phòng đã sửa','Không sửa được tin');await until(()=>cards()===4,'Không tải lại tin');
   document.querySelector('[data-slot-edit="'+own.id+'"]').click();click('closeSlotListing');await until(()=>own.status==='closed','Không đóng được tin');check(true,'Sửa và đóng bài đăng');
   await openRoommateChat('slot-2');check(el('roommateChatTitle').textContent==='Mai Anh','Quan tâm mở đúng người đăng');
@@ -63,10 +69,20 @@
   const first=TimTroTour.canvas.toDataURL(),yaw=TimTroTour.getState().yaw;click('tourRight');await wait(50);check(TimTroTour.getState().yaw!==yaw,'Xoay phòng 360');
   const fov=TimTroTour.getState().fov;click('tourZoomIn');await wait(30);check(TimTroTour.getState().fov<fov,'Thu phóng phòng 360');
   await until(()=>TimTroTour.canvas.toDataURL()!==first,'Ảnh 360 không thay đổi sau khi xoay');check(true,'Ảnh 360 thay đổi khi xoay');click('tourReset');
+  let exported;const nativeClick=HTMLAnchorElement.prototype.click;
+  HTMLAnchorElement.prototype.click=function(){if(this.download&&this.href.startsWith('data:image/png'))exported=this.href;else nativeClick.call(this);};
+  try{click('tourExport');}finally{HTMLAnchorElement.prototype.click=nativeClick;}
+  const panorama=new Image();panorama.src=exported;await until(()=>panorama.naturalWidth>0,'Không xuất được panorama');check(panorama.naturalWidth===2048&&panorama.naturalHeight===1024,'Xuất panorama thật 2048 × 1024');
+  const panoramaBlob=await (await fetch(exported)).blob(),panoramaTransfer=new DataTransfer();panoramaTransfer.items.add(new File([panoramaBlob],'camera360.png',{type:'image/png'}));el('tourUpload').files=panoramaTransfer.files;el('tourUpload').dispatchEvent(new Event('change'));
+  await until(()=>TimTroTour.getState().photoMode===1,'Không nhập được panorama');check(el('tourMode').textContent.includes('Ảnh camera'),'Xem ảnh camera 360 từ tệp PNG hợp lệ');
+  openRoom('2');check(TimTroTour.getState().photoMode===0,'Ảnh camera tách theo từng phòng');openRoom('1');check(TimTroTour.getState().photoMode===1,'Phòng trước khôi phục đúng panorama');click('tourVirtual');
+  const square=document.createElement('canvas');square.width=64;square.height=64;const squareBlob=await new Promise(resolve=>square.toBlob(resolve)),squareTransfer=new DataTransfer();squareTransfer.items.add(new File([squareBlob],'square.png',{type:'image/png'}));el('tourUpload').files=squareTransfer.files;el('tourUpload').dispatchEvent(new Event('change'));
+  await until(()=>el('tourNote').textContent.includes('tỷ lệ 2:1'),'Không báo sai tỷ lệ panorama');check(TimTroTour.getState().photoMode===0,'Ảnh sai tỷ lệ không thay thế cảnh 360');
   showPage('roommates');await loadRoommateData();await wait(50);window.scrollTo(0,0);
   check(document.documentElement.scrollWidth<=innerWidth+1,'Không tràn ngang ở '+innerWidth+'px');
   check(errors.length===0,'Không có lỗi JavaScript: '+errors.join('; '));
   document.body.dataset.testResult='PASS';document.body.dataset.testCount=steps.length;
  }catch(error){document.body.dataset.testResult='FAIL: '+error.message;}
  document.body.dataset.testLog=JSON.stringify(steps);
+ document.body.dataset.testErrors=JSON.stringify(errors);
 })();

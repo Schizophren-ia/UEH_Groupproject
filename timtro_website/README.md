@@ -10,7 +10,7 @@ Logo UEH dùng ảnh do nhóm cung cấp tại `assets/ueh-logo.png`. Trình xem
 
 Theo yêu cầu mới, nhập mã OTP và khôi phục mật khẩu bằng OTP được tạm hoãn. Luồng đang dùng email/mật khẩu và xác nhận email qua liên kết, không nhập mã. Bỏ OTP không tự tạo các bảng bài đăng/chat trên dịch vụ.
 
-Browser test kiểm tra 34 tình huống ở mỗi chiều rộng 1440px và 390px: email/mật khẩu, bộ lọc, hồ sơ ẩn/hiện, đăng/sửa/đóng bài, avatar, tin nhắn HTML, tách cuộc chat, đăng xuất và ảnh 360° thay đổi khi xoay. Ảnh chụp và kết quả ở `.qa/`, không commit. Fixture kiểm tra giao diện; chưa chứng minh RLS hoặc SMTP đã hoạt động trên Supabase thật.
+Browser test kiểm tra 45 tình huống ở mỗi chiều rộng 1440px và 390px: email/mật khẩu, khoảng giá, bộ lọc nâng cao, tiện nghi khác, hồ sơ ẩn/hiện, đăng/sửa/đóng bài, avatar, tin nhắn HTML, tách cuộc chat, đăng xuất, bảng màu và ảnh 360°. Panorama xuất ra đúng 2048×1024, nhập lại theo từng phòng; ảnh sai tỷ lệ bị từ chối. Test desktop còn kiểm tra vào/thoát toàn màn hình. Ảnh chụp và kết quả ở `.qa/`, không commit. Fixture kiểm tra giao diện; chưa chứng minh RLS hoặc SMTP đã hoạt động trên Supabase thật.
 
 ## Kích hoạt tài khoản, bài đăng và chat thật
 

@@ -150,3 +150,24 @@ Người dùng yêu cầu: “tạm thời bỏ qua mã otp trước, ưu tiên 
 - [x] Chrome thật qua 34 kiểm tra giao diện ở 1440px và 34 ở 390px, trên cả hai entry. Bao phủ đăng ký/mật khẩu sai, bộ lọc 2/3/4 người/slot/cơ sở/giá/ngày/tiện nghi/Room Check, quyền ẩn hồ sơ, đăng/sửa/đóng bài, gửi/nhận tin, chống HTML trong tin nhắn, avatar, tách chat, đăng xuất và hình ảnh 360° thay đổi khi xoay/zoom. Supabase dùng fixture cục bộ, không gửi email hay ghi dữ liệu thật. Đã xem ảnh chụp logo và chat mobile, không tràn ngang.
 - [ ] Supabase thật vẫn cần quyền quản trị để cài bảng/view và Auth/SMTP; OTP tạm hoãn theo người dùng. Lần đọc cấu hình Auth tiếp theo bị auto-review từ chối vì hết hạn mức kiểm duyệt, lệnh chưa chạy; không dùng kết quả cũ để tuyên bố cấu hình đã đổi.
 - [x] Bản sửa lỗi `a9573df6df02ed15cfaca03dafb712d7a06b7ce9` đã push lên `origin/main`; SHA từ `git ls-remote` trùng commit. `node tests/login.cjs`, Chrome 34 tình huống × 2 viewport và `git diff --cached --check` đều đạt. Commit báo cáo tiếp theo ghi kết quả push này; không thay đổi chức năng.
+
+
+## 2026-10-14 — Đối chiếu yêu cầu và kiểm tra phần còn lại
+
+- [x] Đối chiếu tài liệu gốc và ảnh bảng màu. Bổ sung giá tối thiểu để lọc khoảng tiền/người/tháng, báo khoảng giá bị đảo; đưa câu hỏi sinh hoạt vào Bộ lọc nâng cao; thêm đăng/lọc/sửa tiện nghi Khác. Dữ liệu tiện nghi khác dùng mảng amenities hiện có, không đổi lược đồ Supabase.
+- [x] Chrome qua 45 tình huống ở 1440px và 45 ở 390px, trên hai entry, không có lỗi JavaScript. Xuất panorama PNG 2048×1024, nhập lại, ảnh riêng theo từng phòng, chặn ảnh sai tỷ lệ 2:1; desktop mở và thoát toàn màn hình. Đã xem ảnh chụp toàn màn hình 360° và mobile. Bài đăng/chat dùng fixture, không ghi dữ liệu hay gửi email thật.
+- [x] Bảng màu được đối chiếu trực tiếp với ảnh người dùng: #F8F7FF, #FFEEDD, #FFD8BE, #B8B8FF, #9381FF. Browser kiểm tra biến màu và nền radial/mesh đang áp dụng.
+- [x] Lần đọc Supabase mới được auto-review duyệt và thực thi, giải quyết lỗi hạn mức ở lần trước. Auth trả 200: đăng ký/email đang bật, mailer_autoconfirm=false (vẫn yêu cầu xác nhận email). Không đổi cấu hình dịch vụ.
+- [ ] Dữ liệu thật vẫn chưa cài: student_roommate_listing_cards, student_public_profiles, student_roommate_threads và student_roommate_messages đều trả 404/PGRST205. Không có Supabase/Postgres CLI, Docker, access token, database URL hoặc công cụ quản trị Supabase trong môi trường. Publishable key không thể cài SQL/Auth Hook/SMTP; cần quản trị áp dụng hai SQL và thử hai tài khoản thật.
+
+| Mục tiêu | Bằng chứng hiện tại | Kết luận |
+| --- | --- | --- |
+| A — câu hỏi và quyền ẩn | Tài liệu, form và Chrome kiểm tra xem trước/payload riêng tư | UI đã kiểm chứng; lưu hồ sơ/RLS thật chờ SQL |
+| B1 — email UEH đăng nhập lại | Auth API bật; guard và Chrome fixture qua luồng đăng nhập lại | Chưa kiểm chứng tài khoản/email thật |
+| B2 — quên mật khẩu bằng OTP | Người dùng yêu cầu tạm bỏ OTP | Tạm hoãn, chưa hoàn thành mục tiêu gốc |
+| C — phòng có người/còn slot, lọc 2/3/4, chat riêng | Chrome đăng/sửa/đóng bài, bộ lọc, tách chat/HTML/avatar | Client qua; trao đổi tài khoản thật chờ SQL |
+| D — phòng giả tưởng và ảnh camera 360° | Pixels, xoay/zoom, import/export, ảnh theo phòng, fullscreen | Đã kiểm chứng trên Chrome |
+| E — sinh viên, aurora và bảng màu | CSS, màu runtime, ảnh desktop/mobile; UI UX Pro Max tham khảo ở đợt trước | Đã áp dụng và kiểm tra hai viewport |
+| F — lỗi phát hiện | Auth gate, chat tải chậm, dữ liệu cũ, focus/nhãn và khoảng giá; Chrome không có lỗi JS | Các lỗi phát hiện đã sửa và kiểm tra |
+
+- [ ] Commit/push phần bổ sung và xác minh SHA remote. Mục tiêu đầy đủ chưa hoàn thành; phần còn lại cần quyền quản trị Supabase và người dùng cho tiếp tục OTP.
