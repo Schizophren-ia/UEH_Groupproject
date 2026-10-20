@@ -2,8 +2,8 @@
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),cp=require('node:child_process'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'../..'),out=path.join(root,'.qa');fs.mkdirSync(out,{recursive:true});
 const chrome=process.argv.includes('--chrome')?process.argv[process.argv.indexOf('--chrome')+1]:'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const demo=process.argv.includes('--demo');
-const mock=fs.readFileSync(path.join(__dirname,'fixtures/supabase.js'),'utf8'),harness=fs.readFileSync(path.join(__dirname,demo?'fixtures/demo-scenarios.js':'fixtures/scenarios.js'),'utf8');
+const toolsSuite=process.argv.includes('--tools'),demo=process.argv.includes('--demo')||toolsSuite;
+const mock=fs.readFileSync(path.join(__dirname,'fixtures/supabase.js'),'utf8'),harness=(toolsSuite?fs.readFileSync(path.join(__dirname,'fixtures/tools-scenarios.js'),'utf8')+'\n':'')+fs.readFileSync(path.join(__dirname,demo?'fixtures/demo-scenarios.js':'fixtures/scenarios.js'),'utf8');
 const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.jpg':'image/jpeg'};
 const server=http.createServer((req,res)=>{
  const route=decodeURIComponent(req.url.split('?')[0]);
@@ -56,10 +56,26 @@ async function run(width,route){
   assert.equal(exited,true,'360 fullscreen exit button must work');
  }
  if(demo){
+  if(toolsSuite){
+   await evaluate("RoomTools.clearSelection();for(const id of ['1','2','3'])RoomTools.toggleCompare('rental',id);RoomTools.openComparison()",sessionId);
+   await screenshot('tools-comparison-'+width+'.png',sessionId);
+   await evaluate("showPage('reportHistory');RoomTools.renderReports()",sessionId);await screenshot('tools-reports-'+width+'.png',sessionId);
+  }
   await evaluate('sessionStorage.setItem("__demoTestReload","1")',sessionId);
   await request('Page.reload',{},sessionId);
-  for(let i=0;i<150;i++){if(await evaluate('typeof authenticated==="function"&&authenticated()&&currentUser.is_demo',sessionId))break;await sleep(100);}
+  for(let i=0;i<150;i++){if(await evaluate('typeof authenticated==="function"&&authenticated()&&currentUser.is_demo'+(toolsSuite?'&&typeof RoomTools!=="undefined"&&!!document.getElementById("comparisonBar")':''),sessionId))break;await sleep(100);}
   assert.equal(await evaluate('authenticated()&&currentUser.is_demo&&document.getElementById("authGate").classList.contains("hidden")',sessionId),true,'Demo session persists across reload');
+  if(toolsSuite){
+   assert.equal(await evaluate('RoomTools.selection.length===3',sessionId),true,'Comparison selection persists across reload');
+   assert.equal(await evaluate('(async()=>{const rows=await RoomTools.reportStore("list");return rows.length===1&&await rows[0].files[0].blob.text()==="%PDF-1.4 local-receipt";})()',sessionId),true,'IndexedDB preserves actual evidence bytes across reload');
+   await evaluate("openRoom('1');document.getElementById('roomTabOverview').focus()",sessionId);
+   await request('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowRight',code:'ArrowRight'},sessionId);await request('Input.dispatchKeyEvent',{type:'keyUp',key:'ArrowRight',code:'ArrowRight'},sessionId);
+   assert.equal(await evaluate('document.activeElement.id==="roomTabChecks"&&document.getElementById("roomTabChecks").getAttribute("aria-selected")==="true"',sessionId),true,'Tabs support keyboard navigation and selection');
+   await evaluate("selectRoomTab('overview');RoomTools.openReport('rental','1')",sessionId);
+   await request('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape'},sessionId);await request('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape'},sessionId);
+   assert.equal(await evaluate('!document.getElementById("reportDialog").open',sessionId),true,'Report dialog closes with Escape');
+   await evaluate("selectRoomTab('overview')",sessionId);await screenshot('tools-detail-'+width+'.png',sessionId);
+  }
   await evaluate('demoLogout();document.getElementById("signupTab").click()',sessionId);
   await request('Emulation.setDeviceMetricsOverride',{width,height:500,deviceScaleFactor:1,mobile:width<600},sessionId);
   await evaluate('document.getElementById("authGate").scrollTop=0',sessionId);
@@ -102,7 +118,7 @@ async function run(width,route){
  });
  await run(1440,'/timtro_website/'+(demo?'':'?auth=live'));await run(390,'/'+(demo?'':'?auth=live'));
  assert.deepEqual(browserErrors,[],'No uncaught JavaScript errors');
- fs.writeFileSync(path.join(out,demo?'demo-results.json':'priority-results.json'),JSON.stringify({passed:true,widths:[1440,390],browserErrors,backend:demo?'actual local demo Auth and storage':'in-memory Supabase fixture'},null,2));
+ fs.writeFileSync(path.join(out,toolsSuite?'tools-results.json':demo?'demo-results.json':'priority-results.json'),JSON.stringify({passed:true,widths:[1440,390],browserErrors,backend:demo?'actual local demo Auth, IndexedDB and storage':'in-memory Supabase fixture'},null,2));
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{
  if(connection?.readyState===WebSocket.OPEN){try{await request('Browser.close');}catch{}connection.close();}
  if(child&&child.exitCode===null)child.kill();server.close();

@@ -67,6 +67,7 @@
   check(!el('contactLandlord').querySelector('a[href^="tel:"]')&&!el('contactLandlord').querySelector('a[data-landlord-zalo]'),'Sample owner never contacts real number or Zalo');
   check(document.documentElement.scrollWidth<=innerWidth+1,'Contact has no horizontal overflow');
   showPage('roommates');check(document.documentElement.scrollWidth<=innerWidth+1,'Sample listing page has no horizontal overflow');showPage('contact');
+  if(window.runRoomToolsTests)steps.push(...await window.runRoomToolsTests());
   check(errors.length===0,'No browser errors');document.body.dataset.testCount=String(steps.length);document.body.dataset.testResult='PASS';
  }catch(error){errors.push(error.stack||error.message);document.body.dataset.testResult='FAIL';document.body.dataset.testErrors=JSON.stringify(errors);console.error(error);}
 })();

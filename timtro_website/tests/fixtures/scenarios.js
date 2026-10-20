@@ -7,7 +7,7 @@
  const until=async(fn,message)=>{for(let i=0;i<100;i++){if(fn())return;await wait(20);}throw Error(message);};
  const el=id=>document.getElementById(id),value=(id,v)=>{el(id).value=v;};
  const click=id=>el(id).click(),submit=id=>el(id).requestSubmit(),cards=()=>document.querySelectorAll('.slot-card').length;
- const filter=(id,v)=>{value(id,v);el(id).dispatchEvent(new Event('change'));};
+ const filter=(id,v)=>{value(id,v);el(id).dispatchEvent(new Event('change'));if(id.startsWith('rf'))click('searchRoommateFilters');};
  try{
   await wait(80);const fixture=window.__fixture;
   check(!el('authGate').classList.contains('hidden'),'Màn chọn tài khoản xuất hiện');
@@ -35,16 +35,16 @@
   filter('rfBudget','1500000');check(el('rfBudget').getAttribute('aria-invalid')==='true'&&el('roommateResultsCount').textContent.includes('chưa hợp lệ'),'Báo khoảng giá bị đảo');
   click('resetRoommateFilters');const advanced=document.querySelector('.roommate-advanced-filters');check(!advanced.open,'Câu hỏi nâng cao được thu gọn');advanced.open=true;
   click('resetRoommateFilters');filter('rfAmenity','washer');check(cards()===1,'Lọc tiện nghi máy giặt');
-  click('resetRoommateFilters');el('rfVerified').checked=true;el('rfVerified').dispatchEvent(new Event('change'));check(cards()===0,'Không tự gắn Room Check');click('resetRoommateFilters');
-  el('roommateProfileForm').querySelectorAll('details').forEach(d=>d.open=true);
+  click('resetRoommateFilters');check(!el('rfVerified')&&!el('rfVerification'),'Room Check đã được gỡ khỏi bộ lọc');
+  showPage('account');el('accountProfileForm').querySelectorAll('details').forEach(d=>d.open=true);
   value('rpName','Sinh viên riêng tư');value('rpPhone','090-private');value('rpAge','20');value('rpMajor','Kinh tế');value('rpHometown','Đà Nẵng');value('rpHobbies','Đọc sách');filter('rpSleep','late');
   el('rpShowOptional').checked=false;el('rpShowStudy').checked=false;el('rpShowNeeds').checked=false;click('previewMyProfile');
   check(!el('slotDialogBody').textContent.includes('090-private')&&!el('slotDialogBody').textContent.includes('Kinh tế')&&!el('slotDialogBody').textContent.includes('Campus'),'Xem trước tôn trọng thông tin ẩn');click('closeSlotDialog');
   el('rpShowOptional').checked=true;el('rpShowNeeds').checked=true;click('previewMyProfile');
   check(el('slotDialogBody').textContent.includes('Đọc sách')&&el('slotDialogBody').textContent.includes('Sau 23 giờ'),'Xem trước đầy đủ thông tin được cho phép');click('closeSlotDialog');
-  submit('roommateProfileForm');await until(()=>fixture.db.student_profiles[0].display_name==='Sinh viên riêng tư','Không lưu hồ sơ');await until(()=>el('profilePreviewName').textContent==='Sinh viên riêng tư','Không cập nhật hồ sơ');
+  submit('accountProfileForm');await until(()=>fixture.db.student_profiles[0].display_name==='Sinh viên riêng tư','Không lưu hồ sơ');await until(()=>el('profilePreviewName').textContent==='Sinh viên riêng tư','Không cập nhật hồ sơ');
   check(fixture.db.student_private_profiles[0].phone==='090-private','Liên hệ lưu riêng');
-  document.querySelector('.roommate-publish').open=true;
+  showPage('roommates');document.querySelector('.roommate-publish').open=true;
   value('slotTitle','Phòng kiểm thử cần bạn ở chung');value('slotArea','Quận 10');value('slotCapacity','3');value('slotOccupied','3');value('slotPrice','1800000');value('slotAvailable','2026-10-15');el('slotLandlordConsent').checked=true;
   const before=fixture.db.student_roommate_listings.length;submit('slotListingForm');await wait(30);check(fixture.db.student_roommate_listings.length===before,'Không đăng phòng đã đầy');
   value('slotOccupied','2');value('slotElectricity','3500đ/kWh');value('slotOtherAmenities','Ban công');el('slotLandlordConsent').checked=false;submit('slotListingForm');await wait(20);check(fixture.db.student_roommate_listings.length===before,'Phải có đồng ý của chủ nhà');

@@ -238,3 +238,19 @@ Người dùng đã duyệt: xác thực 1/3 vẫn hiển thị; chỉ ẩn phò
 - [x] Tìm bạn không tự ẩn bài 0/3; giữ bộ lọc giá, khu vực, sức chứa/slot và sinh hoạt cùng nút Tìm kiếm, bài mẫu và chat.
 - [x] node tests/login.cjs PASS: IDs, cú pháp JavaScript và hai entry đồng bộ.
 - [x] node tests/browser.cjs --demo PASS: 76 tình huống ở 1440px và 76 ở 390px, gồm xác nhận phòng 1/3 xuất hiện, 0/3 bị ẩn ở tìm kiếm/nổi bật/yêu thích, bộ lọc Room Check đã gỡ, hồ sơ, riêng tư, slot/chat, bản đồ, đăng nhập/tải lại và không lỗi JavaScript.
+
+## 2026-10-20 — Thu gọn giao diện, báo cáo, so sánh và điểm tin cậy mẫu
+
+Người dùng đã duyệt và yêu cầu triển khai toàn bộ kế hoạch dựa trên ba ảnh Canva. Các lựa chọn đã chốt: báo cáo demo lưu cục bộ, điểm số mẫu cố định, so sánh cả phòng thuê và bài ở ghép theo từng loại giá riêng.
+
+- [x] Giữ logo UEH, bảng màu aurora và Auth/OTP hiện tại. Thu gọn banner/ảnh/khoảng cách; chi tiết phòng có tab Tổng quan / Xác thực & đánh giá / Chủ trọ. Chi phí mặc định thu gọn. Nội dung xác thực, đánh giá, hồ sơ và liên hệ vẫn truy cập được qua tab/nút cũ.
+- [x] Form đăng bài và form thuê trọ nội bộ chia ba nhóm, chỉ mở nhóm đầu; lỗi ở trường bắt buộc tự mở nhóm tương ứng. Bộ lọc chính giữ sức chứa, khoảng giá và khu vực; tiêu chí cơ sở/ngày/chỗ trống/giới tính và sinh hoạt vào phần nâng cao. Mobile đưa điểm và hành động lên trước ảnh/nội dung dài, thanh so sánh dưới 100px.
+- [x] Báo cáo mở từ chi tiết đúng phòng thuê hoặc bài ở ghép; có loại vi phạm, lý do bắt buộc và bằng chứng tin nhắn hoặc tệp. Tối đa 3 JPG/PNG/WebP/PDF, mỗi tệp tối đa 5 MB; xem tên/dung lượng và xóa trước khi lưu. Tệp sai/empty/quá lớn bị chặn.
+- [x] IndexedDB lưu cả nội dung và Blob bằng chứng theo tài khoản; Tài khoản → Báo cáo của tôi cho mở ảnh/PDF, tải bằng chứng và xóa. Lưu thành công ghi rõ “Đã lưu báo cáo demo, chưa gửi quản trị viên”. Không tự ẩn tin hay giảm điểm. Đăng xuất dọn DOM/URL Blob, chặn dữ liệu trả chậm từ phiên cũ.
+- [x] Chọn so sánh từ thẻ và chi tiết; 2–3 phòng cùng loại. Đổi giữa giá cả phòng và giá/người có hộp xác nhận xóa lựa chọn cũ. Có bỏ từng phòng, bỏ tất cả, chỉnh lựa chọn, lưu/mở/xóa bộ theo tài khoản. Quay lại phục hồi danh sách, bộ lọc và vị trí cuộn, kể cả khi mở so sánh từ chi tiết.
+- [x] Bảng so sánh có ảnh, giá/đơn vị, diện tích, loại phòng, tiện nghi, địa chỉ, cọc/chi phí, giờ giấc, khoảng cách, đánh giá, xác thực và điểm. Ở ghép thêm sức chứa/người đang ở/chỗ trống/ngày vào/sinh hoạt; thiếu ghi Chưa cung cấp. Bộ đã lưu bỏ phòng không còn khả dụng khi mở. Mobile cuộn ngang riêng trong bảng.
+- [x] Điểm phòng thuê mẫu 1–6: 92/88/75/35/55/30; điểm sáu bài ở ghép: 92/88/75/72/55/35. Hiển thị nhất quán trên thẻ/chi tiết/so sánh, nhãn Điểm mô phỏng và giải thích ba nhóm tham chiếu; không tính từ Room Check. Tin người dùng đăng hiện —/100 · Chưa chấm điểm.
+- [x] Giữ quy tắc phòng thuê 0/3 bị ẩn khỏi danh sách; không tự ẩn bài ở ghép 0/3. Không thay đổi backend hay cấu hình Supabase; báo cáo/bộ so sánh vẫn giới hạn trên trình duyệt này.
+- [x] Kiểm tra tĩnh PASS: IDs, cú pháp tất cả script và hai entry đồng bộ. Chrome `--tools` PASS: 139 tình huống desktop 1440px, 141 tình huống mobile 390px, cộng kiểm tra reload giữ phiên/lựa chọn và đúng byte PDF trong IndexedDB, tab bằng phím mũi tên, Escape, cuộn chuột ở cao 500px và nút quay lại. Bao phủ tài khoản/OTP, riêng tư, bài/chat, bản đồ, điểm, so sánh, báo cáo/ảnh/PDF/tệp lỗi/giới hạn và tách tài khoản. Không lỗi JavaScript, không tràn ngang; đã xem ảnh chụp desktop/mobile để điều chỉnh bố cục.
+- [x] Hồi quy Supabase fixture PASS 45 tình huống × 1440px/390px, gồm xoay/zoom, pixels thay đổi, nhập/xuất panorama 2048×1024 và vào/thoát toàn màn hình. Cập nhật bộ test cũ để dùng nút Tìm kiếm và vị trí form tài khoản đã được duyệt từ đợt trước; không khôi phục bộ lọc Room Check đã gỡ.
+- [ ] Commit/push và xác nhận GitHub Pages: đang hoàn tất sau kiểm tra cuối.

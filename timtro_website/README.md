@@ -17,11 +17,25 @@ Hồ sơ, bài đăng ở ghép và chat demo cũng lưu cục bộ, không chia
 
 ## Thuê trọ, liên hệ và bản đồ
 
-Chi tiết phòng và trang Liên hệ hiển thị đúng hồ sơ chủ trọ. Phòng mẫu có tên/avatar chữ minh họa; liên kết Zalo chưa được cung cấp sẽ hiển thị trạng thái thiếu. Qua **Tài khoản → Quản lý phòng demo**, có thể nhập tên, giới thiệu, liên kết HTTPS `zalo.me` và cặp vĩ độ/kinh độ của phòng. Khu quản lý thuê trọ là demo dùng chung bộ nhớ trình duyệt như trước, không phải dịch vụ đăng tin công khai.
+Tab Chủ trọ hiển thị đúng hồ sơ và avatar minh họa của người cho thuê; liên kết Zalo chưa được cung cấp sẽ hiển thị trạng thái thiếu. Form quản lý phòng nội bộ hỗ trợ tên, giới thiệu, liên kết HTTPS `zalo.me` và cặp vĩ độ/kinh độ. Khu quản lý thuê trọ là demo dùng chung bộ nhớ trình duyệt như trước, không phải dịch vụ đăng tin công khai và không đặt trong tài khoản sinh viên.
 
 Nút Xem bản đồ mở hộp thoại [OpenStreetMap nhúng](https://wiki.openstreetmap.org/wiki/Export), đúng địa chỉ/ghim của phòng, kèm đường đi và liên kết mở bản đồ. Phòng mẫu ghi Vị trí minh họa; tọa độ người đăng cung cấp chưa được xác minh thực tế. Không có tọa độ thì không dựng ghim tùy ý. Bản đồ cần mạng; ghim bản đồ không chứng minh phòng có thật.
 
 Logo dùng ảnh UEH được cung cấp; màu aurora và trình xem 360° được giữ. Panorama hỗ trợ nhập/xuất ảnh 2048×1024, xoay/zoom và toàn màn hình.
+
+## Giao diện gọn, báo cáo, so sánh và điểm mẫu — 20/10/2026
+
+Chi tiết phòng chia ba tab Tổng quan / Xác thực & đánh giá / Chủ trọ. Chi phí chi tiết mặc định thu gọn; form đăng bài chia ba nhóm và chỉ mở nhóm đầu. Bộ lọc thường dùng nằm ngoài, cơ sở/ngày vào/chỗ trống và điều kiện sinh hoạt nằm trong Bộ lọc nâng cao. Trên mobile, điểm và hành động đặt trước ảnh để không bị đẩy xuống sau nội dung 360°.
+
+**Báo cáo tin đăng:** mở từ chi tiết phòng thuê hoặc bài ở ghép, chọn loại vi phạm, nhập lý do và bằng chứng tin nhắn hoặc tệp. Nhận tối đa 3 JPG/PNG/WebP/PDF, mỗi tệp không quá 5 MB. Lưu cả Blob bằng chứng và nội dung trong IndexedDB `timtro_local_reports_v1`, store `reports`, index `userId`; giao diện chỉ đọc/xóa lịch sử của tài khoản hiện tại. Tài khoản → Báo cáo của tôi cho xem lại, mở/tải bằng chứng hoặc xóa. Đăng xuất dọn nội dung riêng tư khỏi DOM và thu hồi URL Blob.
+
+Đây là **báo cáo demo cục bộ, chưa gửi quản trị viên**; không làm ẩn tin hay trừ điểm. Bộ nhớ trình duyệt không thay thế bảo mật máy chủ; xóa dữ liệu site sẽ xóa lịch sử và tệp.
+
+**So sánh:** chọn 2–3 phòng cùng loại từ thẻ hoặc chi tiết. Giá thuê cả phòng và giá ở ghép mỗi người được tách biệt; đổi loại cần xác nhận xóa lựa chọn cũ. Bảng hiển thị dữ liệu hiện có, thiếu ghi Chưa cung cấp. So sánh ở ghép có sức chứa, người đang ở/chỗ trống, ngày vào và sinh hoạt. Có chỉnh lựa chọn, bỏ phòng, xóa tất cả, lưu/mở/xóa bộ so sánh; quay lại khôi phục danh sách, bộ lọc và vị trí cuộn. Dữ liệu dùng các key localStorage `timtro_compare_selection_v1_<userId>` và `timtro_compare_saved_v1_<userId>`, lưu tham chiếu `{kind,id}` để lấy thông tin phòng hiện tại. Mobile chỉ cuộn ngang bên trong bảng. Bộ đã lưu tự bỏ phòng không còn khả dụng khi mở lại.
+
+**Điểm tin cậy:** số mẫu cố định, độc lập với Room Check. Phòng thuê mẫu 1–6: 92/88/75/35/55/30; sáu bài ở ghép mẫu: 92/88/75/72/55/35. Luôn có nhãn Điểm mô phỏng; bấm điểm để xem giải thích ba nhóm tham chiếu. Chưa có công thức chấm thực tế. Tin người dùng đăng hiển thị —/100 · Chưa chấm điểm. Giữ quy tắc phòng thuê từ 1/3 lớp mới được liệt kê; ở ghép không tự ẩn bài 0/3.
+
+Mã dùng chung nằm trong `assets/room-tools.js` (trạng thái/IndexedDB/dữ liệu so sánh), `assets/room-tools-ui.js` (giao diện và nối luồng hiện có), `assets/room-tools.css`. Không thay đổi API hoặc cấu hình Supabase.
 
 ## Kiểm tra
 
@@ -29,6 +43,7 @@ Chạy qua HTTP server/HTTPS, không mở bằng `file://` vì Web Crypto cần 
 
 - `node timtro_website/tests/login.cjs`: IDs, cú pháp JS, auth gate và hai entry đồng bộ.
 - `node timtro_website/tests/browser.cjs --demo`: Chrome kiểm tra Auth demo thật và bộ nhớ cục bộ, OTP sai/hết hạn/gửi lại, robot/quy tắc, đăng nhập lại, hai tài khoản/chat riêng, hồ sơ chủ trọ, URL Zalo và bản đồ. Kiểm tra tải lại trang, cuộn chuột ở chiều cao 500px, nút quay lại và tràn ngang ở 1440px/390px.
+- `node timtro_website/tests/browser.cjs --tools`: chạy toàn bộ luồng demo cùng báo cáo/Blob IndexedDB, điểm mẫu, so sánh/lưu bộ, tách tài khoản, tải lại trang, tab bằng bàn phím và đóng hộp thoại bằng Escape; chụp ảnh chi tiết, so sánh và lịch sử ở desktop/mobile. Không giả lập logic mật khẩu/OTP hay IndexedDB. Kết quả `.qa/tools-results.json`.
 - `node timtro_website/tests/browser.cjs`: giữ 45 tình huống/viewport với Supabase fixture, kiểm tra bộ lọc, hồ sơ, tin/chat/avatar và 360°/fullscreen. Không chứng minh RLS/SMTP thật đã hoạt động.
 
 Chrome mặc định `C:/Program Files/Google/Chrome/Application/chrome.exe`; có thể truyền `--chrome <đường dẫn>`. Kết quả và ảnh ở `.qa/`, không commit.
