@@ -37,6 +37,14 @@ Chi tiết phòng chia ba tab Tổng quan / Xác thực & đánh giá / Chủ tr
 
 Mã dùng chung nằm trong `assets/room-tools.js` (trạng thái/IndexedDB/dữ liệu so sánh), `assets/room-tools-ui.js` (giao diện và nối luồng hiện có), `assets/room-tools.css`. Không thay đổi API hoặc cấu hình Supabase.
 
+## Chia sẻ phòng — 22/10/2026
+
+Trong Tổng quan của phòng thuê, bấm **Chia sẻ phòng → Sao chép liên kết**. URL chỉ chứa ID phòng, ví dụ `https://schizophren-ia.github.io/UEH_Groupproject/?room=1`; không chứa thông tin tài khoản, nội dung chat/báo cáo, tham số Auth hay fragment hiện tại. Nút được cập nhật theo phòng đang xem. Nếu Clipboard bị chặn, ô liên kết được chọn để sao chép thủ công.
+
+Người nhận mở link trong trình duyệt khác không cần đăng nhập. Chế độ đọc công khai hiển thị đúng ảnh/360°, chi phí, xác thực/đánh giá, hồ sơ chủ trọ và thời điểm xác minh mẫu của phòng; giữ nhãn minh họa. Chỉ mở bản đồ của phòng công khai đang xem. Không tạo tài khoản hoặc phiên giả, không mở chat, báo cáo, so sánh hoặc tài khoản riêng. Bấm Đăng nhập để sử dụng đầy đủ sẽ dùng luồng Auth hiện có và quay về phòng đã chia sẻ khi đăng nhập thành công.
+
+Chỉ phòng thuê mẫu có ít nhất 1/3 lớp được chia sẻ xuyên thiết bị. Tin chỉ lưu cục bộ hiển thị giải thích thay vì tạo link không thể mở ở máy khác. Phòng 0/3, ID sai/trùng/rỗng hoặc không còn công khai hiện **Phòng không còn khả dụng**, không tự mở phòng đầu tiên. Link dùng query string nên không cần cấu hình lại routing GitHub Pages. Mã nằm trong `assets/room-share.js` và `assets/room-share.css`; không thay đổi dữ liệu/backend.
+
 ## Kiểm tra
 
 Chạy qua HTTP server/HTTPS, không mở bằng `file://` vì Web Crypto cần secure context (localhost được hỗ trợ).
@@ -44,6 +52,7 @@ Chạy qua HTTP server/HTTPS, không mở bằng `file://` vì Web Crypto cần 
 - `node timtro_website/tests/login.cjs`: IDs, cú pháp JS, auth gate và hai entry đồng bộ.
 - `node timtro_website/tests/browser.cjs --demo`: Chrome kiểm tra Auth demo thật và bộ nhớ cục bộ, OTP sai/hết hạn/gửi lại, robot/quy tắc, đăng nhập lại, hai tài khoản/chat riêng, hồ sơ chủ trọ, URL Zalo và bản đồ. Kiểm tra tải lại trang, cuộn chuột ở chiều cao 500px, nút quay lại và tràn ngang ở 1440px/390px.
 - `node timtro_website/tests/browser.cjs --tools`: chạy toàn bộ luồng demo cùng báo cáo/Blob IndexedDB, điểm mẫu, so sánh/lưu bộ, tách tài khoản, tải lại trang, tab bằng bàn phím và đóng hộp thoại bằng Escape; chụp ảnh chi tiết, so sánh và lịch sử ở desktop/mobile. Không giả lập logic mật khẩu/OTP hay IndexedDB. Kết quả `.qa/tools-results.json`.
+- `node timtro_website/tests/browser.cjs --share`: kiểm tra link công khai không đăng nhập, đúng ID/chi phí/xác thực/chủ trọ, Clipboard thành công hoặc bị chặn, link sai/0 lớp/cục bộ, không tạo phiên, rồi mở URL đã tạo trong browser context riêng không có dữ liệu người gửi và tải lại trang. Hai entry, 1440px/390px; kết quả `.qa/share-results.json`.
 - `node timtro_website/tests/browser.cjs`: giữ 45 tình huống/viewport với Supabase fixture, kiểm tra bộ lọc, hồ sơ, tin/chat/avatar và 360°/fullscreen. Không chứng minh RLS/SMTP thật đã hoạt động.
 
 Chrome mặc định `C:/Program Files/Google/Chrome/Application/chrome.exe`; có thể truyền `--chrome <đường dẫn>`. Kết quả và ảnh ở `.qa/`, không commit.

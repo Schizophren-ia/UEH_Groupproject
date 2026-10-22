@@ -63,5 +63,8 @@ window.runRoomToolsTests=async()=>{
  showPage('search');openRoom('2');RoomTools.openComparison();click('comparisonEdit');check(!el('searchPage').classList.contains('hidden'),'Comparison opened from detail returns to its source list');
  openRoom('1');click('roomTabOwner');check(document.documentElement.scrollWidth<=innerWidth+1,'Compact owner panel does not overflow');
  selectRoomTab('overview');if(innerWidth<700){const info=el('detailRoomTools').getBoundingClientRect(),gallery=el('mainGallery').getBoundingClientRect();check(info.top<gallery.top,'Mobile score and report actions appear before photo and long content');check(el('comparisonBar').getBoundingClientRect().height<100,'Mobile comparison bar stays compact');}
+ openRoom('1');click('shareRoom');check(el('roomShareDialog').open&&new URL(el('roomShareLink').value).searchParams.get('room')==='1','Signed-in viewer can share current room');click('closeRoomShare');
+ openRoom('2');click('shareRoom');check(new URL(el('roomShareLink').value).searchParams.get('room')==='2','Signed-in room switch updates share target');click('closeRoomShare');
+ openRoom(hostRooms[0].id);click('shareRoom');check(!el('roomShareLink').value&&el('roomShareHelp').textContent.includes('chỉ lưu trên trình duyệt'),'Signed-in local listing cannot produce cross-device link');click('closeRoomShare');openRoom('1');
  return steps;
 };

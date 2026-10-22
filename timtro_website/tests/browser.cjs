@@ -2,8 +2,8 @@
 const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),cp=require('node:child_process'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'../..'),out=path.join(root,'.qa');fs.mkdirSync(out,{recursive:true});
 const chrome=process.argv.includes('--chrome')?process.argv[process.argv.indexOf('--chrome')+1]:'C:/Program Files/Google/Chrome/Application/chrome.exe';
-const toolsSuite=process.argv.includes('--tools'),demo=process.argv.includes('--demo')||toolsSuite;
-const mock=fs.readFileSync(path.join(__dirname,'fixtures/supabase.js'),'utf8'),harness=(toolsSuite?fs.readFileSync(path.join(__dirname,'fixtures/tools-scenarios.js'),'utf8')+'\n':'')+fs.readFileSync(path.join(__dirname,demo?'fixtures/demo-scenarios.js':'fixtures/scenarios.js'),'utf8');
+const shareSuite=process.argv.includes('--share'),toolsSuite=process.argv.includes('--tools'),demo=process.argv.includes('--demo')||toolsSuite;
+const mock=fs.readFileSync(path.join(__dirname,'fixtures/supabase.js'),'utf8'),harness=(toolsSuite?fs.readFileSync(path.join(__dirname,'fixtures/tools-scenarios.js'),'utf8')+'\n':'')+fs.readFileSync(path.join(__dirname,shareSuite?'fixtures/share-scenarios.js':demo?'fixtures/demo-scenarios.js':'fixtures/scenarios.js'),'utf8');
 const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.jpg':'image/jpeg'};
 const server=http.createServer((req,res)=>{
  const route=decodeURIComponent(req.url.split('?')[0]);
@@ -48,6 +48,25 @@ async function run(width,route){
  if(report!=='PASS')console.error(await evaluate("({errors:document.body.dataset.testErrors,auth:document.getElementById('authMessage').textContent,question:document.getElementById('botQuestion')?.textContent,answer:document.getElementById('botAnswer')?.value,checked:document.getElementById('notRobot')?.checked,invalidFields:[...document.querySelectorAll('#authForm input')].filter(e=>!e.validity.valid).map(e=>({id:e.id,value:e.value,message:e.validationMessage})),toast:document.getElementById('toast').textContent})",sessionId));
  assert.equal(report,'PASS',report||'Browser scenario did not finish');
  const count=await evaluate('document.body.dataset.testCount',sessionId);
+ if(shareSuite){
+  await screenshot('share-public-'+width+'.png',sessionId);
+  await evaluate('document.getElementById("shareRoom").click()',sessionId);await screenshot('share-dialog-'+width+'.png',sessionId);
+  const link=await evaluate('document.getElementById("roomShareLink").value',sessionId),expected=new URL(link).searchParams.get('room');
+  const {browserContextId}=await request('Target.createBrowserContext');
+  const recipient=await request('Target.createTarget',{url:'about:blank',browserContextId});
+  const attached=await request('Target.attachToTarget',{targetId:recipient.targetId,flatten:true}),other=attached.sessionId;
+  await request('Page.enable',{},other);await request('Runtime.enable',{},other);await request('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600},other);
+  await request('Page.addScriptToEvaluateOnNewDocument',{source:'window.__shareRecipient=true;'},other);
+  await request('Page.navigate',{url:link},other);
+  for(let i=0;i<200;i++){if(await evaluate('typeof RoomShare!=="undefined"&&RoomShare.ready',other))break;await sleep(100);}
+  assert.equal(await evaluate('!authenticated()&&String(currentRoom.id)==='+JSON.stringify(expected)+'&&document.getElementById("authGate").classList.contains("hidden")',other),true,'Exact copied URL opens correct room in a separate empty browser context');
+  assert.equal(await evaluate('localStorage.getItem("timtro_demo_accounts_v1")===null&&sessionStorage.getItem("timtro_demo_session_v1")===null',other),true,'Recipient needs no sender account or browser data');
+  await request('Page.reload',{},other);
+  for(let i=0;i<200;i++){if(await evaluate('typeof RoomShare!=="undefined"&&RoomShare.ready',other))break;await sleep(100);}
+  assert.equal(await evaluate('!authenticated()&&String(currentRoom.id)==='+JSON.stringify(expected)+'&&document.getElementById("authGate").classList.contains("hidden")',other),true,'Reload preserves exact public room without login');
+  await request('Target.disposeBrowserContext',{browserContextId});await request('Target.closeTarget',{targetId});
+  console.log('PASS: '+count+' share checks + separate-browser recipient and reload at '+width+'px');return;
+ }
  if(width===1440&&!demo){
   const full=await request('Runtime.evaluate',{expression:"(async()=>{openRoom('1');document.getElementById('tourFull').click();for(let i=0;i<50;i++){if(document.fullscreenElement)return true;await new Promise(r=>setTimeout(r,20));}return false;})()",userGesture:true,awaitPromise:true,returnByValue:true},sessionId);
   assert.equal(full.result.value,true,'360 fullscreen must open after a user gesture');
@@ -116,9 +135,9 @@ async function run(width,route){
   if(entry){clearTimeout(entry.timeout);pending.delete(message.id);message.error?entry.reject(Error(message.error.message)):entry.resolve(message.result);}
   if(message.method==='Runtime.exceptionThrown')browserErrors.push(message.params.exceptionDetails.text);
  });
- await run(1440,'/timtro_website/'+(demo?'':'?auth=live'));await run(390,'/'+(demo?'':'?auth=live'));
+ await run(1440,'/timtro_website/'+(shareSuite?'?room=1':demo?'':'?auth=live'));await run(390,'/'+(shareSuite?'?room=2':demo?'':'?auth=live'));
  assert.deepEqual(browserErrors,[],'No uncaught JavaScript errors');
- fs.writeFileSync(path.join(out,toolsSuite?'tools-results.json':demo?'demo-results.json':'priority-results.json'),JSON.stringify({passed:true,widths:[1440,390],browserErrors,backend:demo?'actual local demo Auth, IndexedDB and storage':'in-memory Supabase fixture'},null,2));
+ fs.writeFileSync(path.join(out,shareSuite?'share-results.json':toolsSuite?'tools-results.json':demo?'demo-results.json':'priority-results.json'),JSON.stringify({passed:true,widths:[1440,390],browserErrors,backend:shareSuite?'public room route and isolated anonymous recipient':demo?'actual local demo Auth, IndexedDB and storage':'in-memory Supabase fixture'},null,2));
 })().catch(error=>{console.error(error);process.exitCode=1;}).finally(async()=>{
  if(connection?.readyState===WebSocket.OPEN){try{await request('Browser.close');}catch{}connection.close();}
  if(child&&child.exitCode===null)child.kill();server.close();

@@ -15,7 +15,7 @@ function roomLocation(room){
  return null;
 }
 function openRoomMap(id=currentRoom.id){
- const room=allFinderRooms().find(r=>String(r.id)===String(id));if(!room||!authenticated())return;
+ const room=allFinderRooms().find(r=>String(r.id)===String(id));if(!room||(!authenticated()&&!(typeof RoomShare!=='undefined'&&RoomShare.canView(id))))return;
  const point=roomLocation(room),dialog=$('#roomMapDialog'),frame=$('#roomMapFrame');
  $('#roomMapTitle').textContent=room.title;$('#roomMapAddress').textContent=room.address;frame.removeAttribute('src');frame.classList.toggle('hidden',!point);$('#mapDirections').classList.toggle('hidden',!point);$('#mapExternal').classList.toggle('hidden',!point);
  $('#roomMapNote').textContent=!point?'Chưa có tọa độ của phòng này. Chủ trọ cần cung cấp vị trí để hiển thị bản đồ.':point.demo?'Vị trí minh họa cho phòng mẫu. Ghim bản đồ không xác minh phòng có thật.':'Vị trí do chủ trọ cung cấp, chưa được xác minh thực tế. Hãy đối chiếu địa chỉ và xem phòng trước khi đặt cọc.';

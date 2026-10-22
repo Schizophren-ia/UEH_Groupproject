@@ -255,3 +255,16 @@ Người dùng đã duyệt và yêu cầu triển khai toàn bộ kế hoạch 
 - [x] Hồi quy Supabase fixture PASS 45 tình huống × 1440px/390px, gồm xoay/zoom, pixels thay đổi, nhập/xuất panorama 2048×1024 và vào/thoát toàn màn hình. Cập nhật bộ test cũ để dùng nút Tìm kiếm và vị trí form tài khoản đã được duyệt từ đợt trước; không khôi phục bộ lọc Room Check đã gỡ.
 - [x] Commit triển khai `9e71e5e9358087ed33bd27bc8cc632059c6d43f5` đã push lên `origin/main`; `git ls-remote` trả đúng SHA. `git diff --cached --check` PASS. Commit báo cáo tiếp theo chỉ ghi lại kết quả triển khai này.
 - [x] GitHub Pages https://schizophren-ia.github.io/UEH_Groupproject/ trả 200. HTML cùng ba asset `room-tools.js`, `room-tools-ui.js`, `room-tools.css` đều trả 200 và nội dung khớp bản local đã kiểm tra. Dữ liệu báo cáo/so sánh vẫn là cục bộ; điểm vẫn là mô phỏng, không phải kết quả xác minh thật.
+
+## 2026-10-22 — Chia sẻ liên kết tới đúng phòng
+
+Người dùng duyệt phương án thêm nút Chia sẻ phòng, người nhận xem chi tiết không cần đăng nhập; chỉ các phòng mẫu đã được công khai có link mở được trên thiết bị khác. Tin cục bộ phải giải thích giới hạn thay vì tạo link hỏng.
+
+- [x] Thêm Chia sẻ phòng cạnh So sánh/Báo cáo trong thông tin phòng. Hộp thoại hiển thị URL đúng ID, nút Sao chép liên kết và phương án chọn văn bản để sao chép thủ công khi Clipboard bị chặn. Đóng hộp thoại trả focus về nút chia sẻ.
+- [x] Link dùng `?room=<id>` trên entry hiện tại, không cần đổi routing GitHub Pages. Chỉ đưa ID công khai vào link; bỏ query Auth/tham số khác và fragment, không đưa chat, báo cáo, tài khoản hay dữ liệu cục bộ vào URL. Chuyển phòng cập nhật đúng mục tiêu chia sẻ.
+- [x] Người nhận chưa đăng nhập xem đúng ảnh/360°, chi phí và chi tiết chi phí, xác thực/đánh giá, chủ trọ và thời điểm xác minh mẫu. Giữ nhãn ảnh/điểm/xác thực mô phỏng, không tạo tài khoản hoặc phiên khách giả. Chỉ mở bản đồ của đúng phòng công khai đang xem.
+- [x] Giao diện công khai không hiển thị điều hướng riêng, form nhắn tin chủ trọ, báo cáo hay so sánh. Truy cập tính năng riêng vẫn yêu cầu Auth. Nút Đăng nhập dùng luồng hiện tại và giữ mục tiêu phòng để quay lại sau đăng nhập.
+- [x] Chỉ phòng thuê mẫu có ít nhất 1/3 lớp được chia sẻ. Tin cục bộ hiện giải thích và không có URL/nút sao chép; ID sai, rỗng, lặp hoặc phòng 0/3 hiện Phòng không còn khả dụng, không mở nhầm phòng đầu tiên.
+- [x] Kiểm tra tĩnh PASS: ID/cú pháp và hai entry đồng bộ. Hồi quy `--tools` PASS 142 tình huống ở 1440px và 144 ở 390px, gồm chia sẻ khi đã đăng nhập, đổi phòng và giới hạn tin cục bộ. Hồi quy dịch vụ fixture PASS 45 tình huống × 2 viewport, gồm đăng nhập, bộ lọc, bài/chat/avatar, bản đồ, 360° nhập/xuất và toàn màn hình.
+- [x] Chrome `--share` PASS 35 tình huống ở mỗi viewport 1440px/390px trên hai entry. Mở chính URL đã tạo trong browser context riêng không có dữ liệu/tài khoản người gửi và tải lại vẫn đúng phòng. Bao phủ link sai/0 lớp, sao chép/fallback, giữ focus, không tạo phiên giả, dữ liệu mẫu, truy cập riêng bị chặn, đăng ký/OTP/đăng nhập thật trong demo từ CTA và quay về đúng phòng. Không lỗi JavaScript hoặc tràn ngang; đã xem ảnh trang công khai và hộp chia sẻ desktop/mobile.
+- [ ] Commit/push và xác nhận GitHub Pages: đang hoàn tất sau kiểm tra cuối.
